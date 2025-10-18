@@ -1,6 +1,6 @@
 .cache/
 build/
-libgfx/
+libgfx
 
 # Prerequisites
 *.d
