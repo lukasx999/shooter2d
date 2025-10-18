@@ -1,0 +1,14 @@
+# ninja log v6
+4	827	1760796522589671935	CMakeFiles/game.dir/main.cc.o	8b55b53b84739ea8
+3	1605	1760796522588822293	_deps/gfx-build/CMakeFiles/gfx.dir/src/texture.cc.o	90cfbf84efac764b
+1645	1684	1760796524230345626	_deps/gfx-build/tests	3fe6621e575f4d03
+2	1350	1760796522587277427	_deps/gfx-build/CMakeFiles/gfx.dir/src/window.cc.o	5902519e19c6768
+3	1452	1760796522588277468	_deps/gfx-build/CMakeFiles/gfx.dir/src/triangle.cc.o	e8b0b3a0ef7ca7f5
+3	1374	1760796522589374716	_deps/gfx-build/CMakeFiles/gfx.dir/src/text.cc.o	c39786839c1efe03
+1	2638	1760796522586277385	_deps/gfx-build/CMakeFiles/gfx.dir/src/gfx.cc.o	797094d234dd2355
+4	1644	1760796522589939401	_deps/gfx-build/CMakeFiles/tests.dir/test.cc.o	3c3c416b43658a16
+2	1672	1760796522588235701	_deps/gfx-build/CMakeFiles/gfx.dir/src/circle.cc.o	bd7cb5b15ac90c2c
+3	1910	1760796522589089493	_deps/gfx-build/CMakeFiles/gfx.dir/src/line.cc.o	8aa96dd4c18cc1d8
+2658	2705	1760796525243387669	game	d83be419dd38b035
+2	2258	1760796522587885299	_deps/gfx-build/CMakeFiles/gfx.dir/src/rectangle.cc.o	4e00055e04f4a338
+2638	2658	1760796525223386840	_deps/gfx-build/libgfx.a	403bbb395a6cd6f8

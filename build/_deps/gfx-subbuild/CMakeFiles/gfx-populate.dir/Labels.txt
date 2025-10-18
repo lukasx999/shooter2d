@@ -1,0 +1,14 @@
+# Target labels
+ gfx-populate
+# Source files and their labels
+/home/lukas/code/repos/shooter2d/build/_deps/gfx-subbuild/CMakeFiles/gfx-populate
+/home/lukas/code/repos/shooter2d/build/_deps/gfx-subbuild/CMakeFiles/gfx-populate.rule
+/home/lukas/code/repos/shooter2d/build/_deps/gfx-subbuild/CMakeFiles/gfx-populate-complete.rule
+/home/lukas/code/repos/shooter2d/build/_deps/gfx-subbuild/gfx-populate-prefix/src/gfx-populate-stamp/gfx-populate-build.rule
+/home/lukas/code/repos/shooter2d/build/_deps/gfx-subbuild/gfx-populate-prefix/src/gfx-populate-stamp/gfx-populate-configure.rule
+/home/lukas/code/repos/shooter2d/build/_deps/gfx-subbuild/gfx-populate-prefix/src/gfx-populate-stamp/gfx-populate-download.rule
+/home/lukas/code/repos/shooter2d/build/_deps/gfx-subbuild/gfx-populate-prefix/src/gfx-populate-stamp/gfx-populate-install.rule
+/home/lukas/code/repos/shooter2d/build/_deps/gfx-subbuild/gfx-populate-prefix/src/gfx-populate-stamp/gfx-populate-mkdir.rule
+/home/lukas/code/repos/shooter2d/build/_deps/gfx-subbuild/gfx-populate-prefix/src/gfx-populate-stamp/gfx-populate-patch.rule
+/home/lukas/code/repos/shooter2d/build/_deps/gfx-subbuild/gfx-populate-prefix/src/gfx-populate-stamp/gfx-populate-test.rule
+/home/lukas/code/repos/shooter2d/build/_deps/gfx-subbuild/gfx-populate-prefix/src/gfx-populate-stamp/gfx-populate-update.rule
