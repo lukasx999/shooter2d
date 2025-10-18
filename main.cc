@@ -101,7 +101,7 @@ public:
 
 int main() {
 
-    gfx::Window window(1600, 900, "my window", gfx::WindowFlags::DisableVsync);
+    gfx::Window window(1600, 900, "my window", gfx::WindowFlags::None);
     gfx::Renderer rd(window);
 
     Player player({window.get_width()/2.0f, window.get_height()/2.0f});
@@ -113,6 +113,7 @@ int main() {
 
         rd.clear_background(gfx::Color::black());
 
+        std::println("{}", rd.get_fps());
         rd.draw_rectangle(0, 0, window.get_width(), window.get_height(), 0_deg, gfx::Color::grey());
         player.draw(rd);
 
