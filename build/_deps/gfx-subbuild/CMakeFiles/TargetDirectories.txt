@@ -1,3 +1,0 @@
-/home/lukas/code/repos/shooter2d/build/_deps/gfx-subbuild/CMakeFiles/gfx-populate.dir
-/home/lukas/code/repos/shooter2d/build/_deps/gfx-subbuild/CMakeFiles/edit_cache.dir
-/home/lukas/code/repos/shooter2d/build/_deps/gfx-subbuild/CMakeFiles/rebuild_cache.dir

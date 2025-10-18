@@ -1,9 +1,0 @@
-{
-	"InstallScripts" : 
-	[
-		"/home/lukas/code/repos/shooter2d/build/cmake_install.cmake",
-		"/home/lukas/code/repos/shooter2d/build/_deps/gfx-build/cmake_install.cmake",
-		"/home/lukas/code/repos/shooter2d/build/_deps/gfx-build/src/cmake_install.cmake"
-	],
-	"Parallel" : false
-}

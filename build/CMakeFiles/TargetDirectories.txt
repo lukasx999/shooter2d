@@ -1,9 +1,0 @@
-/home/lukas/code/repos/shooter2d/build/CMakeFiles/game.dir
-/home/lukas/code/repos/shooter2d/build/CMakeFiles/edit_cache.dir
-/home/lukas/code/repos/shooter2d/build/CMakeFiles/rebuild_cache.dir
-/home/lukas/code/repos/shooter2d/build/_deps/gfx-build/CMakeFiles/gfx.dir
-/home/lukas/code/repos/shooter2d/build/_deps/gfx-build/CMakeFiles/tests.dir
-/home/lukas/code/repos/shooter2d/build/_deps/gfx-build/CMakeFiles/edit_cache.dir
-/home/lukas/code/repos/shooter2d/build/_deps/gfx-build/CMakeFiles/rebuild_cache.dir
-/home/lukas/code/repos/shooter2d/build/_deps/gfx-build/src/CMakeFiles/edit_cache.dir
-/home/lukas/code/repos/shooter2d/build/_deps/gfx-build/src/CMakeFiles/rebuild_cache.dir
