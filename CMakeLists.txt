@@ -8,14 +8,19 @@ project(Game)
 
 include(FetchContent)
 
-FetchContent_Declare(
+set(libgfx_local true)
+
+if(libgfx_local)
+    add_subdirectory(libgfx)
+else()
+    FetchContent_Declare(
     Gfx
-    GIT_REPOSITORY /home/lukas/code/repos/libgfx/
+    GIT_REPOSITORY /home/lukas/code/repos/libgfx
     # GIT_REPOSITORY https://github.com/lukasx999/libgfx.git
     GIT_TAG main
-)
-
-FetchContent_MakeAvailable(Gfx)
+    )
+    FetchContent_MakeAvailable(Gfx)
+endif()
 
 add_executable(game main.cc)
 target_link_libraries(game PRIVATE gfx)
