@@ -16,7 +16,7 @@ public:
         , m_travel_speed(travel_speed)
     { }
 
-    void update(float dt) {
+    void update(double dt) {
         m_position += m_direction * m_travel_speed * dt;
     }
 
@@ -38,7 +38,7 @@ public:
         }
     }
 
-    void update(float dt) {
+    void update(double dt) {
         for (auto& projectile : projectiles) {
             projectile.update(dt);
         }

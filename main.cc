@@ -11,8 +11,10 @@
 namespace {
 
 class Game {
+    gfx::Renderer& m_renderer;
     gfx::Window& m_window;
-    Player m_player{{m_window.get_width()/2.0f, m_window.get_height()/2.0f}};
+    gfx::Font m_font;
+    Player m_player;
     World m_world;
     ProjectileSystem m_projectiles;
 
@@ -20,25 +22,38 @@ class Game {
     static constexpr double m_shot_delay = 0.25;
 
 public:
-    explicit Game(gfx::Window& window)
-    : m_window(window)
+    explicit Game(gfx::Renderer& renderer, gfx::Window& window)
+        : m_renderer(renderer)
+        , m_window(window)
+        , m_font(m_renderer.load_font("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Regular.ttf"))
+        , m_player({ m_window.get_width() / 2.0f, m_window.get_height() / 2.0f })
+        , m_world(m_window)
     { }
 
     void draw(gfx::Renderer& rd) const {
-        m_world.draw(rd);
-        m_player.draw(rd);
-        m_projectiles.draw(rd);
+
+        rd.set_camera(m_player.get_position());
+        rd.with_camera([&] {
+            m_world.draw(rd);
+            m_player.draw(rd);
+            m_projectiles.draw(rd);
+        });
+
+        int size = 50;
+        auto text = "Health: 0";
+        int text_width = m_font.measure_text(text, size);
+        rd.draw_text(m_window.get_width()/2.0 - text_width/2.0, size, size, text, m_font, gfx::Color::red());
 
     }
 
-    void update(float dt) {
+    void update(double dt) {
         m_projectiles.update(dt);
 
         m_world.resolve_collisions(m_player);
 
         bool can_shoot = m_window.get_time() > m_last_shot + m_shot_delay;
 
-        if (m_window.get_mouse_button_state(gfx::MouseButton::LMB).pressed() && can_shoot) {
+        if (m_window.get_mouse_button_state(gfx::MouseButton::Left).pressed() && can_shoot) {
             m_last_shot = m_window.get_time();
             auto ppos = m_player.get_position();
             auto mpos = m_window.get_mouse_pos();
@@ -71,17 +86,17 @@ public:
 
 int main() {
 
-    gfx::Window window(1600, 900, "my window", gfx::WindowFlags::DisableVsync);
-    gfx::Renderer rd(window);
+    gfx::Window window(1600, 900, "shooter2d", gfx::WindowFlags::DisableVsync);
+    gfx::Renderer renderer(window);
 
-    Game game(window);
+    Game game(renderer, window);
 
-    rd.draw([&]() {
+    renderer.draw([&]() {
 
-        rd.clear_background(gfx::Color::black());
+        renderer.clear_background(gfx::Color::black());
 
-        float dt = rd.get_frame_time();
-        game.draw(rd);
+        double dt = renderer.get_frame_time();
+        game.draw(renderer);
         game.update(dt);
 
     });

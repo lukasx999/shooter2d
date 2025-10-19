@@ -36,10 +36,12 @@ public:
     }
 
     void draw(gfx::Renderer& rd) const {
-        rd.draw_circle(m_position, m_size, gfx::Color::blue());
+        rd.draw_rectangle(get_hitbox(), gfx::Color::blue());
+        // FIXME:
+        // rd.draw_circle(m_position, m_size, gfx::Color::blue());
     }
 
-    void move(Direction dir, float dt) {
+    void move(Direction dir, double dt) {
 
         switch (dir) {
             using enum Direction;
