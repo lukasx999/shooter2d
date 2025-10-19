@@ -1,98 +1,68 @@
-#include <vector>
+#include <print>
 
 #include <gfx.hh>
+
+#include "player.hh"
+#include "projectiles.hh"
+#include "world.hh"
 
 // 2d twin stick shooter bullet hell game with procedurally generated levels
 
 namespace {
 
-enum class Direction { North, East, South, West };
+class Game {
+    gfx::Window& m_window;
+    Player m_player{{m_window.get_width()/2.0f, m_window.get_height()/2.0f}};
+    World m_world;
+    ProjectileSystem m_projectiles;
 
-class Projectile {
-    gfx::Vec m_position;
-    const gfx::Vec m_direction;
-    const float m_travel_speed;
+    double m_last_shot = 0.0;
+    static constexpr double m_shot_delay = 0.25;
 
 public:
-    Projectile(gfx::Vec position, gfx::Vec direction, float travel_speed)
-        : m_position(position)
-        , m_direction(direction)
-        , m_travel_speed(travel_speed)
+    explicit Game(gfx::Window& window)
+    : m_window(window)
     { }
 
-    void update(float dt) {
-        m_position += m_direction * m_travel_speed * dt;
-    }
-
     void draw(gfx::Renderer& rd) const {
-        rd.draw_circle(m_position, 5.0, gfx::Color::green());
-    }
+        m_world.draw(rd);
+        m_player.draw(rd);
+        m_projectiles.draw(rd);
 
-};
-
-class ProjectileSystem {
-    std::vector<Projectile> projectiles;
-
-public:
-    ProjectileSystem() = default;
-
-    void draw(gfx::Renderer& rd) const {
-        for (auto& projectile : projectiles) {
-            projectile.draw(rd);
-        }
     }
 
     void update(float dt) {
-        for (auto& projectile : projectiles) {
-            projectile.update(dt);
+        m_projectiles.update(dt);
+
+        m_world.resolve_collisions(m_player);
+
+        bool can_shoot = m_window.get_time() > m_last_shot + m_shot_delay;
+
+        if (m_window.get_mouse_button_state(gfx::MouseButton::LMB).pressed() && can_shoot) {
+            m_last_shot = m_window.get_time();
+            auto ppos = m_player.get_position();
+            auto mpos = m_window.get_mouse_pos();
+
+            auto direction = (mpos - ppos).normalized();
+            m_projectiles.add(ppos, direction, 500.0);
+
         }
-    }
 
-    void add(gfx::Vec position, gfx::Vec direction, float size) {
-        projectiles.emplace_back(Projectile{ position, direction, size });
-    }
+        if (m_window.get_key_state(gfx::Key::W).pressed())
+            m_player.move(Direction::North, dt);
 
-};
+        if (m_window.get_key_state(gfx::Key::S).pressed())
+            m_player.move(Direction::South, dt);
 
-class Player {
-    gfx::Vec m_position;
-    static constexpr float m_movement_speed = 500.0;
+        if (m_window.get_key_state(gfx::Key::D).pressed())
+            m_player.move(Direction::East, dt);
 
-public:
-    Player(gfx::Vec position)
-    : m_position(position)
-    {
-    }
+        if (m_window.get_key_state(gfx::Key::A).pressed())
+            m_player.move(Direction::West, dt);
 
-    [[nodiscard]] gfx::Vec get_position() const {
-        return m_position;
-    }
+        if (m_window.get_key_state(gfx::Key::Escape).pressed())
+            m_window.close();
 
-    void draw(gfx::Renderer& rd) const {
-        rd.draw_circle(m_position, 50.0, gfx::Color::blue());
-    }
-
-    void move(Direction dir, float dt) {
-
-        switch (dir) {
-            using enum Direction;
-
-            case North:
-                m_position.y -= m_movement_speed * dt;
-                break;
-
-            case East:
-                m_position.x += m_movement_speed * dt;
-                break;
-
-            case South:
-                m_position.y += m_movement_speed * dt;
-                break;
-
-            case West:
-                m_position.x -= m_movement_speed * dt;
-                break;
-        }
     }
 
 };
@@ -101,50 +71,18 @@ public:
 
 int main() {
 
-    gfx::Window window(1600, 900, "my window", gfx::WindowFlags::None);
+    gfx::Window window(1600, 900, "my window", gfx::WindowFlags::DisableVsync);
     gfx::Renderer rd(window);
 
-    Player player({window.get_width()/2.0f, window.get_height()/2.0f});
-
-    ProjectileSystem projectiles;
+    Game game(window);
 
     rd.draw([&]() {
-        float dt = rd.get_frame_time();
 
         rd.clear_background(gfx::Color::black());
 
-        std::println("{}", rd.get_fps());
-        rd.draw_rectangle(0, 0, window.get_width(), window.get_height(), 0_deg, gfx::Color::grey());
-        player.draw(rd);
-
-        rd.draw_circle(window.get_mouse_pos(), 15.0, gfx::Color::red());
-        projectiles.draw(rd);
-        projectiles.update(dt);
-
-        if (window.get_mouse_button_state(gfx::MouseButton::LMB).pressed()) {
-            auto ppos = player.get_position();
-            auto mpos = window.get_mouse_pos();
-
-            auto direction = (mpos - ppos).normalized();
-            projectiles.add(ppos, direction, 500.0);
-
-        }
-
-        if (window.get_key_state(gfx::Key::W).pressed())
-            player.move(Direction::North, dt);
-
-        if (window.get_key_state(gfx::Key::S).pressed())
-            player.move(Direction::South, dt);
-
-        if (window.get_key_state(gfx::Key::D).pressed())
-            player.move(Direction::East, dt);
-
-        if (window.get_key_state(gfx::Key::A).pressed())
-            player.move(Direction::West, dt);
-
-        if (window.get_key_state(gfx::Key::Escape).pressed()) {
-            window.close();
-        }
+        float dt = rd.get_frame_time();
+        game.draw(rd);
+        game.update(dt);
 
     });
 
