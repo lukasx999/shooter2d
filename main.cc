@@ -46,10 +46,9 @@ public:
 
     }
 
-    void update(double dt) {
+    void update(double dt, gfx::Renderer& rd) {
         m_projectiles.update(dt);
 
-        m_world.resolve_collisions(m_player);
 
         bool can_shoot = m_window.get_time() > m_last_shot + m_shot_delay;
 
@@ -78,6 +77,8 @@ public:
         if (m_window.get_key_state(gfx::Key::Escape).pressed())
             m_window.close();
 
+        m_world.resolve_collisions(m_player, rd);
+
     }
 
 };
@@ -86,7 +87,7 @@ public:
 
 int main() {
 
-    gfx::Window window(1600, 900, "shooter2d", gfx::WindowFlags::DisableVsync);
+    gfx::Window window(1600, 900, "shooter2d", gfx::WindowFlags::None);
     gfx::Renderer renderer(window);
 
     Game game(renderer, window);
@@ -97,7 +98,7 @@ int main() {
 
         double dt = renderer.get_frame_time();
         game.draw(renderer);
-        game.update(dt);
+        game.update(dt, renderer);
 
     });
 
