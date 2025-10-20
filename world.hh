@@ -55,25 +55,25 @@ public:
         }
     }
 
-    void resolve_collisions(Player& player, gfx::Renderer& rd) {
+    void resolve_collisions(Player& player, double dt) {
         for (size_t i=0; i < m_tiles.size(); ++i) {
             float y = static_cast<int>(i / m_world_width) * m_tile_size;
             float x = (i % m_world_width) * m_tile_size;
 
             if (m_tiles[i] == Bg) continue;
 
-            // size of the collision hitbox
-            float diff = 500.0 * rd.get_frame_time();
+            // subtracted from the height of the collision hitbox, otherwise
+            // the player would clip through the tile and trigger a wrong collision
+            // it is set to the amount of pixels the player can move at the current frame
+            float diff = player.get_movement_speed() * dt;
 
+            // width of the collision hitbox
             float collision_size = 1;
 
             // add a tiny collision rectangle for each side of the tile so we
             // know which tile was hit
-            //
-            // also make the side of each rectangle a bit smaller to avoid
-            // overlaps in collisions
             gfx::Rect left {
-                x-collision_size,
+                x - collision_size,
                 y + diff,
                 collision_size,
                 m_tile_size - diff * 2,
@@ -88,7 +88,7 @@ public:
 
             gfx::Rect top {
                 x + diff,
-                y-collision_size,
+                y - collision_size,
                 m_tile_size - diff * 2,
                 collision_size,
             };
@@ -99,13 +99,6 @@ public:
                 m_tile_size - diff * 2,
                 collision_size,
             };
-
-            rd.with_camera([&] {
-                rd.draw_rectangle(left, gfx::Color::green());
-                rd.draw_rectangle(right, gfx::Color::green());
-                rd.draw_rectangle(top, gfx::Color::green());
-                rd.draw_rectangle(bottom, gfx::Color::green());
-            });
 
             gfx::Vec pos = player.get_position();
             float size = player.get_size();

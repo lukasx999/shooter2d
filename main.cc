@@ -46,7 +46,7 @@ public:
 
     }
 
-    void update(double dt, gfx::Renderer& rd) {
+    void update(double dt) {
         m_projectiles.update(dt);
 
 
@@ -77,7 +77,7 @@ public:
         if (m_window.get_key_state(gfx::Key::Escape).pressed())
             m_window.close();
 
-        m_world.resolve_collisions(m_player, rd);
+        m_world.resolve_collisions(m_player, dt);
 
     }
 
@@ -98,7 +98,7 @@ int main() {
 
         double dt = renderer.get_frame_time();
         game.draw(renderer);
-        game.update(dt, renderer);
+        game.update(dt);
 
     });
 

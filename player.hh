@@ -31,6 +31,10 @@ public:
         return m_size;
     }
 
+    [[nodiscard]] float get_movement_speed() const {
+        return m_movement_speed;
+    }
+
     void set_position(gfx::Vec position) {
         m_position = position;
     }
