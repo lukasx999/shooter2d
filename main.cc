@@ -6,6 +6,8 @@
 #include "projectiles.hh"
 #include "world.hh"
 
+#include <tmxlite/Map.hpp>
+
 // 2d twin stick shooter bullet hell game with procedurally generated levels
 
 namespace {

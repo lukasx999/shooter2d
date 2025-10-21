@@ -22,5 +22,6 @@ else()
     FetchContent_MakeAvailable(Gfx)
 endif()
 
+include_directories(/home/lukas/code/src/tmxlite/tmxlite/include/)
 add_executable(game main.cc)
-target_link_libraries(game PRIVATE gfx)
+target_link_libraries(game PRIVATE gfx tmxlite)
