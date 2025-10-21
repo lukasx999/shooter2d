@@ -15,13 +15,22 @@ if(libgfx_local)
 else()
     FetchContent_Declare(
     Gfx
-    GIT_REPOSITORY /home/lukas/code/repos/libgfx
-    # GIT_REPOSITORY https://github.com/lukasx999/libgfx.git
+    GIT_REPOSITORY https://github.com/lukasx999/libgfx.git
     GIT_TAG main
     )
     FetchContent_MakeAvailable(Gfx)
 endif()
 
-include_directories(/home/lukas/code/src/tmxlite/tmxlite/include/)
+FetchContent_Declare(
+    Tmxlite
+    GIT_REPOSITORY https://github.com/fallahn/tmxlite.git
+    GIT_TAG master
+)
+FetchContent_MakeAvailable(Tmxlite)
+
+# set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${tmxlite_SOURCE_DIR}/cmake/modules/")
+# find_package(TMXLITE)
+# include_directories(${TMXLITE_INCLUDE_DIR})
+
 add_executable(game main.cc)
 target_link_libraries(game PRIVATE gfx tmxlite)

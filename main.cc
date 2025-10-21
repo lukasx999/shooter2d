@@ -89,6 +89,19 @@ public:
 
 int main() {
 
+    tmx::Map map;
+    bool success = map.load("./map.tmx");
+    if (!success) {
+        std::println("failed to load map");
+        return EXIT_FAILURE;
+    }
+
+    auto& layers = map.getLayers();
+    // auto& layer = layers[0]->getLayerAs<tmx::TileLayer>();
+    // auto tilesets = map.getTilesets();
+    // auto tileset = tilesets[0];
+    // std::println("{}", tileset.getName());
+
     gfx::Window window(1600, 900, "shooter2d", gfx::WindowFlags::None);
     gfx::Renderer renderer(window);
 
