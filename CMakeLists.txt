@@ -28,9 +28,7 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(Tmxlite)
 
-# set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${tmxlite_SOURCE_DIR}/cmake/modules/")
-# find_package(TMXLITE)
-# include_directories(${TMXLITE_INCLUDE_DIR})
+add_subdirectory(${tmxlite_SOURCE_DIR}/tmxlite/)
 
 add_executable(game main.cc)
 target_link_libraries(game PRIVATE gfx tmxlite)

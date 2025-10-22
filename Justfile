@@ -1,5 +1,5 @@
 run: build
-    LD_LIBRARY_PATH=/usr/local/lib ./build/game
+    ./build/game
 
 configure:
     cmake -B build -G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
