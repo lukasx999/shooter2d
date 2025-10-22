@@ -115,6 +115,21 @@ int main() {
         game.draw(renderer);
         game.update(dt);
 
+        if (window.get_key_state(gfx::Key::Escape).pressed())
+            window.close();
+
+        std::println("{}", renderer.get_fps());
+
+        // int n = 300;
+        // int size = 5;
+        // int spacing = 5;
+        // for (int x = 0; x < n; ++x) {
+        //     for (int y = 0; y < n; ++y) {
+        //         renderer.draw_circle(x*(size+spacing), y*(size+spacing), size, gfx::Color::blue());
+        //     }
+        // }
+
+
     });
 
 }

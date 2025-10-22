@@ -30,4 +30,5 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(Tmxlite)
 
 add_executable(game main.cc)
+target_compile_options(game PRIVATE -Wall -Wextra -O3)
 target_link_libraries(game PRIVATE gfx tmxlite)
