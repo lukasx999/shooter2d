@@ -25,10 +25,9 @@ FetchContent_Declare(
     Tmxlite
     GIT_REPOSITORY https://github.com/fallahn/tmxlite.git
     GIT_TAG master
+    SOURCE_SUBDIR tmxlite
 )
 FetchContent_MakeAvailable(Tmxlite)
-
-add_subdirectory(${tmxlite_SOURCE_DIR}/tmxlite/)
 
 add_executable(game main.cc)
 target_link_libraries(game PRIVATE gfx tmxlite)
