@@ -1,4 +1,8 @@
 #include <print>
+#include <tuple>
+#include <fstream>
+#include <ranges>
+#include <filesystem>
 
 #include <gfx.hh>
 
@@ -7,6 +11,8 @@
 #include "world.hh"
 
 #include <tmxlite/Map.hpp>
+#include <tmxlite/TileLayer.hpp>
+#include <tmxlite/Layer.hpp>
 
 // 2d twin stick shooter bullet hell game with procedurally generated levels
 
@@ -89,36 +95,88 @@ public:
 
 int main() {
 
-    // tmx::Map map;
-    // bool success = map.load("./map.tmx");
-    // if (!success) {
-    //     std::println("failed to load map");
-    //     return EXIT_FAILURE;
-    // }
+    tmx::Map map;
+    bool success = map.load("./assets/map.tmx");
+    if (!success) {
+        std::println("failed to load map");
+        return EXIT_FAILURE;
+    }
 
-    // auto& layers = map.getLayers();
-    // const auto& layer = layers[0]->getLayerAs<tmx::TileLayer>();
-    // auto tilesets = map.getTilesets();
-    // auto tileset = tilesets[0];
-    // std::println("{}", tileset.getName());
+    auto tile_size = map.getTileSize();
+
+    auto& layers = map.getLayers();
+    auto& layer = layers[0];
+    auto tilesets = map.getTilesets();
+    auto layer_size = layer->getSize();
+
+    auto& tileset = tilesets[0];
+    uint32_t first_gid = tileset.getFirstGID();
+    uint32_t last_gid = tileset.getLastGID();
+
+    auto tileset_size = tileset.getTileSize();
+    auto tileset_columns = tileset.getColumnCount();
+    auto tileset_rows = tileset.getTileCount() / tileset_columns;
+
+    auto& tiles = layer->getLayerAs<tmx::TileLayer>().getTiles();
+
+    auto path = tileset.getImagePath();
+    if (!std::filesystem::exists(path)) {
+        std::println("image doesnt exist");
+        return EXIT_FAILURE;
+    }
+
+    std::ifstream image(path);
+    std::vector<char> img(std::istreambuf_iterator<char>(image), {});
+
 
     gfx::Window window(1600, 900, "shooter2d", gfx::WindowFlags::None);
     gfx::Renderer renderer(window);
 
+    gfx::Texture tex(path);
+
     Game game(renderer, window);
 
-    renderer.draw([&]() {
+    renderer.draw([&] {
 
         renderer.clear_background(gfx::Color::black());
 
-        double dt = renderer.get_frame_time();
-        game.draw(renderer);
-        game.update(dt);
+        // double dt = renderer.get_frame_time();
+        // game.draw(renderer);
+        // game.update(dt);
 
         if (window.get_key_state(gfx::Key::Escape).pressed())
             window.close();
 
-        std::println("{}", renderer.get_fps());
+        renderer.draw_texture(0, 0, tileset_size.x * tileset_columns, tileset_size.y * tileset_rows, 0_deg, tex);
+
+        for (auto&& [i, tile] : tiles | std::views::enumerate) {
+            uint32_t id = tile.ID;
+
+            int dest_x = i % layer_size.x;
+            int dest_y = i / layer_size.x;
+
+            if (id == 0) {
+            }
+
+            if (id >= first_gid && id <= last_gid) {
+
+                uint32_t local_id = id - first_gid;
+                int src_x = local_id % tileset_columns;
+                int src_y = local_id / tileset_columns;
+
+                renderer.draw_rectangle(
+                    src_x*tileset_size.x,
+                    src_y*tileset_size.y,
+                    tileset_size.x,
+                    tileset_size.y,
+                    gfx::Color::white().set_alpha(245)
+                );
+
+            }
+
+            // renderer.draw_rectangle(dest_x*tile_size.x, dest_y*tile_size.y, tile_size.x, tile_size.y, color);
+
+        }
 
         // int n = 300;
         // int size = 5;
