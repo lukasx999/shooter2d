@@ -104,13 +104,9 @@ public:
             exit(1);
         }
 
-
-
-
-        std::ifstream image(path);
-        std::vector<char> img(std::istreambuf_iterator<char>(image), {});
-
-        gfx::Texture tex(path);
+        // std::ifstream image(path);
+        // std::vector<char> img(std::istreambuf_iterator<char>(image), {});
+        // gfx::Texture tex(path);
 
     }
 
@@ -129,15 +125,16 @@ public:
 
             if (gid == 0) {
                 // TODO: empty, fill with bg color
+                continue;
             }
 
             auto ts = find_tileset(gid);
 
-            auto tex_path = ts.getImagePath();
-            if (!std::filesystem::exists(tex_path)) {
-                std::println("image doesnt exist");
-                exit(1);
-            }
+            // auto tex_path = ts.getImagePath();
+            // if (!std::filesystem::exists(tex_path)) {
+            //     std::println("image doesnt exist");
+            //     exit(1);
+            // }
 
             auto tileset_size = ts.getTileSize();
             auto tileset_columns = ts.getColumnCount();
@@ -156,7 +153,7 @@ public:
 private:
     [[nodiscard]] const tmx::Tileset& find_tileset(uint32_t gid) const {
 
-        auto tilesets = m_map.getTilesets();
+        auto& tilesets = m_map.getTilesets();
         auto ts = std::ranges::find_if(tilesets, [&](const tmx::Tileset& ts) {
             return gid >= ts.getFirstGID() && gid <= ts.getLastGID();
         });
