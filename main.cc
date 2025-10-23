@@ -1,19 +1,10 @@
 #include <print>
-#include <tuple>
-#include <fstream>
-#include <algorithm>
-#include <ranges>
-#include <filesystem>
 
 #include <gfx.hh>
 
 #include "player.hh"
 #include "projectiles.hh"
-#include "world.hh"
-
-#include <tmxlite/Map.hpp>
-#include <tmxlite/TileLayer.hpp>
-#include <tmxlite/Layer.hpp>
+#include "map.hh"
 
 // 2d twin stick shooter bullet hell game with procedurally generated levels
 
@@ -24,7 +15,6 @@ class Game {
     gfx::Window& m_window;
     gfx::Font m_font;
     Player m_player;
-    World m_world;
     ProjectileSystem m_projectiles;
 
     double m_last_shot = 0.0;
@@ -36,14 +26,12 @@ public:
         , m_window(window)
         , m_font(m_renderer.load_font("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Regular.ttf"))
         , m_player({ m_window.get_width() / 2.0f, m_window.get_height() / 2.0f })
-        , m_world(m_window)
     { }
 
     void draw(gfx::Renderer& rd) const {
 
         rd.set_camera(m_player.get_position());
         rd.with_camera([&] {
-            m_world.draw(rd);
             m_player.draw(rd);
             m_projectiles.draw(rd);
         });
@@ -86,81 +74,74 @@ public:
         if (m_window.get_key_state(gfx::Key::Escape).pressed())
             m_window.close();
 
-        m_world.resolve_collisions(m_player, dt);
+        // m_world.resolve_collisions(m_player, dt);
 
     }
 
-};
-
-class Map {
-    tmx::Map m_map;
-
-public:
-    explicit Map(const char* path) {
-
-        bool success = m_map.load(path);
-        if (!success) {
-            std::println("failed to load map");
-            exit(1);
-        }
-
-        // std::ifstream image(path);
-        // std::vector<char> img(std::istreambuf_iterator<char>(image), {});
-        // gfx::Texture tex(path);
-
-    }
-
-    void draw(gfx::Renderer& rd) const {
-
-        auto& layers = m_map.getLayers();
-        auto& layer = layers[0];
-        auto layer_size = layer->getSize();
-        auto& tiles = layer->getLayerAs<tmx::TileLayer>().getTiles();
-
-        for (auto&& [i, tile] : tiles | std::views::enumerate) {
-            uint32_t gid = tile.ID;
-
-            int dest_x = i % layer_size.x;
-            int dest_y = i / layer_size.x;
-
-            if (gid == 0) {
-                // TODO: empty, fill with bg color
-                continue;
-            }
-
-            auto ts = find_tileset(gid);
-
-            // auto tex_path = ts.getImagePath();
-            // if (!std::filesystem::exists(tex_path)) {
-            //     std::println("image doesnt exist");
-            //     exit(1);
-            // }
-
-            auto tileset_size = ts.getTileSize();
-            auto tileset_columns = ts.getColumnCount();
-            auto tileset_rows = ts.getTileCount() / tileset_columns;
-            uint32_t local_id = gid - ts.getFirstGID();
-            int src_x = local_id % tileset_columns;
-            int src_y = local_id / tileset_columns;
-
-            auto tile_size = m_map.getTileSize();
-
-            rd.draw_rectangle(dest_x*tile_size.x, dest_y*tile_size.y, tile_size.x, tile_size.y, gfx::Color::red());
-
-        }
-    }
-
-private:
-    [[nodiscard]] const tmx::Tileset& find_tileset(uint32_t gid) const {
-
-        auto& tilesets = m_map.getTilesets();
-        auto ts = std::ranges::find_if(tilesets, [&](const tmx::Tileset& ts) {
-            return gid >= ts.getFirstGID() && gid <= ts.getLastGID();
-        });
-
-        assert(ts != tilesets.cend());
-        return *ts;
-    }
+    // TODO:
+    // void resolve_collisions(Player& player, double dt) {
+    //     for (size_t i=0; i < m_tiles.size(); ++i) {
+    //         float y = static_cast<int>(i / m_world_width) * m_tile_size;
+    //         float x = (i % m_world_width) * m_tile_size;
+    //
+    //         if (m_tiles[i] == Bg) continue;
+    //
+    //         // subtracted from the height of the collision hitbox, otherwise
+    //         // the player would clip through the tile and trigger a wrong collision
+    //         // it is set to the amount of pixels the player can move at the current frame
+    //         float diff = player.get_movement_speed() * dt;
+    //
+    //         // width of the collision hitbox
+    //         float collision_size = 1;
+    //
+    //         // add a tiny collision rectangle for each side of the tile so we
+    //         // know which tile was hit
+    //         gfx::Rect left {
+    //             x - collision_size,
+    //             y + diff,
+    //             collision_size,
+    //             m_tile_size - diff * 2,
+    //         };
+    //
+    //         gfx::Rect right {
+    //             x + m_tile_size,
+    //             y + diff,
+    //             collision_size,
+    //             m_tile_size - diff * 2,
+    //         };
+    //
+    //         gfx::Rect top {
+    //             x + diff,
+    //             y - collision_size,
+    //             m_tile_size - diff * 2,
+    //             collision_size,
+    //         };
+    //
+    //         gfx::Rect bottom {
+    //             x + diff,
+    //             y + m_tile_size,
+    //             m_tile_size - diff * 2,
+    //             collision_size,
+    //         };
+    //
+    //         gfx::Vec pos = player.get_position();
+    //         float size = player.get_size();
+    //         gfx::Rect p = player.get_hitbox();
+    //
+    //         if (p.check_collision_rects(left))
+    //             player.set_position({ x-size-1, pos.y });
+    //
+    //         if (p.check_collision_rects(right))
+    //             player.set_position({ x+m_tile_size+size+1, pos.y });
+    //
+    //         if (p.check_collision_rects(top))
+    //             player.set_position({ pos.x, y-size-1 });
+    //
+    //         if (p.check_collision_rects(bottom))
+    //             player.set_position({ pos.x, y+m_tile_size+size+1 });
+    //
+    //     }
+    // }
 
 };
 
