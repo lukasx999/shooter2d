@@ -1,6 +1,7 @@
 #include <print>
 #include <tuple>
 #include <fstream>
+#include <algorithm>
 #include <ranges>
 #include <filesystem>
 
@@ -91,48 +92,89 @@ public:
 
 };
 
+class Map {
+    tmx::Map m_map;
+
+public:
+    explicit Map(const char* path) {
+
+        bool success = m_map.load(path);
+        if (!success) {
+            std::println("failed to load map");
+            exit(1);
+        }
+
+
+
+
+        std::ifstream image(path);
+        std::vector<char> img(std::istreambuf_iterator<char>(image), {});
+
+        gfx::Texture tex(path);
+
+    }
+
+    void draw(gfx::Renderer& rd) const {
+
+        auto& layers = m_map.getLayers();
+        auto& layer = layers[0];
+        auto layer_size = layer->getSize();
+        auto& tiles = layer->getLayerAs<tmx::TileLayer>().getTiles();
+
+        for (auto&& [i, tile] : tiles | std::views::enumerate) {
+            uint32_t gid = tile.ID;
+
+            int dest_x = i % layer_size.x;
+            int dest_y = i / layer_size.x;
+
+            if (gid == 0) {
+                // TODO: empty, fill with bg color
+            }
+
+            auto ts = find_tileset(gid);
+
+            auto tex_path = ts.getImagePath();
+            if (!std::filesystem::exists(tex_path)) {
+                std::println("image doesnt exist");
+                exit(1);
+            }
+
+            auto tileset_size = ts.getTileSize();
+            auto tileset_columns = ts.getColumnCount();
+            auto tileset_rows = ts.getTileCount() / tileset_columns;
+            uint32_t local_id = gid - ts.getFirstGID();
+            int src_x = local_id % tileset_columns;
+            int src_y = local_id / tileset_columns;
+
+            auto tile_size = m_map.getTileSize();
+
+            rd.draw_rectangle(dest_x*tile_size.x, dest_y*tile_size.y, tile_size.x, tile_size.y, gfx::Color::red());
+
+        }
+    }
+
+private:
+    [[nodiscard]] const tmx::Tileset& find_tileset(uint32_t gid) const {
+
+        auto tilesets = m_map.getTilesets();
+        auto ts = std::ranges::find_if(tilesets, [&](const tmx::Tileset& ts) {
+            return gid >= ts.getFirstGID() && gid <= ts.getLastGID();
+        });
+
+        assert(ts != tilesets.cend());
+        return *ts;
+    }
+
+};
+
 } // namespace
 
 int main() {
 
-    tmx::Map map;
-    bool success = map.load("./assets/map.tmx");
-    if (!success) {
-        std::println("failed to load map");
-        return EXIT_FAILURE;
-    }
-
-    auto tile_size = map.getTileSize();
-
-    auto& layers = map.getLayers();
-    auto& layer = layers[0];
-    auto tilesets = map.getTilesets();
-    auto layer_size = layer->getSize();
-
-    auto& tileset = tilesets[0];
-    uint32_t first_gid = tileset.getFirstGID();
-    uint32_t last_gid = tileset.getLastGID();
-
-    auto tileset_size = tileset.getTileSize();
-    auto tileset_columns = tileset.getColumnCount();
-    auto tileset_rows = tileset.getTileCount() / tileset_columns;
-
-    auto& tiles = layer->getLayerAs<tmx::TileLayer>().getTiles();
-
-    auto path = tileset.getImagePath();
-    if (!std::filesystem::exists(path)) {
-        std::println("image doesnt exist");
-        return EXIT_FAILURE;
-    }
-
-    std::ifstream image(path);
-    std::vector<char> img(std::istreambuf_iterator<char>(image), {});
-
+    Map map("./assets/map.tmx");
 
     gfx::Window window(1600, 900, "shooter2d", gfx::WindowFlags::None);
     gfx::Renderer renderer(window);
-
-    gfx::Texture tex(path);
 
     Game game(renderer, window);
 
@@ -140,53 +182,14 @@ int main() {
 
         renderer.clear_background(gfx::Color::black());
 
+        map.draw(renderer);
+
         // double dt = renderer.get_frame_time();
         // game.draw(renderer);
         // game.update(dt);
 
         if (window.get_key_state(gfx::Key::Escape).pressed())
             window.close();
-
-        renderer.draw_texture(0, 0, tileset_size.x * tileset_columns, tileset_size.y * tileset_rows, 0_deg, tex);
-
-        for (auto&& [i, tile] : tiles | std::views::enumerate) {
-            uint32_t id = tile.ID;
-
-            int dest_x = i % layer_size.x;
-            int dest_y = i / layer_size.x;
-
-            if (id == 0) {
-            }
-
-            if (id >= first_gid && id <= last_gid) {
-
-                uint32_t local_id = id - first_gid;
-                int src_x = local_id % tileset_columns;
-                int src_y = local_id / tileset_columns;
-
-                renderer.draw_rectangle(
-                    src_x*tileset_size.x,
-                    src_y*tileset_size.y,
-                    tileset_size.x,
-                    tileset_size.y,
-                    gfx::Color::white().set_alpha(245)
-                );
-
-            }
-
-            // renderer.draw_rectangle(dest_x*tile_size.x, dest_y*tile_size.y, tile_size.x, tile_size.y, color);
-
-        }
-
-        // int n = 300;
-        // int size = 5;
-        // int spacing = 5;
-        // for (int x = 0; x < n; ++x) {
-        //     for (int y = 0; y < n; ++y) {
-        //         renderer.draw_circle(x*(size+spacing), y*(size+spacing), size, gfx::Color::blue());
-        //     }
-        // }
-
 
     });
 
