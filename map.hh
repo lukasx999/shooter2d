@@ -36,10 +36,11 @@ public:
         auto& layer = layers.front();
         auto layer_size = layer->getSize();
         auto& tiles = layer->getLayerAs<tmx::TileLayer>().getTiles();
+        auto tile_size = m_map.getTileSize();
+
 
         auto color = m_map.getBackgroundColour();
-        // TODO: fix background rendering (layer_size)
-        rd.draw_rectangle(0, 0, layer_size.x, layer_size.y, tmx_color_to_gfx_color(color));
+        rd.draw_rectangle(0, 0, layer_size.x * tile_size.x, layer_size.y * tile_size.y, tmx_color_to_gfx_color(color));
 
         for (auto&& [i, tile] : tiles | std::views::enumerate) {
             uint32_t gid = tile.ID;
@@ -67,7 +68,6 @@ public:
             int src_x = local_id % tileset_columns;
             int src_y = local_id / tileset_columns;
 
-            auto tile_size = m_map.getTileSize();
 
             rd.draw_rectangle(dest_x*tile_size.x, dest_y*tile_size.y, tile_size.x, tile_size.y, gfx::Color::red());
 
