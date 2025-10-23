@@ -32,9 +32,14 @@ public:
     void draw(gfx::Renderer& rd) const {
 
         auto& layers = m_map.getLayers();
-        auto& layer = layers[0];
+        // TODO: use other layers than the first
+        auto& layer = layers.front();
         auto layer_size = layer->getSize();
         auto& tiles = layer->getLayerAs<tmx::TileLayer>().getTiles();
+
+        auto color = m_map.getBackgroundColour();
+        // TODO: fix background rendering (layer_size)
+        rd.draw_rectangle(0, 0, layer_size.x, layer_size.y, tmx_color_to_gfx_color(color));
 
         for (auto&& [i, tile] : tiles | std::views::enumerate) {
             uint32_t gid = tile.ID;
@@ -79,6 +84,11 @@ private:
 
         assert(ts != tilesets.cend());
         return *ts;
+    }
+
+    [[nodiscard]] static constexpr gfx::Color tmx_color_to_gfx_color(tmx::Colour color) {
+        // HACK: use a cleaner approach
+        return *reinterpret_cast<gfx::Color*>(&color);
     }
 
 };
