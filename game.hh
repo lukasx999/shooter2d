@@ -20,7 +20,7 @@ class Game {
     static constexpr double m_shot_delay = 0.25;
 
 public:
-    explicit Game(gfx::Renderer& renderer, gfx::Window& window)
+    Game(gfx::Renderer& renderer, gfx::Window& window)
         : m_renderer(renderer)
         , m_window(window)
         , m_font(m_renderer.load_font("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Regular.ttf"))
