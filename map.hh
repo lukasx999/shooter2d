@@ -38,7 +38,6 @@ public:
         auto& tiles = layer->getLayerAs<tmx::TileLayer>().getTiles();
         auto tile_size = m_map.getTileSize();
 
-
         auto color = m_map.getBackgroundColour();
         rd.draw_rectangle(0, 0, layer_size.x * tile_size.x, layer_size.y * tile_size.y, tmx_color_to_gfx_color(color));
 
