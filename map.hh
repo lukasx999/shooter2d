@@ -23,10 +23,6 @@ public:
             exit(1);
         }
 
-        // std::ifstream image(path);
-        // std::vector<char> img(std::istreambuf_iterator<char>(image), {});
-        // gfx::Texture tex(path);
-
     }
 
     void draw(gfx::Renderer& rd) const {
@@ -47,28 +43,32 @@ public:
             int dest_x = i % layer_size.x;
             int dest_y = i / layer_size.x;
 
-            if (gid == 0) {
-                // TODO: empty, fill with bg color
+            if (gid == 0)
+                // empty.
                 continue;
-            }
 
             auto ts = find_tileset(gid);
 
-            // auto tex_path = ts.getImagePath();
-            // if (!std::filesystem::exists(tex_path)) {
-            //     std::println("image doesnt exist");
-            //     exit(1);
-            // }
+            auto tex_path = ts.getImagePath();
+            if (!std::filesystem::exists(tex_path)) {
+                std::println("image doesnt exist");
+                exit(1);
+            }
 
-            auto tileset_size = ts.getTileSize();
+            std::ifstream image(tex_path);
+            std::vector<char> img(std::istreambuf_iterator<char>(image), {});
+            gfx::Texture tex(tex_path);
+
+
+
             auto tileset_columns = ts.getColumnCount();
             auto tileset_rows = ts.getTileCount() / tileset_columns;
             uint32_t local_id = gid - ts.getFirstGID();
             int src_x = local_id % tileset_columns;
             int src_y = local_id / tileset_columns;
 
-
-            rd.draw_rectangle(dest_x*tile_size.x, dest_y*tile_size.y, tile_size.x, tile_size.y, gfx::Color::red());
+            rd.draw_texture(dest_x*tile_size.x, dest_y*tile_size.y, tile_size.x, tile_size.y, 0_deg, tex);
+            // rd.draw_rectangle(dest_x*tile_size.x, dest_y*tile_size.y, tile_size.x, tile_size.y, gfx::Color::red());
 
         }
     }

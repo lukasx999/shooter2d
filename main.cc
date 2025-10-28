@@ -11,8 +11,6 @@ int main() {
     gfx::Window window(1600, 900, "shooter2d", gfx::WindowFlags::None);
     gfx::Renderer renderer(window);
 
-    gfx::Texture tex("./awesomeface.png");
-
     Game game(renderer, window);
 
     renderer.draw([&] {
