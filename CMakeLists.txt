@@ -21,13 +21,17 @@ else()
     FetchContent_MakeAvailable(Gfx)
 endif()
 
-FetchContent_Declare(
-    Tmxlite
-    GIT_REPOSITORY https://github.com/fallahn/tmxlite.git
-    GIT_TAG master
-    SOURCE_SUBDIR tmxlite
-)
-FetchContent_MakeAvailable(Tmxlite)
+# FetchContent_Declare(
+#     Tmxlite
+#     GIT_REPOSITORY https://github.com/fallahn/tmxlite.git
+#     GIT_TAG master
+#     SOURCE_SUBDIR tmxlite
+# )
+# FetchContent_MakeAvailable(Tmxlite)
+
+# TODO: remove
+link_directories(./build/_deps/tmxlite-build/)
+include_directories(./build/_deps/tmxlite-src/tmxlite/include/)
 
 add_executable(game main.cc)
 target_compile_options(game PRIVATE -Wall -Wextra -O3 -ggdb)
