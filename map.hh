@@ -13,7 +13,7 @@
 
 class Map {
     tmx::Map m_map;
-    std::unordered_map<tmx::Tileset*, gfx::Texture> m_textures;
+    std::unordered_map<const tmx::Tileset*, gfx::Texture> m_textures;
 
 public:
     explicit Map(const char* path) {
@@ -37,9 +37,7 @@ public:
             std::vector<char> img(std::istreambuf_iterator<char>(image), {});
             gfx::Texture tex(tex_path);
 
-            // m_textures.insert(&tileset);
-            // m_textures.at(&tileset) = tex;
-            // m_textures[&tileset] = tex;
+            m_textures[&tileset] = tex;
 
         }
 
@@ -67,25 +65,27 @@ public:
                 // empty.
                 continue;
 
-            auto ts = find_tileset(gid);
+            const tmx::Tileset& ts = find_tileset(gid);
 
             auto tileset_columns = ts.getColumnCount();
             uint32_t local_id = gid - ts.getFirstGID();
             int src_x = local_id % tileset_columns;
             int src_y = local_id / tileset_columns;
 
-            // rd.draw_texture_sub(
-            //     dest_x * tile_size.x,
-            //     dest_y * tile_size.y,
-            //     tile_size.x,
-            //     tile_size.y,
-            //     src_x * tile_size.x,
-            //     src_y * tile_size.y,
-            //     tile_size.x,
-            //     tile_size.y,
-            //     0_deg,
-            //     tex
-            // );
+            auto tex = m_textures.at(&ts);
+
+            rd.draw_texture_sub(
+                dest_x * tile_size.x,
+                dest_y * tile_size.y,
+                tile_size.x,
+                tile_size.y,
+                src_x * tile_size.x,
+                src_y * tile_size.y,
+                tile_size.x,
+                tile_size.y,
+                0_deg,
+                tex
+            );
 
         }
     }
