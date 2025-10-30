@@ -47,7 +47,6 @@ public:
     void update(double dt) {
         m_projectiles.update(dt);
 
-
         bool can_shoot = m_window.get_time() > m_last_shot + m_shot_delay;
 
         if (m_window.get_mouse_button_state(gfx::MouseButton::Left).pressed() && can_shoot) {
@@ -75,73 +74,8 @@ public:
         if (m_window.get_key_state(gfx::Key::Escape).pressed())
             m_window.close();
 
-        // m_world.resolve_collisions(m_player, dt);
+        m_map.resolve_collisions(m_player, dt);
 
     }
-
-    // TODO:
-    // void resolve_collisions(Player& player, double dt) {
-    //     for (size_t i=0; i < m_tiles.size(); ++i) {
-    //         float y = static_cast<int>(i / m_world_width) * m_tile_size;
-    //         float x = (i % m_world_width) * m_tile_size;
-    //
-    //         if (m_tiles[i] == Bg) continue;
-    //
-    //         // subtracted from the height of the collision hitbox, otherwise
-    //         // the player would clip through the tile and trigger a wrong collision
-    //         // it is set to the amount of pixels the player can move at the current frame
-    //         float diff = player.get_movement_speed() * dt;
-    //
-    //         // width of the collision hitbox
-    //         float collision_size = 1;
-    //
-    //         // add a tiny collision rectangle for each side of the tile so we
-    //         // know which tile was hit
-    //         gfx::Rect left {
-    //             x - collision_size,
-    //             y + diff,
-    //             collision_size,
-    //             m_tile_size - diff * 2,
-    //         };
-    //
-    //         gfx::Rect right {
-    //             x + m_tile_size,
-    //             y + diff,
-    //             collision_size,
-    //             m_tile_size - diff * 2,
-    //         };
-    //
-    //         gfx::Rect top {
-    //             x + diff,
-    //             y - collision_size,
-    //             m_tile_size - diff * 2,
-    //             collision_size,
-    //         };
-    //
-    //         gfx::Rect bottom {
-    //             x + diff,
-    //             y + m_tile_size,
-    //             m_tile_size - diff * 2,
-    //             collision_size,
-    //         };
-    //
-    //         gfx::Vec pos = player.get_position();
-    //         float size = player.get_size();
-    //         gfx::Rect p = player.get_hitbox();
-    //
-    //         if (p.check_collision_rects(left))
-    //             player.set_position({ x-size-1, pos.y });
-    //
-    //         if (p.check_collision_rects(right))
-    //             player.set_position({ x+m_tile_size+size+1, pos.y });
-    //
-    //         if (p.check_collision_rects(top))
-    //             player.set_position({ pos.x, y-size-1 });
-    //
-    //         if (p.check_collision_rects(bottom))
-    //             player.set_position({ pos.x, y+m_tile_size+size+1 });
-    //
-    //     }
-    // }
 
 };

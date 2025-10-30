@@ -6,7 +6,7 @@ enum class Direction { North, East, South, West };
 
 class Player {
     gfx::Vec m_position;
-    static constexpr float m_size = 50.0;
+    static constexpr float m_size = 25.0;
     static constexpr float m_movement_speed = 500.0;
 
 public:

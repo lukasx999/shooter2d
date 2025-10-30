@@ -11,6 +11,8 @@
 #include <tmxlite/TileLayer.hpp>
 #include <tmxlite/Layer.hpp>
 
+#include "player.hh"
+
 class Map {
     tmx::Map m_map;
     std::unordered_map<const tmx::Tileset*, gfx::Texture> m_textures;
@@ -24,36 +26,123 @@ public:
             exit(1);
         }
 
-        auto& tilesets = m_map.getTilesets();
-        for (auto& tileset : tilesets) {
-
-            auto tex_path = tileset.getImagePath();
-            if (!std::filesystem::exists(tex_path)) {
-                std::println("image doesnt exist");
-                exit(1);
-            }
-
-            std::ifstream image(tex_path);
-            std::vector<char> img(std::istreambuf_iterator<char>(image), {});
-            gfx::Texture tex(tex_path);
-
-            m_textures[&tileset] = tex;
-
-        }
+        load_tile_textures();
 
     }
 
     void draw(gfx::Renderer& rd) const {
 
-        auto& layers = m_map.getLayers();
+        auto tile_size = m_map.getTileSize();
+        auto& layer = m_map.getLayers().front();
+        auto layer_size = layer->getSize();
+
+        auto color = m_map.getBackgroundColour();
+        rd.draw_rectangle(
+            0,
+            0,
+            layer_size.x * tile_size.x,
+            layer_size.y * tile_size.y,
+            tmx_color_to_gfx_color(color)
+        );
+
+        for_each_tile([&](uint32_t gid, int dest_x, int dest_y) {
+
+            const tmx::Tileset& ts = find_tileset(gid);
+
+            auto tileset_columns = ts.getColumnCount();
+            uint32_t local_id = gid - ts.getFirstGID();
+            int src_x = local_id % tileset_columns;
+            int src_y = local_id / tileset_columns;
+
+            auto& tex = m_textures.at(&ts);
+
+            rd.draw_texture_sub(
+                dest_x,
+                dest_y,
+                tile_size.x,
+                tile_size.y,
+                src_x * tile_size.x,
+                src_y * tile_size.y,
+                tile_size.x,
+                tile_size.y,
+                0_deg,
+                tex
+            );
+
+        });
+    }
+
+    void resolve_collisions(Player& player, double dt) {
+
+        auto tile_size = m_map.getTileSize();
+
+        for_each_tile([&]([[maybe_unused]] uint32_t gid, int x, int y) {
+
+            // subtracted from the height of the collision hitbox, otherwise
+            // the player would clip through the tile and trigger a wrong collision
+            // it is set to the amount of pixels the player can move at the current frame
+            float diff = player.get_movement_speed() * dt;
+
+            // width of the collision hitbox
+            float collision_size = 1;
+
+            // add a tiny collision rectangle for each side of the tile so we
+            // know which tile was hit
+            gfx::Rect left {
+                x - collision_size,
+                y + diff,
+                collision_size,
+                tile_size.y - diff * 2,
+            };
+
+            gfx::Rect right {
+                static_cast<float>(x) + tile_size.x,
+                y + diff,
+                collision_size,
+                tile_size.y - diff * 2,
+            };
+
+            gfx::Rect top {
+                x + diff,
+                y - collision_size,
+                tile_size.x - diff * 2,
+                collision_size,
+            };
+
+            gfx::Rect bottom {
+                x + diff,
+                static_cast<float>(y) + tile_size.y,
+                tile_size.x - diff * 2,
+                collision_size,
+            };
+
+            gfx::Vec pos = player.get_position();
+            float size = player.get_size();
+            gfx::Rect p = player.get_hitbox();
+
+            if (p.check_collision(left))
+                player.set_position({ x-size-1, pos.y });
+
+            if (p.check_collision(right))
+                player.set_position({ x+tile_size.x+size+1, pos.y });
+
+            if (p.check_collision(top))
+                player.set_position({ pos.x, y-size-1 });
+
+            if (p.check_collision(bottom))
+                player.set_position({ pos.x, y+tile_size.y+size+1 });
+
+        });
+    }
+
+private:
+    void for_each_tile(std::function<void(uint32_t gid, int x, int y)> fn) const {
+
         // TODO: use other layers than the first
-        auto& layer = layers.front();
+        auto& layer = m_map.getLayers().front();
         auto layer_size = layer->getSize();
         auto& tiles = layer->getLayerAs<tmx::TileLayer>().getTiles();
         auto tile_size = m_map.getTileSize();
-
-        auto color = m_map.getBackgroundColour();
-        rd.draw_rectangle(0, 0, layer_size.x * tile_size.x, layer_size.y * tile_size.y, tmx_color_to_gfx_color(color));
 
         for (auto&& [i, tile] : tiles | std::views::enumerate) {
             uint32_t gid = tile.ID;
@@ -65,32 +154,25 @@ public:
                 // empty.
                 continue;
 
-            const tmx::Tileset& ts = find_tileset(gid);
+            fn(gid, dest_x * tile_size.x, dest_y * tile_size.y);
+        }
+    }
 
-            auto tileset_columns = ts.getColumnCount();
-            uint32_t local_id = gid - ts.getFirstGID();
-            int src_x = local_id % tileset_columns;
-            int src_y = local_id / tileset_columns;
+    void load_tile_textures() {
+        auto& tilesets = m_map.getTilesets();
+        for (auto& tileset : tilesets) {
 
-            auto tex = m_textures.at(&ts);
+            auto tex_path = tileset.getImagePath();
+            if (!std::filesystem::exists(tex_path)) {
+                std::println("image doesnt exist");
+                exit(1);
+            }
 
-            rd.draw_texture_sub(
-                dest_x * tile_size.x,
-                dest_y * tile_size.y,
-                tile_size.x,
-                tile_size.y,
-                src_x * tile_size.x,
-                src_y * tile_size.y,
-                tile_size.x,
-                tile_size.y,
-                0_deg,
-                tex
-            );
+            m_textures.emplace(&tileset, gfx::Texture(tex_path));
 
         }
     }
 
-private:
     [[nodiscard]] const tmx::Tileset& find_tileset(uint32_t gid) const {
 
         auto& tilesets = m_map.getTilesets();
@@ -102,7 +184,8 @@ private:
         return *ts;
     }
 
-    [[nodiscard]] static constexpr gfx::Color tmx_color_to_gfx_color(tmx::Colour color) {
+    [[nodiscard]] static constexpr
+    gfx::Color tmx_color_to_gfx_color(tmx::Colour color) {
         // HACK: use a cleaner approach
         return *reinterpret_cast<gfx::Color*>(&color);
     }
