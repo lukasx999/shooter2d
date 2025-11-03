@@ -40,7 +40,7 @@ public:
         int size = 50;
         auto text = "Health: 0";
         int text_width = m_font.measure_text(text, size);
-        rd.draw_text(m_window.get_width()/2.0 - text_width/2.0, size, size, text, m_font, gfx::Color::red());
+        rd.draw_text(m_window.get_width()/2.0 - text_width/2.0, 0, size, text, m_font, gfx::Color::red());
 
     }
 
