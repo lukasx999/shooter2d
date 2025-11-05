@@ -1,6 +1,5 @@
 #pragma once
 
-#include <fstream>
 #include <algorithm>
 #include <filesystem>
 #include <ranges>
@@ -10,6 +9,8 @@
 #include <tmxlite/Map.hpp>
 #include <tmxlite/TileLayer.hpp>
 #include <tmxlite/Layer.hpp>
+#include <tmxlite/ObjectGroup.hpp>
+#include <tmxlite/Object.hpp>
 
 #include "player.hh"
 
@@ -33,6 +34,7 @@ public:
     void draw(gfx::Renderer& rd) const {
 
         auto tile_size = m_map.getTileSize();
+        // TODO: parse all layers
         auto& layer = m_map.getLayers().front();
         auto layer_size = layer->getSize();
 
@@ -74,9 +76,18 @@ public:
 
     void resolve_collisions(Player& player, double dt) {
 
-        auto tile_size = m_map.getTileSize();
+        // TODO: parse all object layers
+        auto& obj_layer = m_map.getLayers()[1];
+        assert(obj_layer->getType() == tmx::Layer::Type::Object);
+        auto objects = obj_layer->getLayerAs<tmx::ObjectGroup>().getObjects();
 
-        for_each_tile([&]([[maybe_unused]] uint32_t gid, int x, int y) {
+        for (auto& object : objects) {
+            auto aabb = object.getAABB();
+
+            int x = aabb.left;
+            int y = aabb.top;
+            int width = aabb.width;
+            int height = aabb.height;
 
             // subtracted from the height of the collision hitbox, otherwise
             // the player would clip through the tile and trigger a wrong collision
@@ -92,27 +103,27 @@ public:
                 x - collision_size,
                 y + diff,
                 collision_size,
-                tile_size.y - diff * 2,
+                height - diff * 2,
             };
 
             gfx::Rect right {
-                static_cast<float>(x) + tile_size.x,
+                static_cast<float>(x) + width,
                 y + diff,
                 collision_size,
-                tile_size.y - diff * 2,
+                height - diff * 2,
             };
 
             gfx::Rect top {
                 x + diff,
                 y - collision_size,
-                tile_size.x - diff * 2,
+                width - diff * 2,
                 collision_size,
             };
 
             gfx::Rect bottom {
                 x + diff,
-                static_cast<float>(y) + tile_size.y,
-                tile_size.x - diff * 2,
+                static_cast<float>(y) + height,
+                width - diff * 2,
                 collision_size,
             };
 
@@ -124,15 +135,16 @@ public:
                 player.set_position({ x-size-1, pos.y });
 
             if (p.check_collision(right))
-                player.set_position({ x+tile_size.x+size+1, pos.y });
+                player.set_position({ x+width+size+1, pos.y });
 
             if (p.check_collision(top))
                 player.set_position({ pos.x, y-size-1 });
 
             if (p.check_collision(bottom))
-                player.set_position({ pos.x, y+tile_size.y+size+1 });
+                player.set_position({ pos.x, y+height+size+1 });
 
-        });
+        }
+
     }
 
 private:
@@ -141,6 +153,7 @@ private:
         // TODO: use other layers than the first
         auto& layer = m_map.getLayers().front();
         auto layer_size = layer->getSize();
+        assert(layer->getType() == tmx::Layer::Type::Tile);
         auto& tiles = layer->getLayerAs<tmx::TileLayer>().getTiles();
         auto tile_size = m_map.getTileSize();
 
