@@ -6,29 +6,36 @@ enum class Direction { North, East, South, West };
 
 class Player {
     gfx::Vec m_position;
-    static constexpr float m_size = 25.0;
     static constexpr float m_movement_speed = 500.0;
+    const gfx::Texture m_texture;
+
+    static constexpr gfx::Rect m_texture_src {
+        8, 4, 15, 22
+    };
+
+    static constexpr float m_texture_scale = 5.0f;
 
 public:
     explicit Player(gfx::Vec position)
-    : m_position(position)
+        : m_position(position)
+        , m_texture("./assets/Cute_Fantasy_Free/Player/Player.png")
     { }
 
     [[nodiscard]] gfx::Vec get_position() const {
         return m_position;
     }
 
+    // TODO: seperate the render hitbox from the collision hitbox
     [[nodiscard]] gfx::Rect get_hitbox() const {
-        return {
-            m_position.x - m_size,
-            m_position.y - m_size,
-            m_size * 2,
-            m_size * 2,
-        };
-    }
+        float width = m_texture_src.width * m_texture_scale;
+        float height = m_texture_src.height * m_texture_scale;
 
-    [[nodiscard]] float get_size() const {
-        return m_size;
+        return {
+            m_position.x - width / 2.0f,
+            m_position.y - height / 2.0f,
+            width,
+            height,
+        };
     }
 
     [[nodiscard]] float get_movement_speed() const {
@@ -40,7 +47,7 @@ public:
     }
 
     void draw(gfx::Renderer& rd) const {
-        rd.draw_circle(m_position, m_size, gfx::Color::blue());
+        rd.draw_texture_sub(get_hitbox(), m_texture_src, m_texture);
     }
 
     void move(Direction dir, double dt) {

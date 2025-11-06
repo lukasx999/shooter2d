@@ -54,6 +54,7 @@ public:
             auto ppos = m_player.get_position();
             auto mpos = m_window.get_mouse_pos();
 
+            // BUG: breaks when using camera
             auto direction = (mpos - ppos).normalized();
             m_projectiles.add(ppos, direction, 500.0);
 

@@ -28,41 +28,44 @@ public:
         }
 
         load_tile_textures();
-
     }
 
     void draw(gfx::Renderer& rd) const {
 
         auto tile_size = m_map.getTileSize();
+        auto tile_count = m_map.getTileCount();
         // TODO: parse all layers
         auto& layer = m_map.getLayers().front();
         auto layer_size = layer->getSize();
 
         auto color = m_map.getBackgroundColour();
-        rd.draw_rectangle(
-            0,
-            0,
-            layer_size.x * tile_size.x,
-            layer_size.y * tile_size.y,
-            tmx_color_to_gfx_color(color)
-        );
+        rd.draw_rectangle(0, 0, layer_size.x * tile_size.x, layer_size.y * tile_size.y, tmx_color_to_gfx_color(color));
 
         for_each_tile([&](uint32_t gid, int dest_x, int dest_y) {
 
             const tmx::Tileset& ts = find_tileset(gid);
 
             auto tileset_columns = ts.getColumnCount();
-            uint32_t local_id = gid - ts.getFirstGID();
+            int local_id = gid - ts.getFirstGID();
             int src_x = local_id % tileset_columns;
             int src_y = local_id / tileset_columns;
 
             auto& tex = m_textures.at(&ts);
 
+            // scale up the map to fit the window resolution
+            // TODO: we also need to apply scaling in collision detection system
+            float factor_x = static_cast<float>(rd.get_window().get_width()) / (tile_count.x * tile_size.x);
+            float factor_y = static_cast<float>(rd.get_window().get_height()) / (tile_count.y * tile_size.y);
+            float scaled_x = dest_x * factor_x;
+            float scaled_y = dest_y * factor_y;
+            float scaled_width = tile_size.x * factor_x;
+            float scaled_height = tile_size.y * factor_y;
+
             rd.draw_texture_sub(
-                dest_x,
-                dest_y,
-                tile_size.x,
-                tile_size.y,
+                scaled_x,
+                scaled_y,
+                scaled_width,
+                scaled_height,
                 src_x * tile_size.x,
                 src_y * tile_size.y,
                 tile_size.x,
@@ -84,10 +87,10 @@ public:
         for (auto& object : objects) {
             auto aabb = object.getAABB();
 
-            int x = aabb.left;
-            int y = aabb.top;
-            int width = aabb.width;
-            int height = aabb.height;
+            float x = aabb.left;
+            float y = aabb.top;
+            float width = aabb.width;
+            float height = aabb.height;
 
             // subtracted from the height of the collision hitbox, otherwise
             // the player would clip through the tile and trigger a wrong collision
@@ -128,20 +131,19 @@ public:
             };
 
             gfx::Vec pos = player.get_position();
-            float size = player.get_size();
             gfx::Rect p = player.get_hitbox();
 
             if (p.check_collision(left))
-                player.set_position({ x-size-1, pos.y });
+                player.set_position({ x - p.width / 2.0f - 1, pos.y });
 
             if (p.check_collision(right))
-                player.set_position({ x+width+size+1, pos.y });
+                player.set_position({ x + width + p.width / 2.0f + 1, pos.y });
 
             if (p.check_collision(top))
-                player.set_position({ pos.x, y-size-1 });
+                player.set_position({ pos.x, y - p.height / 2.0f - 1 });
 
             if (p.check_collision(bottom))
-                player.set_position({ pos.x, y+height+size+1 });
+                player.set_position({ pos.x, y + height + p.height / 2.0f + 1 });
 
         }
 
