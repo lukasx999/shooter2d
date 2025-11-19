@@ -9,11 +9,11 @@ class Player {
     static constexpr float m_movement_speed = 500.0;
     const gfx::Texture m_texture;
 
-    static constexpr gfx::Rect m_texture_src {
-        8, 4, 15, 22
-    };
+    static constexpr gfx::Rect m_texture_src_idle { 8, 4, 15, 22 };
+    static constexpr gfx::Rect m_texture_src_walking { 8, 35, 15, 22 };
 
     static constexpr float m_texture_scale = 5.0f;
+    Direction m_direction = Direction::North;
 
 public:
     explicit Player(gfx::Vec position)
@@ -25,10 +25,9 @@ public:
         return m_position;
     }
 
-    // TODO: seperate the render hitbox from the collision hitbox
     [[nodiscard]] gfx::Rect get_hitbox() const {
-        float width = m_texture_src.width * m_texture_scale;
-        float height = m_texture_src.height * m_texture_scale;
+        float width = m_texture_src_idle.width * m_texture_scale;
+        float height = m_texture_src_idle.height * m_texture_scale;
 
         return {
             m_position.x - width / 2.0f,
@@ -47,7 +46,12 @@ public:
     }
 
     void draw(gfx::Renderer& rd) const {
-        rd.draw_texture_sub(get_hitbox(), m_texture_src, m_texture);
+        if (m_direction == Direction::East) {
+            rd.draw_texture_sub(get_hitbox(), m_texture_src_walking, m_texture);
+        } else {
+            rd.draw_texture_sub(get_hitbox(), m_texture_src_idle, m_texture);
+        }
+        rd.draw_rectangle(get_hitbox(), gfx::Color::red().set_alpha(0x7f));
     }
 
     void move(Direction dir, double dt) {
@@ -57,18 +61,22 @@ public:
 
             case North:
                 m_position.y -= m_movement_speed * dt;
+                m_direction = North;
                 break;
 
             case East:
                 m_position.x += m_movement_speed * dt;
+                m_direction = East;
                 break;
 
             case South:
                 m_position.y += m_movement_speed * dt;
+                m_direction = South;
                 break;
 
             case West:
                 m_position.x -= m_movement_speed * dt;
+                m_direction = West;
                 break;
         }
     }
