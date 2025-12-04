@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gfx.hh>
+#include <gfx.h>
 
 enum class Direction { North, East, South, West };
 
@@ -9,9 +9,14 @@ class Player {
     static constexpr float m_movement_speed = 500.0;
     const gfx::Texture m_texture;
 
-    static constexpr gfx::Rect m_texture_src_idle { 8, 4, 15, 22 };
-    static constexpr gfx::Rect m_texture_src_walking { 8, 35, 15, 22 };
+    enum class SpriteState {
+        Idle, Walking,
+    };
 
+    Spritesheet<SpriteState> m_spritesheet{ m_texture };
+
+    static constexpr float m_sprite_width = 15;
+    static constexpr float m_sprite_height = 22;
     static constexpr float m_texture_scale = 5.0f;
     Direction m_direction = Direction::North;
 
@@ -19,15 +24,18 @@ public:
     explicit Player(gfx::Vec position)
         : m_position(position)
         , m_texture("./assets/Cute_Fantasy_Free/Player/Player.png")
-    { }
+    {
+        m_spritesheet.set_sprite(SpriteState::Idle, { 8, 4, m_sprite_width, m_sprite_height });
+        m_spritesheet.set_sprite(SpriteState::Walking, { 8, 35, m_sprite_width, m_sprite_height });
+    }
 
     [[nodiscard]] gfx::Vec get_position() const {
         return m_position;
     }
 
     [[nodiscard]] gfx::Rect get_hitbox() const {
-        float width = m_texture_src_idle.width * m_texture_scale;
-        float height = m_texture_src_idle.height * m_texture_scale;
+        float width = m_sprite_width * m_texture_scale;
+        float height = m_sprite_height * m_texture_scale;
 
         return {
             m_position.x - width / 2.0f,
@@ -46,11 +54,7 @@ public:
     }
 
     void draw(gfx::Renderer& rd) const {
-        if (m_direction == Direction::East) {
-            rd.draw_texture_sub(get_hitbox(), m_texture_src_walking, m_texture);
-        } else {
-            rd.draw_texture_sub(get_hitbox(), m_texture_src_idle, m_texture);
-        }
+        m_spritesheet.draw(rd, SpriteState::Idle, get_hitbox());
         rd.draw_rectangle(get_hitbox(), gfx::Color::red().set_alpha(0x7f));
     }
 

@@ -2,11 +2,11 @@
 
 #include <print>
 
-#include <gfx.hh>
+#include <gfx.h>
 
-#include "player.hh"
-#include "projectiles.hh"
-#include "map.hh"
+#include "Player.h"
+#include "Projectiles.h"
+#include "Map.h"
 
 class Game {
     gfx::Renderer& m_renderer;
@@ -34,31 +34,31 @@ public:
         rd.with_camera([&] {
             m_map.draw(rd);
             m_player.draw(rd);
-            m_projectiles.draw(rd);
+            // m_projectiles.draw(rd);
         });
 
-        int size = 50;
-        auto text = "Health: 0";
-        int text_width = m_font.measure_text(text, size);
-        rd.draw_text(m_window.get_width()/2.0 - text_width/2.0, 0, size, text, m_font, gfx::Color::red());
+        // int size = 50;
+        // auto text = "Health: 0";
+        // int text_width = m_font.measure_text(text, size);
+        // rd.draw_text(m_window.get_width()/2.0 - text_width/2.0, 0, size, text, m_font, gfx::Color::red());
 
     }
 
     void update(double dt) {
         m_projectiles.update(dt);
 
-        bool can_shoot = m_window.get_time() > m_last_shot + m_shot_delay;
-
-        if (m_window.get_mouse_button_state(gfx::MouseButton::Left).pressed() && can_shoot) {
-            m_last_shot = m_window.get_time();
-            auto ppos = m_player.get_position();
-            auto mpos = m_window.get_mouse_pos();
-
-            // BUG: breaks when using camera
-            auto direction = (mpos - ppos).normalized();
-            m_projectiles.add(ppos, direction, 500.0);
-
-        }
+        // bool can_shoot = m_window.get_time() > m_last_shot + m_shot_delay;
+        //
+        // if (m_window.get_mouse_button_state(gfx::MouseButton::Left).pressed() && can_shoot) {
+        //     m_last_shot = m_window.get_time();
+        //     auto ppos = m_player.get_position();
+        //     auto mpos = m_window.get_mouse_pos();
+        //
+        //     // BUG: breaks when using camera
+        //     auto direction = (mpos - ppos).normalized();
+        //     m_projectiles.add(ppos, direction, 500.0);
+        //
+        // }
 
         if (m_window.get_key_state(gfx::Key::W).pressed())
             m_player.move(Direction::North, dt);

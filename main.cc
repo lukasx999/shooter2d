@@ -1,12 +1,12 @@
 #include <print>
 
-#include <gfx.hh>
+#include <gfx.h>
 
-#include "game.hh"
+#include "Game.h"
 
 int main() {
 
-    gfx::Window window(1600, 900, "shooter2d", gfx::WindowFlags::None);
+    gfx::Window window(1600, 900, "shooter2d", gfx::WindowFlags::Resizable);
     gfx::Renderer renderer(window);
 
     Game game(renderer, window);

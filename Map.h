@@ -4,7 +4,7 @@
 #include <filesystem>
 #include <ranges>
 
-#include <gfx.hh>
+#include <gfx.h>
 
 #include <tmxlite/Map.hpp>
 #include <tmxlite/TileLayer.hpp>
@@ -12,7 +12,7 @@
 #include <tmxlite/ObjectGroup.hpp>
 #include <tmxlite/Object.hpp>
 
-#include "player.hh"
+#include "Player.h"
 
 class Map {
     tmx::Map m_map;

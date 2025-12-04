@@ -2,7 +2,7 @@
 
 #include <vector>
 
-#include <gfx.hh>
+#include <gfx.h>
 
 class Projectile {
     gfx::Vec m_position;
