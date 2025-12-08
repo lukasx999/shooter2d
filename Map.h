@@ -35,7 +35,7 @@ public:
         auto& layer = m_map.getLayers().front();
         auto layer_size = layer->getSize();
 
-        auto factor = get_map_scaling_factor(rd);
+        auto factor = get_map_scaling_factor(rd.get_window());
 
         auto color = m_map.getBackgroundColour();
         rd.draw_rectangle(0, 0, layer_size.x * tile_size.x, layer_size.y * tile_size.y, tmx_color_to_gfx_color(color));
@@ -70,20 +70,22 @@ public:
         });
     }
 
-    void resolve_collisions(Player& player, double dt) {
+    void resolve_collisions(const gfx::Window& window, Player& player, double dt) {
 
         // TODO: parse all object layers
         auto& obj_layer = m_map.getLayers()[1];
         assert(obj_layer->getType() == tmx::Layer::Type::Object);
         auto objects = obj_layer->getLayerAs<tmx::ObjectGroup>().getObjects();
 
+        auto factor = get_map_scaling_factor(window);
+
         for (auto& object : objects) {
             auto aabb = object.getAABB();
 
-            float x = aabb.left;
-            float y = aabb.top;
-            float width = aabb.width;
-            float height = aabb.height;
+            float x = aabb.left * factor.x;
+            float y = aabb.top * factor.y;
+            float width = aabb.width * factor.x;
+            float height = aabb.height * factor.y;
 
             // subtracted from the height of the collision hitbox, otherwise
             // the player would clip through the tile and trigger a wrong collision
@@ -144,13 +146,13 @@ public:
 
 private:
     // get the scaling factor so the map fits the window
-    [[nodiscard]] gfx::Vec get_map_scaling_factor(const gfx::Renderer& rd) const {
+    [[nodiscard]] gfx::Vec get_map_scaling_factor(const gfx::Window& window) const {
 
         auto tile_size = m_map.getTileSize();
         auto tile_count = m_map.getTileCount();
 
-        float width = rd.get_window().get_width();
-        float height = rd.get_window().get_height();
+        float width = window.get_width();
+        float height = window.get_height();
         float factor_x = width / (tile_count.x * tile_size.x);
         float factor_y = height / (tile_count.y * tile_size.y);
 

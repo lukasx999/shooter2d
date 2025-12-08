@@ -75,7 +75,7 @@ public:
         if (m_window.get_key_state(gfx::Key::Escape).pressed())
             m_window.close();
 
-        m_map.resolve_collisions(m_player, dt);
+        m_map.resolve_collisions(m_window, m_player, dt);
 
     }
 
