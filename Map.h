@@ -22,26 +22,25 @@ public:
     explicit Map(const char* path) {
 
         bool success = m_map.load(path);
-        if (!success) {
-            std::println("failed to load map");
-            exit(1);
-        }
+        if (!success)
+            throw std::runtime_error("failed to load map");
 
         load_tile_textures();
     }
 
     void draw(gfx::Renderer& rd) const {
-
         auto tile_size = m_map.getTileSize();
-        auto tile_count = m_map.getTileCount();
+
         // TODO: parse all layers
         auto& layer = m_map.getLayers().front();
         auto layer_size = layer->getSize();
 
+        auto factor = get_map_scaling_factor(rd);
+
         auto color = m_map.getBackgroundColour();
         rd.draw_rectangle(0, 0, layer_size.x * tile_size.x, layer_size.y * tile_size.y, tmx_color_to_gfx_color(color));
 
-        for_each_tile([&](uint32_t gid, int dest_x, int dest_y) {
+        for_each_tile([&](uint32_t gid, gfx::Vec dest) {
 
             const tmx::Tileset& ts = find_tileset(gid);
 
@@ -50,16 +49,10 @@ public:
             int src_x = local_id % tileset_columns;
             int src_y = local_id / tileset_columns;
 
-            auto& tex = m_textures.at(&ts);
-
-            // scale up the map to fit the window resolution
-            // TODO: we also need to apply scaling in collision detection system
-            float factor_x = static_cast<float>(rd.get_window().get_width()) / (tile_count.x * tile_size.x);
-            float factor_y = static_cast<float>(rd.get_window().get_height()) / (tile_count.y * tile_size.y);
-            float scaled_x = dest_x * factor_x;
-            float scaled_y = dest_y * factor_y;
-            float scaled_width = tile_size.x * factor_x;
-            float scaled_height = tile_size.y * factor_y;
+            float scaled_x = dest.x * factor.x;
+            float scaled_y = dest.y * factor.y;
+            float scaled_width = tile_size.x * factor.x;
+            float scaled_height = tile_size.y * factor.y;
 
             rd.draw_texture_sub(
                 scaled_x,
@@ -71,7 +64,7 @@ public:
                 tile_size.x,
                 tile_size.y,
                 0_deg,
-                tex
+                m_textures.at(&ts)
             );
 
         });
@@ -150,7 +143,21 @@ public:
     }
 
 private:
-    void for_each_tile(std::function<void(uint32_t gid, int x, int y)> fn) const {
+    // get the scaling factor so the map fits the window
+    [[nodiscard]] gfx::Vec get_map_scaling_factor(const gfx::Renderer& rd) const {
+
+        auto tile_size = m_map.getTileSize();
+        auto tile_count = m_map.getTileCount();
+
+        float width = rd.get_window().get_width();
+        float height = rd.get_window().get_height();
+        float factor_x = width / (tile_count.x * tile_size.x);
+        float factor_y = height / (tile_count.y * tile_size.y);
+
+        return { factor_x, factor_y };
+    }
+
+    void for_each_tile(std::function<void(uint32_t gid, gfx::Vec dest)> fn) const {
 
         // TODO: use other layers than the first
         auto& layer = m_map.getLayers().front();
@@ -159,17 +166,21 @@ private:
         auto& tiles = layer->getLayerAs<tmx::TileLayer>().getTiles();
         auto tile_size = m_map.getTileSize();
 
-        for (auto&& [i, tile] : tiles | std::views::enumerate) {
+        for (auto&& [idx, tile] : tiles | std::views::enumerate) {
             uint32_t gid = tile.ID;
 
-            int dest_x = i % layer_size.x;
-            int dest_y = i / layer_size.x;
+            int dest_x = idx % layer_size.x;
+            int dest_y = idx / layer_size.x;
+            gfx::Vec dest {
+                static_cast<float>(dest_x * tile_size.x),
+                static_cast<float>(dest_y * tile_size.y),
+            };
 
             if (gid == 0)
                 // empty.
                 continue;
 
-            fn(gid, dest_x * tile_size.x, dest_y * tile_size.y);
+            fn(gid, dest);
         }
     }
 
