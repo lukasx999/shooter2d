@@ -28,7 +28,7 @@ public:
         , m_player({ m_window.get_width() / 2.0f, m_window.get_height() / 2.0f })
     { }
 
-    void draw(gfx::Renderer& rd) const {
+    void draw(gfx::Renderer& rd) {
 
         rd.set_camera(m_player.get_position());
         rd.with_camera([&] {
