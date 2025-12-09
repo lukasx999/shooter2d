@@ -60,6 +60,8 @@ public:
         //
         // }
 
+        m_player.update();
+
         if (m_window.get_key_state(gfx::Key::W).pressed())
             m_player.move(Direction::North, dt);
 

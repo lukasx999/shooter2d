@@ -16,8 +16,8 @@ int main() {
         renderer.clear_background(gfx::Color::black());
 
         double dt = renderer.get_frame_time();
-        game.draw(renderer);
         game.update(dt);
+        game.draw(renderer);
 
     });
 

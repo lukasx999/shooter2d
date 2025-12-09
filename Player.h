@@ -89,6 +89,10 @@ public:
 
     }
 
+    [[nodiscard]] bool is_idle() const {
+        return m_is_idle;
+    }
+
     [[nodiscard]] gfx::Vec get_position() const {
         return m_position;
     }
@@ -111,6 +115,10 @@ public:
 
     void set_position(gfx::Vec position) {
         m_position = position;
+    }
+
+    void update() {
+        m_is_idle = true;
     }
 
     void draw(gfx::Renderer& rd) {
@@ -141,7 +149,6 @@ public:
         }
 
         // rd.draw_rectangle(get_hitbox(), gfx::Color::red().set_alpha(0x7f));
-        m_is_idle = true;
     }
 
     void move(Direction dir, double dt) {
