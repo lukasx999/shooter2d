@@ -73,7 +73,7 @@ public:
         });
     }
 
-    void resolve_collisions(const gfx::Window& window, Entity& player, double dt) {
+    void resolve_collisions(const gfx::Window& window, Entity& entity, double dt) {
 
         // TODO: parse all object layers
         auto& obj_layer = m_map.getLayers()[1];
@@ -93,7 +93,7 @@ public:
             // subtracted from the height of the collision hitbox, otherwise
             // the player would clip through the tile and trigger a wrong collision
             // it is set to the amount of pixels the player can move at the current frame
-            float diff = player.get_movement_speed() * dt;
+            float diff = entity.get_movement_speed() * dt;
 
             // width of the collision hitbox
             float collision_size = 1;
@@ -128,20 +128,20 @@ public:
                 collision_size,
             };
 
-            gfx::Vec pos = player.get_position();
-            gfx::Rect p = player.get_hitbox();
+            gfx::Vec pos = entity.get_position();
+            gfx::Rect p = entity.get_hitbox();
 
             if (p.check_collision(left))
-                player.set_position({ x - p.width / 2.0f - 1, pos.y });
+                entity.set_position({ x - p.width / 2.0f - 1, pos.y });
 
             if (p.check_collision(right))
-                player.set_position({ x + width + p.width / 2.0f + 1, pos.y });
+                entity.set_position({ x + width + p.width / 2.0f + 1, pos.y });
 
             if (p.check_collision(top))
-                player.set_position({ pos.x, y - p.height / 2.0f - 1 });
+                entity.set_position({ pos.x, y - p.height / 2.0f - 1 });
 
             if (p.check_collision(bottom))
-                player.set_position({ pos.x, y + height + p.height / 2.0f + 1 });
+                entity.set_position({ pos.x, y + height + p.height / 2.0f + 1 });
 
         }
 

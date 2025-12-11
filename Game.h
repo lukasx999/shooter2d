@@ -5,6 +5,7 @@
 
 #include <gfx.h>
 
+#include "Enemy.h"
 #include "Entity.h"
 #include "Player.h"
 #include "GameObject.h"
@@ -15,10 +16,12 @@ class Game : public GameObject {
     gfx::Font m_font;
     Map m_map;
     Player m_player;
+    Enemy m_enemy;
 
     std::vector<std::reference_wrapper<GameObject>> m_objects {
         m_map,
         m_player,
+        m_enemy,
     };
 
 public:
@@ -27,6 +30,7 @@ public:
         , m_font(m_renderer.load_font("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Regular.ttf"))
         , m_map("./assets/map.tmx")
         , m_player({ m_renderer.get_window().get_width() / 2.0f, m_renderer.get_window().get_height() / 2.0f })
+        , m_enemy({ m_renderer.get_window().get_width() / 2.0f, m_renderer.get_window().get_height() / 2.0f })
     { }
 
     void draw(gfx::Renderer& rd) const override {
@@ -38,20 +42,27 @@ public:
             }
         });
 
-        // int size = 50;
-        // auto text = "Health: 0";
-        // int text_width = m_font.measure_text(text, size);
-        // rd.draw_text(m_window.get_width()/2.0 - text_width/2.0, 0, size, text, m_font, gfx::Color::red());
+        int size = 50;
+        auto text = std::format("Health: {}", m_player.get_health());
+        int text_width = m_font.measure_text(text.c_str(), size);
+        rd.draw_text(m_renderer.get_window().get_width()/2.0 - text_width/2.0, 0, size, text.c_str(), m_font, gfx::Color::red());
 
     }
 
     void update(double dt) override {
 
-        auto& window = m_renderer.get_window();
-
         for (auto& obj : m_objects) {
             obj.get().update(dt);
         }
+
+        handle_inputs(dt);
+        // TODO: this method should accept a span of const entities, and fire an event if a collision happens
+        m_map.resolve_collisions(m_renderer.get_window(), m_player, dt);
+    }
+
+private:
+    void handle_inputs(double dt) {
+        auto& window = m_renderer.get_window();
 
         if (window.get_key_state(gfx::Key::W).pressed())
             m_player.move(Direction::North, dt);
@@ -67,9 +78,6 @@ public:
 
         if (window.get_key_state(gfx::Key::Escape).pressed())
             window.close();
-
-        m_map.resolve_collisions(window, m_player, dt);
-
     }
 
 };

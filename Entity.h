@@ -10,6 +10,8 @@ enum class Direction { North, East, South, West };
 class Entity : public GameObject {
 protected:
     gfx::Vec m_position;
+    static constexpr int m_max_health = 100;
+    int m_health = m_max_health;
 
     enum class SpriteState {
         IdleNorth,
@@ -43,6 +45,10 @@ public:
 
     [[nodiscard]] gfx::Vec get_position() const {
         return m_position;
+    }
+
+    [[nodiscard]] int get_health() const {
+        return m_health;
     }
 
     [[nodiscard]] gfx::Rect get_hitbox() const {
