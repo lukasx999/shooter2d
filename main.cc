@@ -9,7 +9,7 @@ int main() {
     gfx::Window window(1600, 900, "shooter2d", gfx::WindowFlags::Resizable);
     gfx::Renderer renderer(window);
 
-    Game game(renderer, window);
+    Game game(renderer);
 
     renderer.draw([&] {
 

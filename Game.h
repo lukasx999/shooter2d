@@ -1,40 +1,41 @@
 #pragma once
 
 #include <print>
+#include <vector>
 
 #include <gfx.h>
 
+#include "Entity.h"
 #include "Player.h"
-#include "Projectiles.h"
+#include "GameObject.h"
 #include "Map.h"
 
-class Game {
+class Game : public GameObject {
     gfx::Renderer& m_renderer;
-    gfx::Window& m_window;
     gfx::Font m_font;
     Map m_map;
     Player m_player;
-    ProjectileSystem m_projectiles;
 
-    double m_last_shot = 0.0;
-    static constexpr double m_shot_delay = 0.25;
+    std::vector<std::reference_wrapper<GameObject>> m_objects {
+        m_map,
+        m_player,
+    };
 
 public:
-    Game(gfx::Renderer& renderer, gfx::Window& window)
+    explicit Game(gfx::Renderer& renderer)
         : m_renderer(renderer)
-        , m_window(window)
         , m_font(m_renderer.load_font("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Regular.ttf"))
         , m_map("./assets/map.tmx")
-        , m_player({ m_window.get_width() / 2.0f, m_window.get_height() / 2.0f })
+        , m_player({ m_renderer.get_window().get_width() / 2.0f, m_renderer.get_window().get_height() / 2.0f })
     { }
 
-    void draw(gfx::Renderer& rd) {
+    void draw(gfx::Renderer& rd) const override {
 
         rd.set_camera(m_player.get_position());
         rd.with_camera([&] {
-            m_map.draw(rd);
-            m_player.draw(rd);
-            // m_projectiles.draw(rd);
+            for (auto& obj : m_objects) {
+                obj.get().draw(rd);
+            }
         });
 
         // int size = 50;
@@ -44,40 +45,30 @@ public:
 
     }
 
-    void update(double dt) {
-        m_projectiles.update(dt);
+    void update(double dt) override {
 
-        // bool can_shoot = m_window.get_time() > m_last_shot + m_shot_delay;
-        //
-        // if (m_window.get_mouse_button_state(gfx::MouseButton::Left).pressed() && can_shoot) {
-        //     m_last_shot = m_window.get_time();
-        //     auto ppos = m_player.get_position();
-        //     auto mpos = m_window.get_mouse_pos();
-        //
-        //     // BUG: breaks when using camera
-        //     auto direction = (mpos - ppos).normalized();
-        //     m_projectiles.add(ppos, direction, 500.0);
-        //
-        // }
+        auto& window = m_renderer.get_window();
 
-        m_player.update();
+        for (auto& obj : m_objects) {
+            obj.get().update(dt);
+        }
 
-        if (m_window.get_key_state(gfx::Key::W).pressed())
+        if (window.get_key_state(gfx::Key::W).pressed())
             m_player.move(Direction::North, dt);
 
-        if (m_window.get_key_state(gfx::Key::S).pressed())
+        if (window.get_key_state(gfx::Key::S).pressed())
             m_player.move(Direction::South, dt);
 
-        if (m_window.get_key_state(gfx::Key::D).pressed())
+        if (window.get_key_state(gfx::Key::D).pressed())
             m_player.move(Direction::East, dt);
 
-        if (m_window.get_key_state(gfx::Key::A).pressed())
+        if (window.get_key_state(gfx::Key::A).pressed())
             m_player.move(Direction::West, dt);
 
-        if (m_window.get_key_state(gfx::Key::Escape).pressed())
-            m_window.close();
+        if (window.get_key_state(gfx::Key::Escape).pressed())
+            window.close();
 
-        m_map.resolve_collisions(m_window, m_player, dt);
+        m_map.resolve_collisions(window, m_player, dt);
 
     }
 

@@ -12,9 +12,10 @@
 #include <tmxlite/ObjectGroup.hpp>
 #include <tmxlite/Object.hpp>
 
+#include "GameObject.h"
 #include "Player.h"
 
-class Map {
+class Map : public GameObject {
     tmx::Map m_map;
     std::unordered_map<const tmx::Tileset*, gfx::Texture> m_textures;
 
@@ -28,7 +29,9 @@ public:
         load_tile_textures();
     }
 
-    void draw(gfx::Renderer& rd) const {
+    void update([[maybe_unused]] double dt) override { }
+
+    void draw(gfx::Renderer& rd) const override {
         auto tile_size = m_map.getTileSize();
 
         // TODO: parse all layers
@@ -70,7 +73,7 @@ public:
         });
     }
 
-    void resolve_collisions(const gfx::Window& window, Player& player, double dt) {
+    void resolve_collisions(const gfx::Window& window, Entity& player, double dt) {
 
         // TODO: parse all object layers
         auto& obj_layer = m_map.getLayers()[1];
