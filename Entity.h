@@ -35,8 +35,7 @@ protected:
 public:
     Entity(gfx::Vec position, gfx::Texture texture)
         : m_position(position)
-        // BUG: fix gfx::Texture copy ctor
-        , m_texture("./assets/Cute_Fantasy_Free/Player/Player.png")
+        , m_texture(std::move(texture))
     { }
 
     [[nodiscard]] bool is_idle() const {
