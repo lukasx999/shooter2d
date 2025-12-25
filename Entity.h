@@ -95,6 +95,21 @@ protected:
         }
     };
 
+private:
+    // const-agnostic code.
+    template <typename This> requires std::is_pointer_v<This>
+    [[nodiscard]] static auto& get_current_sprite(This self) {
+
+        bool is_idle = self->m_is_idle;
+
+        switch (self->m_direction) {
+            using enum Direction;
+            case North: return is_idle ? self->m_sprite_idle_north     : self->m_sprite_walking_north;
+            case East:  return is_idle ? self->m_sprite_idle_sidewards : self->m_sprite_walking_sidewards;
+            case West:  return is_idle ? self->m_sprite_idle_sidewards : self->m_sprite_walking_sidewards;
+            case South: return is_idle ? self->m_sprite_idle_south     : self->m_sprite_walking_south;
+        }
+    }
 
 public:
     Entity(const gfx::Window& window, gfx::Vec position, gfx::Texture texture)
@@ -136,33 +151,12 @@ public:
     }
 
     void update([[maybe_unused]] double dt) override {
-
-        auto& current_sprite = [&] -> Sprite& {
-            switch (m_direction) {
-                using enum Direction;
-                case North: return m_is_idle ? m_sprite_idle_north     : m_sprite_walking_north;
-                case East:  return m_is_idle ? m_sprite_idle_sidewards : m_sprite_walking_sidewards;
-                case West:  return m_is_idle ? m_sprite_idle_sidewards : m_sprite_walking_sidewards;
-                case South: return m_is_idle ? m_sprite_idle_south     : m_sprite_walking_south;
-            }
-        }();
-
-        current_sprite.update(m_window);
-
+        get_current_sprite(this).update(m_window);
         m_is_idle = true;
     }
 
     void draw(gfx::Renderer& rd) const override {
-
-        const auto& current_sprite = [&] -> const Sprite& {
-            switch (m_direction) {
-                using enum Direction;
-                case North: return m_is_idle ? m_sprite_idle_north     : m_sprite_walking_north;
-                case East:  return m_is_idle ? m_sprite_idle_sidewards : m_sprite_walking_sidewards;
-                case West:  return m_is_idle ? m_sprite_idle_sidewards : m_sprite_walking_sidewards;
-                case South: return m_is_idle ? m_sprite_idle_south     : m_sprite_walking_south;
-            }
-        }();
+        auto& current_sprite = get_current_sprite(this);
 
         if (m_direction == Direction::West)
             current_sprite.draw_mirrored(rd, get_hitbox());
