@@ -3,38 +3,103 @@
 #include <gfx.h>
 #include <print>
 
+#include "Sprite.h"
 #include "GameObject.h"
 
 enum class Direction { North, East, South, West };
 
 class Entity : public GameObject {
 protected:
+    const gfx::Window& m_window;
     gfx::Vec m_position;
-    static constexpr int m_max_health = 100;
-    int m_health = m_max_health;
-
-    enum class SpriteState {
-        IdleNorth,
-        IdleSidewards,
-        IdleSouth,
-        WalkingNorth,
-        WalkingSidewards,
-        WalkingSouth,
-    };
-
     const gfx::Texture m_texture;
-    Spritesheet<SpriteState> m_spritesheet{ m_texture, 0.1 };
-
-    static constexpr float m_movement_speed = 500.0;
+    static constexpr int m_max_health = 100;
+    static constexpr double m_animation_delay = 0.1;
     static constexpr float m_sprite_width = 15;
     static constexpr float m_sprite_height = 22;
-    static constexpr float m_texture_scale = 5.0f;
+    static constexpr float m_movement_speed = 500;
+    static constexpr float m_texture_scale = 5;
+    int m_health = m_max_health;
     Direction m_direction = Direction::South;
     bool m_is_idle = true;
 
+    Sprite m_sprite_idle_south {
+        m_texture, m_animation_delay,
+        {
+            { 8, 4, m_sprite_width, m_sprite_height },
+            { 40, 4, m_sprite_width, m_sprite_height },
+            { 72, 4, m_sprite_width, m_sprite_height },
+            { 104, 4, m_sprite_width, m_sprite_height },
+            { 136, 4, m_sprite_width, m_sprite_height },
+            { 168, 4, m_sprite_width, m_sprite_height },
+        }
+    };
+
+    Sprite m_sprite_idle_sidewards {
+        m_texture, m_animation_delay,
+        {
+            { 9, 36, m_sprite_width, m_sprite_height },
+            { 41, 36, m_sprite_width, m_sprite_height },
+            { 73, 36, m_sprite_width, m_sprite_height },
+            { 105, 36, m_sprite_width, m_sprite_height },
+            { 137, 36, m_sprite_width, m_sprite_height },
+            { 169, 36, m_sprite_width, m_sprite_height },
+        }
+    };
+
+    Sprite m_sprite_idle_north {
+        m_texture, m_animation_delay,
+        {
+            { 8, 68, m_sprite_width, m_sprite_height },
+            { 40, 68, m_sprite_width, m_sprite_height },
+            { 72, 68, m_sprite_width, m_sprite_height },
+            { 104, 68, m_sprite_width, m_sprite_height },
+            { 136, 68, m_sprite_width, m_sprite_height },
+            { 168, 68, m_sprite_width, m_sprite_height },
+        }
+    };
+
+    Sprite m_sprite_walking_sidewards {
+        m_texture, m_animation_delay,
+        {
+            { 9, 130, m_sprite_width, m_sprite_height },
+            { 41, 130, m_sprite_width, m_sprite_height },
+            { 73, 130, m_sprite_width, m_sprite_height },
+            { 105, 130, m_sprite_width, m_sprite_height },
+            { 137, 130, m_sprite_width, m_sprite_height },
+            { 169, 130, m_sprite_width, m_sprite_height },
+        }
+    };
+
+    Sprite m_sprite_walking_north {
+        m_texture, m_animation_delay,
+        {
+            { 8, 162, m_sprite_width, m_sprite_height },
+            { 40, 162, m_sprite_width, m_sprite_height },
+            { 72, 162, m_sprite_width, m_sprite_height },
+            { 104, 162, m_sprite_width, m_sprite_height },
+            { 136, 162, m_sprite_width, m_sprite_height },
+            { 168, 162, m_sprite_width, m_sprite_height },
+        }
+    };
+
+    Sprite m_sprite_walking_south {
+        m_texture, m_animation_delay,
+        {
+            { 8, 98, m_sprite_width, m_sprite_height },
+            { 40, 98, m_sprite_width, m_sprite_height },
+            { 72, 98, m_sprite_width, m_sprite_height },
+            { 104, 98, m_sprite_width, m_sprite_height },
+            { 136, 98, m_sprite_width, m_sprite_height },
+            { 168, 98, m_sprite_width, m_sprite_height },
+        }
+    };
+
+
 public:
-    Entity(gfx::Vec position, gfx::Texture texture)
-        : m_position(position)
+    Entity(const gfx::Window& window, gfx::Vec position, gfx::Texture texture)
+        : m_window(window)
+        , m_position(position)
         , m_texture(std::move(texture))
     { }
 
@@ -71,35 +136,38 @@ public:
     }
 
     void update([[maybe_unused]] double dt) override {
+
+        auto& current_sprite = [&] -> Sprite& {
+            switch (m_direction) {
+                using enum Direction;
+                case North: return m_is_idle ? m_sprite_idle_north     : m_sprite_walking_north;
+                case East:  return m_is_idle ? m_sprite_idle_sidewards : m_sprite_walking_sidewards;
+                case West:  return m_is_idle ? m_sprite_idle_sidewards : m_sprite_walking_sidewards;
+                case South: return m_is_idle ? m_sprite_idle_south     : m_sprite_walking_south;
+            }
+        }();
+
+        current_sprite.update(m_window);
+
         m_is_idle = true;
     }
 
     void draw(gfx::Renderer& rd) const override {
 
-        switch (m_direction) {
-            using enum Direction;
+        const auto& current_sprite = [&] -> const Sprite& {
+            switch (m_direction) {
+                using enum Direction;
+                case North: return m_is_idle ? m_sprite_idle_north     : m_sprite_walking_north;
+                case East:  return m_is_idle ? m_sprite_idle_sidewards : m_sprite_walking_sidewards;
+                case West:  return m_is_idle ? m_sprite_idle_sidewards : m_sprite_walking_sidewards;
+                case South: return m_is_idle ? m_sprite_idle_south     : m_sprite_walking_south;
+            }
+        }();
 
-            case North: {
-                auto state = m_is_idle ? SpriteState::IdleNorth : SpriteState::WalkingNorth;
-                m_spritesheet.draw(rd, state, get_hitbox());
-            } break;
-
-            case East: {
-                auto state = m_is_idle ? SpriteState::IdleSidewards : SpriteState::WalkingSidewards;
-                m_spritesheet.draw(rd, state, get_hitbox());
-            } break;
-
-            case West: {
-                auto state = m_is_idle ? SpriteState::IdleSidewards : SpriteState::WalkingSidewards;
-                m_spritesheet.draw_mirrored(rd, state, get_hitbox());
-            } break;
-
-            case South: {
-                auto state = m_is_idle ? SpriteState::IdleSouth : SpriteState::WalkingSouth;
-                m_spritesheet.draw(rd, state, get_hitbox());
-            } break;
-
-        }
+        if (m_direction == Direction::West)
+            current_sprite.draw_mirrored(rd, get_hitbox());
+        else
+            current_sprite.draw(rd, get_hitbox());
 
         // rd.draw_rectangle(get_hitbox(), gfx::Color::red().set_alpha(0x7f));
     }

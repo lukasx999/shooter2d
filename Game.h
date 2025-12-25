@@ -5,7 +5,6 @@
 
 #include <gfx.h>
 
-#include "Enemy.h"
 #include "Entity.h"
 #include "Player.h"
 #include "GameObject.h"
@@ -16,12 +15,10 @@ class Game : public GameObject {
     gfx::Font m_font;
     Map m_map;
     Player m_player;
-    Enemy m_enemy;
 
     std::vector<std::reference_wrapper<GameObject>> m_objects {
         m_map,
         m_player,
-        m_enemy,
     };
 
 public:
@@ -29,8 +26,7 @@ public:
         : m_renderer(renderer)
         , m_font(m_renderer.load_font("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Regular.ttf"))
         , m_map("./assets/map.tmx")
-        , m_player({ m_renderer.get_window().get_width() / 2.0f, m_renderer.get_window().get_height() / 2.0f })
-        , m_enemy({ m_renderer.get_window().get_width() / 2.0f, m_renderer.get_window().get_height() / 2.0f })
+        , m_player(m_renderer.get_window(), { m_renderer.get_window().get_width() / 2.0f, m_renderer.get_window().get_height() / 2.0f })
     { }
 
     void draw(gfx::Renderer& rd) const override {
@@ -64,17 +60,19 @@ private:
     void handle_inputs(double dt) {
         auto& window = m_renderer.get_window();
 
+        using enum Direction;
+
         if (window.get_key_state(gfx::Key::W).pressed())
-            m_player.move(Direction::North, dt);
+            m_player.move(North, dt);
 
         if (window.get_key_state(gfx::Key::S).pressed())
-            m_player.move(Direction::South, dt);
+            m_player.move(South, dt);
 
         if (window.get_key_state(gfx::Key::D).pressed())
-            m_player.move(Direction::East, dt);
+            m_player.move(East, dt);
 
         if (window.get_key_state(gfx::Key::A).pressed())
-            m_player.move(Direction::West, dt);
+            m_player.move(West, dt);
 
         if (window.get_key_state(gfx::Key::Escape).pressed())
             window.close();

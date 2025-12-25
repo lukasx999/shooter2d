@@ -6,7 +6,7 @@
 
 int main() {
 
-    gfx::Window window(1600, 900, "shooter2d", gfx::WindowFlags::Resizable);
+    gfx::Window window(1600, 900, "shooter2d", gfx::WindowFlags::Logging);
     gfx::Renderer renderer(window);
 
     Game game(renderer);
