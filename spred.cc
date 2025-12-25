@@ -29,7 +29,7 @@ int main(int argc, char** argv) {
     int width = 1600;
     int height = 900;
 
-    gfx::Window window(width, height, "shooter2d", gfx::WindowFlags::Logging);
+    gfx::Window window(width, height, "Spritesheet Editor", gfx::WindowFlags::Logging | gfx::WindowFlags::DisableCursor);
     gfx::Renderer renderer(window);
 
     gfx::Texture texture("./assets/Cute_Fantasy_Free/Player/Player.png");
@@ -42,7 +42,9 @@ int main(int argc, char** argv) {
         renderer.draw_texture(0, 0, texture.get_width() * scale, texture.get_height() * scale, texture);
 
         gfx::Vec mouse_pos = window.get_mouse_pos();
-        renderer.draw_circle(mouse_pos, 10, gfx::Color::red());
+        int x = mouse_pos.x / scale;
+        int y = mouse_pos.y / scale;
+        renderer.draw_rectangle({ static_cast<float>(x) * scale, static_cast<float>(y) * scale, scale, scale }, gfx::Color::red());
 
         auto grid_color = gfx::Color::white().set_alpha(0x7f);
         draw_grid(renderer, grid_color, scale, width, height);
