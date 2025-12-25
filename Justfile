@@ -2,7 +2,7 @@ run: build
     ./build/game
 
 spred: build
-    ./build/spred
+    ./build/spred ./assets/Cute_Fantasy_Free/Player/Player.png
 
 configure:
     cmake -B build -G Ninja -DCMAKE_CXX_COMPILER=clang++ -DCMAKE_C_COMPILER=clang
