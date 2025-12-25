@@ -1,7 +1,6 @@
 #pragma once
 
 #include <gfx.h>
-#include <print>
 
 #include "Sprite.h"
 #include "GameObject.h"
@@ -26,9 +25,9 @@ protected:
     Sprite m_sprite_idle_south {
         m_texture, m_animation_delay,
         {
-            { 8, 4, m_sprite_width, m_sprite_height },
-            { 40, 4, m_sprite_width, m_sprite_height },
-            { 72, 4, m_sprite_width, m_sprite_height },
+            { 8,   4, m_sprite_width, m_sprite_height },
+            { 40,  4, m_sprite_width, m_sprite_height },
+            { 72,  4, m_sprite_width, m_sprite_height },
             { 104, 4, m_sprite_width, m_sprite_height },
             { 136, 4, m_sprite_width, m_sprite_height },
             { 168, 4, m_sprite_width, m_sprite_height },
@@ -38,9 +37,9 @@ protected:
     Sprite m_sprite_idle_sidewards {
         m_texture, m_animation_delay,
         {
-            { 9, 36, m_sprite_width, m_sprite_height },
-            { 41, 36, m_sprite_width, m_sprite_height },
-            { 73, 36, m_sprite_width, m_sprite_height },
+            { 9,   36, m_sprite_width, m_sprite_height },
+            { 41,  36, m_sprite_width, m_sprite_height },
+            { 73,  36, m_sprite_width, m_sprite_height },
             { 105, 36, m_sprite_width, m_sprite_height },
             { 137, 36, m_sprite_width, m_sprite_height },
             { 169, 36, m_sprite_width, m_sprite_height },
@@ -50,9 +49,9 @@ protected:
     Sprite m_sprite_idle_north {
         m_texture, m_animation_delay,
         {
-            { 8, 68, m_sprite_width, m_sprite_height },
-            { 40, 68, m_sprite_width, m_sprite_height },
-            { 72, 68, m_sprite_width, m_sprite_height },
+            { 8,   68, m_sprite_width, m_sprite_height },
+            { 40,  68, m_sprite_width, m_sprite_height },
+            { 72,  68, m_sprite_width, m_sprite_height },
             { 104, 68, m_sprite_width, m_sprite_height },
             { 136, 68, m_sprite_width, m_sprite_height },
             { 168, 68, m_sprite_width, m_sprite_height },
@@ -62,9 +61,9 @@ protected:
     Sprite m_sprite_walking_sidewards {
         m_texture, m_animation_delay,
         {
-            { 9, 130, m_sprite_width, m_sprite_height },
-            { 41, 130, m_sprite_width, m_sprite_height },
-            { 73, 130, m_sprite_width, m_sprite_height },
+            { 9,   130, m_sprite_width, m_sprite_height },
+            { 41,  130, m_sprite_width, m_sprite_height },
+            { 73,  130, m_sprite_width, m_sprite_height },
             { 105, 130, m_sprite_width, m_sprite_height },
             { 137, 130, m_sprite_width, m_sprite_height },
             { 169, 130, m_sprite_width, m_sprite_height },
@@ -74,9 +73,9 @@ protected:
     Sprite m_sprite_walking_north {
         m_texture, m_animation_delay,
         {
-            { 8, 162, m_sprite_width, m_sprite_height },
-            { 40, 162, m_sprite_width, m_sprite_height },
-            { 72, 162, m_sprite_width, m_sprite_height },
+            { 8,   162, m_sprite_width, m_sprite_height },
+            { 40,  162, m_sprite_width, m_sprite_height },
+            { 72,  162, m_sprite_width, m_sprite_height },
             { 104, 162, m_sprite_width, m_sprite_height },
             { 136, 162, m_sprite_width, m_sprite_height },
             { 168, 162, m_sprite_width, m_sprite_height },
@@ -86,9 +85,9 @@ protected:
     Sprite m_sprite_walking_south {
         m_texture, m_animation_delay,
         {
-            { 8, 98, m_sprite_width, m_sprite_height },
-            { 40, 98, m_sprite_width, m_sprite_height },
-            { 72, 98, m_sprite_width, m_sprite_height },
+            { 8,   98, m_sprite_width, m_sprite_height },
+            { 40,  98, m_sprite_width, m_sprite_height },
+            { 72,  98, m_sprite_width, m_sprite_height },
             { 104, 98, m_sprite_width, m_sprite_height },
             { 136, 98, m_sprite_width, m_sprite_height },
             { 168, 98, m_sprite_width, m_sprite_height },

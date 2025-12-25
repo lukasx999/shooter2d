@@ -36,3 +36,7 @@ FetchContent_MakeAvailable(Tmxlite)
 add_executable(game main.cc)
 target_compile_options(game PRIVATE -Wall -Wextra -O3 -ggdb)
 target_link_libraries(game PRIVATE gfx tmxlite)
+
+add_executable(spred spred.cc)
+target_compile_options(spred PRIVATE -Wall -Wextra -O3 -ggdb)
+target_link_libraries(spred PRIVATE gfx)
