@@ -31,21 +31,13 @@ protected:
     gfx::AnimatedTexture m_sprite_walking_north     { m_window, m_spritesheet.get_row(5, 6), m_animation_delay };
     gfx::AnimatedTexture m_sprite_walking_south     { m_window, m_spritesheet.get_row(3, 6), m_animation_delay };
 
-private:
-    // const-agnostic code
-    template <typename This> requires std::is_pointer_v<This>
-    [[nodiscard]] static auto& get_current_sprite(This self) {
+    enum class State {
+        IdleNorth, IdleEast, IdleSouth, IdleWest,
+        WalkingNorth, WalkingEast, WalkingSouth, WalkingWest,
+        AttackingNorth, AttackingEast, AttackingSouth, AttackingWest,
+    };
 
-        bool is_idle = self->m_is_idle;
-
-        switch (self->m_direction) {
-            using enum Direction;
-            case North: return is_idle ? self->m_sprite_idle_north     : self->m_sprite_walking_north;
-            case East:  return is_idle ? self->m_sprite_idle_sidewards : self->m_sprite_walking_sidewards;
-            case West:  return is_idle ? self->m_sprite_idle_sidewards : self->m_sprite_walking_sidewards;
-            case South: return is_idle ? self->m_sprite_idle_south     : self->m_sprite_walking_south;
-        }
-    }
+    State m_state = State::IdleSouth;
 
 public:
     Entity(const gfx::Window& window, gfx::Vec position, gfx::Texture texture);
@@ -62,8 +54,6 @@ public:
         return m_health;
     }
 
-    [[nodiscard]] gfx::Rect get_hitbox() const;
-
     [[nodiscard]] float get_movement_speed() const {
         return m_movement_speed;
     }
@@ -72,14 +62,25 @@ public:
         m_position = position;
     }
 
-    void update(double dt) override;
+    [[nodiscard]] gfx::Rect get_hitbox() const;
 
+    void update(double dt) override;
     void draw(gfx::Renderer& rd) const override;
+    void move(Direction dir, double dt);
 
     void attack() {
         m_is_attacking = true;
     }
 
-    void move(Direction dir, double dt);
+private:
+    [[nodiscard]] const gfx::AnimatedTexture& get_current_sprite() const {
+        switch (m_direction) {
+            using enum Direction;
+            case North: return m_is_idle ? m_sprite_idle_north     : m_sprite_walking_north;
+            case East:  return m_is_idle ? m_sprite_idle_sidewards : m_sprite_walking_sidewards;
+            case West:  return m_is_idle ? m_sprite_idle_sidewards : m_sprite_walking_sidewards;
+            case South: return m_is_idle ? m_sprite_idle_south     : m_sprite_walking_south;
+        }
+    }
 
 };

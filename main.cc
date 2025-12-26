@@ -5,17 +5,17 @@
 int main() {
 
     gfx::Window window(1600, 900, "Game", gfx::WindowFlags::Logging);
-    gfx::Renderer renderer(window);
+    gfx::Renderer rd(window);
 
-    Game game(renderer);
+    Game game(rd);
 
-    renderer.draw([&] {
+    rd.draw([&] {
 
-        renderer.clear_background(gfx::Color::black());
+        rd.clear_background(gfx::Color::black());
 
-        double dt = renderer.get_frame_time();
+        double dt = rd.get_frame_time();
         game.update(dt);
-        game.draw(renderer);
+        game.draw(rd);
 
     });
 
