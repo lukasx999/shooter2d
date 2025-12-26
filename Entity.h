@@ -2,8 +2,6 @@
 
 #include <gfx.h>
 
-#include "Spritesheet.h"
-#include "Sprite.h"
 #include "GameObject.h"
 
 enum class Direction { North, East, South, West };
@@ -21,17 +19,20 @@ protected:
     Direction m_direction = Direction::South;
     bool m_is_idle = true;
     bool m_is_attacking = false;
-    Spritesheet m_spritesheet { m_texture, 32, 32 };
-    AnimatedTexture m_sprite_attack_south      { m_texture, m_animation_delay, m_spritesheet.get_row(6, 4) };
-    AnimatedTexture m_sprite_idle_south        { m_texture, m_animation_delay, m_spritesheet.get_row(0, 6) };
-    AnimatedTexture m_sprite_idle_sidewards    { m_texture, m_animation_delay, m_spritesheet.get_row(1, 6) };
-    AnimatedTexture m_sprite_idle_north        { m_texture, m_animation_delay, m_spritesheet.get_row(2, 6) };
-    AnimatedTexture m_sprite_walking_sidewards { m_texture, m_animation_delay, m_spritesheet.get_row(4, 6) };
-    AnimatedTexture m_sprite_walking_north     { m_texture, m_animation_delay, m_spritesheet.get_row(5, 6) };
-    AnimatedTexture m_sprite_walking_south     { m_texture, m_animation_delay, m_spritesheet.get_row(3, 6) };
+    // TODO: more generic interface for this
+    gfx::Spritesheet m_spritesheet { m_texture, 32, 32 };
+    gfx::AnimatedTexture m_sprite_attack_south      { m_window, m_spritesheet.get_row(6, 4), m_animation_delay };
+    gfx::AnimatedTexture m_sprite_attack_north      { m_window, m_spritesheet.get_row(8, 4), m_animation_delay };
+    gfx::AnimatedTexture m_sprite_attack_sidewards  { m_window, m_spritesheet.get_row(7, 4), m_animation_delay };
+    gfx::AnimatedTexture m_sprite_idle_south        { m_window, m_spritesheet.get_row(0, 6), m_animation_delay };
+    gfx::AnimatedTexture m_sprite_idle_sidewards    { m_window, m_spritesheet.get_row(1, 6), m_animation_delay };
+    gfx::AnimatedTexture m_sprite_idle_north        { m_window, m_spritesheet.get_row(2, 6), m_animation_delay };
+    gfx::AnimatedTexture m_sprite_walking_sidewards { m_window, m_spritesheet.get_row(4, 6), m_animation_delay };
+    gfx::AnimatedTexture m_sprite_walking_north     { m_window, m_spritesheet.get_row(5, 6), m_animation_delay };
+    gfx::AnimatedTexture m_sprite_walking_south     { m_window, m_spritesheet.get_row(3, 6), m_animation_delay };
 
 private:
-    // const-agnostic code.
+    // const-agnostic code
     template <typename This> requires std::is_pointer_v<This>
     [[nodiscard]] static auto& get_current_sprite(This self) {
 
@@ -47,11 +48,7 @@ private:
     }
 
 public:
-    Entity(const gfx::Window& window, gfx::Vec position, gfx::Texture texture)
-        : m_window(window)
-        , m_position(position)
-        , m_texture(std::move(texture))
-    { }
+    Entity(const gfx::Window& window, gfx::Vec position, gfx::Texture texture);
 
     [[nodiscard]] bool is_idle() const {
         return m_is_idle;

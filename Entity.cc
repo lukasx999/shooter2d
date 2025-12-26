@@ -1,5 +1,22 @@
 #include "Entity.h"
 
+Entity::Entity(const gfx::Window& window, gfx::Vec position, gfx::Texture texture)
+    : m_window(window)
+    , m_position(position)
+    , m_texture(std::move(texture))
+{
+    // TODO: reset animation when changing direction
+    m_sprite_attack_south.start();
+    m_sprite_attack_north.start();
+    m_sprite_attack_sidewards.start();
+    m_sprite_idle_south.start();
+    m_sprite_idle_sidewards.start();
+    m_sprite_idle_north.start();
+    m_sprite_walking_sidewards.start();
+    m_sprite_walking_north.start();
+    m_sprite_walking_south.start();
+}
+
 void Entity::move(Direction dir, double dt) {
     m_direction = dir;
     m_is_idle = false;
@@ -39,8 +56,6 @@ gfx::Rect Entity::get_hitbox() const {
 }
 
 void Entity::update([[maybe_unused]] double dt) {
-    get_current_sprite(this).update(m_window);
-    m_sprite_attack_south.update(m_window);
     m_is_idle = true;
 }
 
