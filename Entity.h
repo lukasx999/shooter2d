@@ -21,6 +21,17 @@ protected:
     int m_health = m_max_health;
     Direction m_direction = Direction::South;
     bool m_is_idle = true;
+    bool m_is_attacking = false;
+
+    Sprite m_sprite_attack_south {
+        m_texture, m_animation_delay,
+        {
+            { 5,   197, m_sprite_width, m_sprite_height },
+            { 38,  197, m_sprite_width, m_sprite_height },
+            { 72,  197, m_sprite_width, m_sprite_height },
+            { 104, 197, m_sprite_width, m_sprite_height },
+        }
+    };
 
     Sprite m_sprite_idle_south {
         m_texture, m_animation_delay,
@@ -129,17 +140,7 @@ public:
         return m_health;
     }
 
-    [[nodiscard]] gfx::Rect get_hitbox() const {
-        float width = m_sprite_width * m_texture_scale;
-        float height = m_sprite_height * m_texture_scale;
-
-        return {
-            m_position.x - width / 2.0f,
-            m_position.y - height / 2.0f,
-            width,
-            height,
-        };
-    }
+    [[nodiscard]] gfx::Rect get_hitbox() const;
 
     [[nodiscard]] float get_movement_speed() const {
         return m_movement_speed;
@@ -149,45 +150,14 @@ public:
         m_position = position;
     }
 
-    void update([[maybe_unused]] double dt) override {
-        get_current_sprite(this).update(m_window);
-        m_is_idle = true;
+    void update(double dt) override;
+
+    void draw(gfx::Renderer& rd) const override;
+
+    void attack() {
+        m_is_attacking = true;
     }
 
-    void draw(gfx::Renderer& rd) const override {
-        auto& current_sprite = get_current_sprite(this);
-
-        if (m_direction == Direction::West)
-            current_sprite.draw_mirrored(rd, get_hitbox());
-        else
-            current_sprite.draw(rd, get_hitbox());
-
-        // rd.draw_rectangle(get_hitbox(), gfx::Color::red().set_alpha(0x7f));
-    }
-
-    void move(Direction dir, double dt) {
-        m_direction = dir;
-        m_is_idle = false;
-
-        switch (dir) {
-            using enum Direction;
-
-            case North:
-                m_position.y -= m_movement_speed * dt;
-                break;
-
-            case East:
-                m_position.x += m_movement_speed * dt;
-                break;
-
-            case South:
-                m_position.y += m_movement_speed * dt;
-                break;
-
-            case West:
-                m_position.x -= m_movement_speed * dt;
-                break;
-        }
-    }
+    void move(Direction dir, double dt);
 
 };

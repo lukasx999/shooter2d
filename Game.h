@@ -74,6 +74,9 @@ private:
         if (window.get_key_state(gfx::Key::A).pressed())
             m_player.move(West, dt);
 
+        if (window.get_mouse_button_state(gfx::MouseButton::Left).pressed())
+            m_player.attack();
+
         if (window.get_key_state(gfx::Key::Escape).pressed())
             window.close();
     }
