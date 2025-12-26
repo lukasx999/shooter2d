@@ -2,6 +2,7 @@
 
 #include <gfx.h>
 
+#include "Spritesheet.h"
 #include "Sprite.h"
 #include "GameObject.h"
 
@@ -14,96 +15,20 @@ protected:
     const gfx::Texture m_texture;
     static constexpr int m_max_health = 100;
     static constexpr double m_animation_delay = 0.1;
-    static constexpr float m_sprite_width = 15;
-    static constexpr float m_sprite_height = 22;
     static constexpr float m_movement_speed = 500;
     static constexpr float m_texture_scale = 5;
     int m_health = m_max_health;
     Direction m_direction = Direction::South;
     bool m_is_idle = true;
     bool m_is_attacking = false;
-
-    Sprite m_sprite_attack_south {
-        m_texture, m_animation_delay,
-        {
-            { 5,   197, m_sprite_width, m_sprite_height },
-            { 38,  197, m_sprite_width, m_sprite_height },
-            { 72,  197, m_sprite_width, m_sprite_height },
-            { 104, 197, m_sprite_width, m_sprite_height },
-        }
-    };
-
-    Sprite m_sprite_idle_south {
-        m_texture, m_animation_delay,
-        {
-            { 8,   4, m_sprite_width, m_sprite_height },
-            { 40,  4, m_sprite_width, m_sprite_height },
-            { 72,  4, m_sprite_width, m_sprite_height },
-            { 104, 4, m_sprite_width, m_sprite_height },
-            { 136, 4, m_sprite_width, m_sprite_height },
-            { 168, 4, m_sprite_width, m_sprite_height },
-        }
-    };
-
-    Sprite m_sprite_idle_sidewards {
-        m_texture, m_animation_delay,
-        {
-            { 9,   36, m_sprite_width, m_sprite_height },
-            { 41,  36, m_sprite_width, m_sprite_height },
-            { 73,  36, m_sprite_width, m_sprite_height },
-            { 105, 36, m_sprite_width, m_sprite_height },
-            { 137, 36, m_sprite_width, m_sprite_height },
-            { 169, 36, m_sprite_width, m_sprite_height },
-        }
-    };
-
-    Sprite m_sprite_idle_north {
-        m_texture, m_animation_delay,
-        {
-            { 8,   68, m_sprite_width, m_sprite_height },
-            { 40,  68, m_sprite_width, m_sprite_height },
-            { 72,  68, m_sprite_width, m_sprite_height },
-            { 104, 68, m_sprite_width, m_sprite_height },
-            { 136, 68, m_sprite_width, m_sprite_height },
-            { 168, 68, m_sprite_width, m_sprite_height },
-        }
-    };
-
-    Sprite m_sprite_walking_sidewards {
-        m_texture, m_animation_delay,
-        {
-            { 9,   130, m_sprite_width, m_sprite_height },
-            { 41,  130, m_sprite_width, m_sprite_height },
-            { 73,  130, m_sprite_width, m_sprite_height },
-            { 105, 130, m_sprite_width, m_sprite_height },
-            { 137, 130, m_sprite_width, m_sprite_height },
-            { 169, 130, m_sprite_width, m_sprite_height },
-        }
-    };
-
-    Sprite m_sprite_walking_north {
-        m_texture, m_animation_delay,
-        {
-            { 8,   162, m_sprite_width, m_sprite_height },
-            { 40,  162, m_sprite_width, m_sprite_height },
-            { 72,  162, m_sprite_width, m_sprite_height },
-            { 104, 162, m_sprite_width, m_sprite_height },
-            { 136, 162, m_sprite_width, m_sprite_height },
-            { 168, 162, m_sprite_width, m_sprite_height },
-        }
-    };
-
-    Sprite m_sprite_walking_south {
-        m_texture, m_animation_delay,
-        {
-            { 8,   98, m_sprite_width, m_sprite_height },
-            { 40,  98, m_sprite_width, m_sprite_height },
-            { 72,  98, m_sprite_width, m_sprite_height },
-            { 104, 98, m_sprite_width, m_sprite_height },
-            { 136, 98, m_sprite_width, m_sprite_height },
-            { 168, 98, m_sprite_width, m_sprite_height },
-        }
-    };
+    Spritesheet m_spritesheet { m_texture, 32, 32 };
+    AnimatedTexture m_sprite_attack_south      { m_texture, m_animation_delay, m_spritesheet.get_row(6, 4) };
+    AnimatedTexture m_sprite_idle_south        { m_texture, m_animation_delay, m_spritesheet.get_row(0, 6) };
+    AnimatedTexture m_sprite_idle_sidewards    { m_texture, m_animation_delay, m_spritesheet.get_row(1, 6) };
+    AnimatedTexture m_sprite_idle_north        { m_texture, m_animation_delay, m_spritesheet.get_row(2, 6) };
+    AnimatedTexture m_sprite_walking_sidewards { m_texture, m_animation_delay, m_spritesheet.get_row(4, 6) };
+    AnimatedTexture m_sprite_walking_north     { m_texture, m_animation_delay, m_spritesheet.get_row(5, 6) };
+    AnimatedTexture m_sprite_walking_south     { m_texture, m_animation_delay, m_spritesheet.get_row(3, 6) };
 
 private:
     // const-agnostic code.

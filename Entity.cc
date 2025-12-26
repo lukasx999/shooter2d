@@ -26,8 +26,9 @@ void Entity::move(Direction dir, double dt) {
 }
 
 gfx::Rect Entity::get_hitbox() const {
-    float width = m_sprite_width * m_texture_scale;
-    float height = m_sprite_height * m_texture_scale;
+
+    float width = m_spritesheet.get_cell_width() * m_texture_scale;
+    float height = m_spritesheet.get_cell_height() * m_texture_scale;
 
     return {
         m_position.x - width / 2.0f,
@@ -55,5 +56,7 @@ void Entity::draw(gfx::Renderer& rd) const {
         current_sprite.draw_mirrored(rd, get_hitbox());
     else
         current_sprite.draw(rd, get_hitbox());
+
+    // rd.draw_rectangle(get_hitbox(), gfx::Color::red().set_alpha(0x7f));
 
 }

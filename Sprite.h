@@ -2,25 +2,25 @@
 
 #include <gfx.h>
 
-class Sprite {
+class AnimatedTexture {
     const gfx::Texture& m_texture;
     const std::vector<gfx::Rect> m_frames;
     size_t m_current_frame = 0;
     double m_time_marker = 0.0f;
-    const double m_anim_delay_secs;
+    const double m_animation_delay_secs;
 
 public:
-    explicit Sprite(const gfx::Texture& texture, double anim_delay_secs, std::vector<gfx::Rect> frames)
+    explicit AnimatedTexture(const gfx::Texture& texture, double animation_delay_secs, std::vector<gfx::Rect> frames)
         : m_texture(texture)
         , m_frames(std::move(frames))
-        , m_anim_delay_secs(anim_delay_secs)
+        , m_animation_delay_secs(animation_delay_secs)
     { }
 
     void update(const gfx::Window& window) {
 
         double time = window.get_time();
 
-        if (time - m_time_marker >= m_anim_delay_secs) {
+        if (time - m_time_marker >= m_animation_delay_secs) {
             m_current_frame++;
             m_current_frame %= m_frames.size();
             m_time_marker = time;
