@@ -13,9 +13,8 @@ int main() {
 
         rd.clear_background(gfx::Color::black());
 
-        double dt = rd.get_frame_time();
-        game.update(dt);
         game.draw(rd);
+        game.update(rd.get_frame_time());
 
     });
 

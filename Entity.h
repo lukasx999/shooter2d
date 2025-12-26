@@ -12,39 +12,29 @@ protected:
     gfx::Vec m_position;
     const gfx::Texture m_texture;
     static constexpr int m_max_health = 100;
-    static constexpr double m_animation_delay = 0.1;
     static constexpr float m_movement_speed = 500;
-    static constexpr float m_texture_scale = 5;
     int m_health = m_max_health;
-    Direction m_direction = Direction::South;
-    bool m_is_idle = true;
-    bool m_is_attacking = false;
-    // TODO: more generic interface for this
+
+    static constexpr double m_animation_delay = 0.1;
+    static constexpr float m_texture_scale = 5;
     gfx::Spritesheet m_spritesheet { m_texture, 32, 32 };
-    gfx::AnimatedTexture m_sprite_attack_south      { m_window, m_spritesheet.get_row(6, 4), m_animation_delay };
-    gfx::AnimatedTexture m_sprite_attack_north      { m_window, m_spritesheet.get_row(8, 4), m_animation_delay };
-    gfx::AnimatedTexture m_sprite_attack_sidewards  { m_window, m_spritesheet.get_row(7, 4), m_animation_delay };
-    gfx::AnimatedTexture m_sprite_idle_south        { m_window, m_spritesheet.get_row(0, 6), m_animation_delay };
-    gfx::AnimatedTexture m_sprite_idle_sidewards    { m_window, m_spritesheet.get_row(1, 6), m_animation_delay };
-    gfx::AnimatedTexture m_sprite_idle_north        { m_window, m_spritesheet.get_row(2, 6), m_animation_delay };
-    gfx::AnimatedTexture m_sprite_walking_sidewards { m_window, m_spritesheet.get_row(4, 6), m_animation_delay };
-    gfx::AnimatedTexture m_sprite_walking_north     { m_window, m_spritesheet.get_row(5, 6), m_animation_delay };
-    gfx::AnimatedTexture m_sprite_walking_south     { m_window, m_spritesheet.get_row(3, 6), m_animation_delay };
+    gfx::AnimatedTexture m_sprite_attacking_south     { m_window, m_spritesheet.get_row(6, 4), m_animation_delay };
+    gfx::AnimatedTexture m_sprite_attacking_north     { m_window, m_spritesheet.get_row(8, 4), m_animation_delay };
+    gfx::AnimatedTexture m_sprite_attacking_sidewards { m_window, m_spritesheet.get_row(7, 4), m_animation_delay };
+    gfx::AnimatedTexture m_sprite_idle_south          { m_window, m_spritesheet.get_row(0, 6), m_animation_delay };
+    gfx::AnimatedTexture m_sprite_idle_sidewards      { m_window, m_spritesheet.get_row(1, 6), m_animation_delay };
+    gfx::AnimatedTexture m_sprite_idle_north          { m_window, m_spritesheet.get_row(2, 6), m_animation_delay };
+    gfx::AnimatedTexture m_sprite_walking_sidewards   { m_window, m_spritesheet.get_row(4, 6), m_animation_delay };
+    gfx::AnimatedTexture m_sprite_walking_north       { m_window, m_spritesheet.get_row(5, 6), m_animation_delay };
+    gfx::AnimatedTexture m_sprite_walking_south       { m_window, m_spritesheet.get_row(3, 6), m_animation_delay };
 
-    enum class State {
-        IdleNorth, IdleEast, IdleSouth, IdleWest,
-        WalkingNorth, WalkingEast, WalkingSouth, WalkingWest,
-        AttackingNorth, AttackingEast, AttackingSouth, AttackingWest,
-    };
+    Direction m_direction = Direction::South;
 
-    State m_state = State::IdleSouth;
+    enum class State { Idle, Walking, Attacking };
+    State m_state = State::Idle;
 
 public:
     Entity(const gfx::Window& window, gfx::Vec position, gfx::Texture texture);
-
-    [[nodiscard]] bool is_idle() const {
-        return m_is_idle;
-    }
 
     [[nodiscard]] gfx::Vec get_position() const {
         return m_position;
@@ -66,21 +56,7 @@ public:
 
     void update(double dt) override;
     void draw(gfx::Renderer& rd) const override;
-    void move(Direction dir, double dt);
-
-    void attack() {
-        m_is_attacking = true;
-    }
-
-private:
-    [[nodiscard]] const gfx::AnimatedTexture& get_current_sprite() const {
-        switch (m_direction) {
-            using enum Direction;
-            case North: return m_is_idle ? m_sprite_idle_north     : m_sprite_walking_north;
-            case East:  return m_is_idle ? m_sprite_idle_sidewards : m_sprite_walking_sidewards;
-            case West:  return m_is_idle ? m_sprite_idle_sidewards : m_sprite_walking_sidewards;
-            case South: return m_is_idle ? m_sprite_idle_south     : m_sprite_walking_south;
-        }
-    }
+    void walk(Direction dir, double dt);
+    void attack();
 
 };

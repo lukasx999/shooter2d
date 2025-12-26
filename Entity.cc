@@ -1,4 +1,5 @@
 #include "Entity.h"
+#include <print>
 
 Entity::Entity(const gfx::Window& window, gfx::Vec position, gfx::Texture texture)
     : m_window(window)
@@ -6,9 +7,6 @@ Entity::Entity(const gfx::Window& window, gfx::Vec position, gfx::Texture textur
     , m_texture(std::move(texture))
 {
     // TODO: reset animation when changing direction
-    m_sprite_attack_south.start();
-    m_sprite_attack_north.start();
-    m_sprite_attack_sidewards.start();
     m_sprite_idle_south.start();
     m_sprite_idle_sidewards.start();
     m_sprite_idle_north.start();
@@ -17,11 +15,12 @@ Entity::Entity(const gfx::Window& window, gfx::Vec position, gfx::Texture textur
     m_sprite_walking_south.start();
 }
 
-void Entity::move(Direction dir, double dt) {
-    m_direction = dir;
-    m_is_idle = false;
+void Entity::walk(Direction direction, double dt) {
 
-    switch (dir) {
+    m_state = State::Walking;
+    m_direction = direction;
+
+    switch (direction) {
         using enum Direction;
 
         case North:
@@ -56,22 +55,58 @@ gfx::Rect Entity::get_hitbox() const {
 }
 
 void Entity::update([[maybe_unused]] double dt) {
-    m_is_idle = true;
+    if (m_sprite_attacking_south.is_done()) {
+        m_state = State::Idle;
+        m_sprite_attacking_south.reset();
+    }
+
+    if (m_state != State::Attacking)
+        m_state = State::Idle;
 }
 
 void Entity::draw(gfx::Renderer& rd) const {
-    if (m_is_attacking) {
-        m_sprite_attack_south.draw(rd, get_hitbox());
-        return;
-    }
 
-    auto& current_sprite = get_current_sprite(this);
+    const gfx::AnimatedTexture& sprite = [&] {
+        switch (m_state) {
+            using enum State;
+            using enum Direction;
+
+            case Idle: switch (m_direction) {
+                case North: return m_sprite_idle_north;
+                case East:
+                case West: return m_sprite_idle_sidewards;
+                case South: return m_sprite_idle_south;
+            }
+
+            case Walking: switch (m_direction) {
+                case North: return m_sprite_walking_north;
+                case East:
+                case West: return m_sprite_walking_sidewards;
+                case South: return m_sprite_walking_south;
+            }
+
+            case Attacking: switch (m_direction) {
+                case North: return m_sprite_attacking_north;
+                case East:
+                case West: return m_sprite_attacking_sidewards;
+                case South: return m_sprite_attacking_south;
+            }
+
+        }
+    }();
 
     if (m_direction == Direction::West)
-        current_sprite.draw_mirrored(rd, get_hitbox());
+        sprite.draw_mirrored(rd, get_hitbox());
     else
-        current_sprite.draw(rd, get_hitbox());
+        sprite.draw(rd, get_hitbox());
 
     // rd.draw_rectangle(get_hitbox(), gfx::Color::red().set_alpha(0x7f));
 
+}
+
+void Entity::attack() {
+    if (m_state == State::Attacking) return;
+
+    m_state = State::Attacking;
+    m_sprite_attacking_south.start();
 }

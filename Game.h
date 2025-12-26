@@ -33,9 +33,8 @@ public:
 
         rd.set_camera(m_player.get_position());
         rd.with_camera([&] {
-            for (auto& obj : m_objects) {
+            for (auto& obj : m_objects)
                 obj.get().draw(rd);
-            }
         });
 
         int size = 50;
@@ -47,11 +46,11 @@ public:
 
     void update(double dt) override {
 
-        for (auto& obj : m_objects) {
+        for (auto& obj : m_objects)
             obj.get().update(dt);
-        }
 
         handle_inputs(dt);
+
         // TODO: this method should accept a span of const entities, and fire an event if a collision happens
         m_map.resolve_collisions(m_renderer.get_window(), m_player, dt);
     }
@@ -63,18 +62,18 @@ private:
         using enum Direction;
 
         if (window.get_key_state(gfx::Key::W).pressed())
-            m_player.move(North, dt);
+            m_player.walk(North, dt);
 
         if (window.get_key_state(gfx::Key::S).pressed())
-            m_player.move(South, dt);
+            m_player.walk(South, dt);
 
         if (window.get_key_state(gfx::Key::D).pressed())
-            m_player.move(East, dt);
+            m_player.walk(East, dt);
 
         if (window.get_key_state(gfx::Key::A).pressed())
-            m_player.move(West, dt);
+            m_player.walk(West, dt);
 
-        if (window.get_mouse_button_state(gfx::MouseButton::Left).pressed())
+        if (window.get_key_state(gfx::Key::J).pressed())
             m_player.attack();
 
         if (window.get_key_state(gfx::Key::Escape).pressed())
