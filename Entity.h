@@ -7,6 +7,16 @@
 
 enum class Direction { North, East, South, West };
 
+[[nodiscard]] inline constexpr const char* stringify_direction(Direction direction) {
+    switch (direction) {
+        using enum Direction;
+        case North: return "North";
+        case East:  return "East";
+        case South: return "South";
+        case West:  return "West";
+    }
+}
+
 class Entity : public GameObject {
 protected:
     const gfx::Window& m_window;

@@ -75,18 +75,21 @@ public:
     }
 
     void on_direction_change(Direction new_direction) override {
-        auto& old_sprite = get_sprite(this, m_direction, m_state);
-        old_sprite.reset();
+        // auto& old_sprite = get_sprite(this, m_direction, m_state);
+        // old_sprite.reset();
 
         auto& new_sprite = get_sprite(this, new_direction, m_state);
+        new_sprite.reset();
         new_sprite.start();
+        std::println("{}", stringify_direction(new_direction));
     }
 
     void on_state_change(State new_state) override {
-        auto& old_sprite = get_sprite(this, m_direction, m_state);
-        old_sprite.reset();
+        // auto& old_sprite = get_sprite(this, m_direction, m_state);
+        // old_sprite.reset();
 
         auto& new_sprite = get_sprite(this, m_direction, new_state);
+        new_sprite.reset();
         new_sprite.start();
     }
 

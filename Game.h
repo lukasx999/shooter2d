@@ -46,6 +46,8 @@ public:
 
     void update(double dt) override {
 
+        std::println();
+
         for (auto& obj : m_objects)
             obj.get().update(dt);
 

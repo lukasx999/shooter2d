@@ -45,6 +45,9 @@ void Entity::walk(Direction direction, double dt) {
 
 void Entity::update([[maybe_unused]] double dt) {
 
+    // if the entity has not walked in the last iteration of the game loop
+    // we can assume it has stopped walking, and is therefore idle
+    // m_idle_lock is here to avoid calling on_state_change() more than once
     if (m_is_idle && !m_idle_lock) {
         m_state = State::Idle;
         on_state_change(State::Idle);
