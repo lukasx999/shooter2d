@@ -24,6 +24,9 @@ protected:
     const int m_width;
     const int m_height;
 
+    bool m_is_idle = false;
+    bool m_idle_lock = false;
+
 public:
     Entity(const gfx::Window& window, gfx::Vec position, gfx::Texture texture, int width, int height);
 

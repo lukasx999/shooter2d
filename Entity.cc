@@ -1,5 +1,4 @@
 #include "Entity.h"
-#include <print>
 
 Entity::Entity(const gfx::Window& window, gfx::Vec position, gfx::Texture texture, int width, int height)
     : m_window(window)
@@ -20,16 +19,20 @@ gfx::Rect Entity::get_hitbox() const {
 
 void Entity::walk(Direction direction, double dt) {
 
+    m_is_idle = false;
+    m_idle_lock = false;
+
     bool direction_has_changed = direction != m_direction;
     if (direction_has_changed)
         on_direction_change(direction);
+
+    m_direction = direction;
 
     bool state_has_changed = m_state != State::Walking;
     if (state_has_changed)
         on_state_change(State::Walking);
 
     m_state = State::Walking;
-    m_direction = direction;
 
     switch (direction) {
         using enum Direction;
@@ -41,8 +44,14 @@ void Entity::walk(Direction direction, double dt) {
 }
 
 void Entity::update([[maybe_unused]] double dt) {
-    // TODO: this is a bad approach
-    m_state = State::Idle;
+
+    if (m_is_idle && !m_idle_lock) {
+        m_state = State::Idle;
+        on_state_change(State::Idle);
+        m_idle_lock = true;
+    }
+
+    m_is_idle = true;
 }
 
 void Entity::attack() {
