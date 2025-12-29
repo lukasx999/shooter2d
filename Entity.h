@@ -19,23 +19,22 @@ enum class Direction { North, East, South, West };
 
 class Entity : public GameObject {
 protected:
-    const gfx::Window& m_window;
-    gfx::Vec m_position;
+    // TODO: this should be public
+    enum class State { Idle, Walking, Attacking };
+
     static constexpr int m_max_health = 100;
     static constexpr float m_movement_speed = 500;
-    int m_health = m_max_health;
-
-    Direction m_direction = Direction::South;
-
-    enum class State { Idle, Walking, Attacking };
-    State m_state = State::Idle;
-
     const int m_width;
     const int m_height;
+    const gfx::Window& m_window;
+
+    gfx::Vec m_position;
+    Direction m_direction = Direction::South;
+    State m_state = State::Idle;
+    int m_health = m_max_health;
 
     bool m_is_idle = false;
     bool m_idle_lock = false;
-
     bool m_is_holding_walk_button = false;
 
 public:
