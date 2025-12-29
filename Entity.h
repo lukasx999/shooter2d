@@ -83,6 +83,6 @@ public:
 protected:
     virtual void on_direction_change([[maybe_unused]] Direction new_direction) { }
     virtual void on_state_change([[maybe_unused]] State new_state) { }
-    [[nodiscard]] virtual bool is_attack_done() = 0;
+    [[nodiscard]] virtual bool is_attack_done() const = 0;
 
 };

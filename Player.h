@@ -81,7 +81,7 @@ public:
         new_sprite.start();
     }
 
-    bool is_attack_done() override {
+    bool is_attack_done() const override {
         auto& sprite = get_sprite(this, m_direction, m_state);
         return sprite.is_done();
     }

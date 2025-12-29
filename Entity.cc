@@ -41,12 +41,14 @@ void Entity::walk(Direction direction, double dt) {
         m_is_holding_walk_button = true;
     }
 
+    float step = m_movement_speed * dt;
+
     switch (direction) {
         using enum Direction;
-        case North: m_position.y -= m_movement_speed * dt; break;
-        case East:  m_position.x += m_movement_speed * dt; break;
-        case South: m_position.y += m_movement_speed * dt; break;
-        case West:  m_position.x -= m_movement_speed * dt; break;
+        case North: m_position.y -= step; break;
+        case East:  m_position.x += step; break;
+        case South: m_position.y += step; break;
+        case West:  m_position.x -= step; break;
     }
 }
 
