@@ -71,27 +71,23 @@ public:
             sprite.draw(rd, get_hitbox());
 
         // rd.draw_rectangle(get_hitbox(), gfx::Color::red().set_alpha(0x7f));
-
     }
 
     void on_direction_change(Direction new_direction) override {
-        // auto& old_sprite = get_sprite(this, m_direction, m_state);
-        // old_sprite.reset();
-
         auto& new_sprite = get_sprite(this, new_direction, m_state);
         new_sprite.reset();
         new_sprite.start();
-        std::println("{}", stringify_direction(new_direction));
     }
 
     void on_state_change(State new_state) override {
-        // auto& old_sprite = get_sprite(this, m_direction, m_state);
-        // old_sprite.reset();
-
         auto& new_sprite = get_sprite(this, m_direction, new_state);
         new_sprite.reset();
         new_sprite.start();
     }
 
+    bool is_attack_done() override {
+        auto& sprite = get_sprite(this, m_direction, m_state);
+        return sprite.is_done();
+    }
 
 };

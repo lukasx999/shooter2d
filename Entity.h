@@ -37,6 +37,8 @@ protected:
     bool m_is_idle = false;
     bool m_idle_lock = false;
 
+    bool m_is_holding_walk_button = false;
+
 public:
     Entity(const gfx::Window& window, gfx::Vec position, gfx::Texture texture, int width, int height);
 
@@ -52,18 +54,36 @@ public:
         return m_movement_speed;
     }
 
+    [[nodiscard]] Direction get_direction() const {
+        return m_direction;
+    }
+
+    [[nodiscard]] State get_state() const {
+        return m_state;
+    }
+
     void set_position(gfx::Vec position) {
         m_position = position;
     }
 
-    [[nodiscard]] gfx::Rect get_hitbox() const;
+    [[nodiscard]] static constexpr const char* stringify_state(State state) {
+        switch (state) {
+            using enum State;
+            case Idle:      return "Idle";
+            case Walking:   return "Walking";
+            case Attacking: return "Attacking";
+        }
+    }
 
+    [[nodiscard]] gfx::Rect get_hitbox() const;
     void update(double dt) override;
     void draw([[maybe_unused]] gfx::Renderer& rd) const override { }
     void walk(Direction dir, double dt);
     void attack();
 
+protected:
     virtual void on_direction_change([[maybe_unused]] Direction new_direction) { }
     virtual void on_state_change([[maybe_unused]] State new_state) { }
+    [[nodiscard]] virtual bool is_attack_done() = 0;
 
 };

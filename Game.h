@@ -37,16 +37,14 @@ public:
                 obj.get().draw(rd);
         });
 
-        int size = 50;
         auto text = std::format("Health: {}", m_player.get_health());
-        int text_width = m_font.measure_text(text.c_str(), size);
-        rd.draw_text(m_renderer.get_window().get_width()/2.0 - text_width/2.0, 0, size, text.c_str(), m_font, gfx::Color::red());
+        rd.draw_text(0, 0, 50, text.c_str(), m_font, gfx::Color::white());
+        rd.draw_text(0, 50, 50, m_player.stringify_state(m_player.get_state()), m_font, gfx::Color::white());
+        rd.draw_text(0, 100, 50, stringify_direction(m_player.get_direction()), m_font, gfx::Color::white());
 
     }
 
     void update(double dt) override {
-
-        std::println();
 
         for (auto& obj : m_objects)
             obj.get().update(dt);

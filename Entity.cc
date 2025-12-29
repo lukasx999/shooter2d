@@ -19,20 +19,28 @@ gfx::Rect Entity::get_hitbox() const {
 
 void Entity::walk(Direction direction, double dt) {
 
-    m_is_idle = false;
-    m_idle_lock = false;
+    // just update the position when attacking while walking, so we dont
+    // show the walking animation
+    if (m_state != State::Attacking) {
 
-    bool direction_has_changed = direction != m_direction;
-    if (direction_has_changed)
-        on_direction_change(direction);
+        m_is_idle = false;
+        m_idle_lock = false;
 
-    m_direction = direction;
+        bool direction_has_changed = direction != m_direction;
+        // m_is_holding_walk_button prevents conflicting on_direction_change() calls
+        // when multiple buttons are pressed at the same time
+        if (direction_has_changed && !m_is_holding_walk_button)
+            on_direction_change(direction);
 
-    bool state_has_changed = m_state != State::Walking;
-    if (state_has_changed)
-        on_state_change(State::Walking);
+        m_direction = direction;
 
-    m_state = State::Walking;
+        bool state_has_changed = m_state != State::Walking;
+        if (state_has_changed)
+            on_state_change(State::Walking);
+
+        m_state = State::Walking;
+        m_is_holding_walk_button = true;
+    }
 
     switch (direction) {
         using enum Direction;
@@ -45,19 +53,36 @@ void Entity::walk(Direction direction, double dt) {
 
 void Entity::update([[maybe_unused]] double dt) {
 
-    // if the entity has not walked in the last iteration of the game loop
-    // we can assume it has stopped walking, and is therefore idle
-    // m_idle_lock is here to avoid calling on_state_change() more than once
-    if (m_is_idle && !m_idle_lock) {
-        m_state = State::Idle;
-        on_state_change(State::Idle);
-        m_idle_lock = true;
-    }
+    switch (m_state) {
+        using enum State;
 
-    m_is_idle = true;
+        case Attacking:
+            if (is_attack_done())
+                m_state = State::Idle;
+            break;
+
+        case Idle:
+            break;
+
+        case Walking:
+
+            // if the entity has not walked in the last iteration of the game loop
+            // we can assume it has stopped walking, and is therefore idle
+            // m_idle_lock is here to avoid calling on_state_change() more than once
+            if (m_is_idle && !m_idle_lock) {
+                m_state = State::Idle;
+                on_state_change(State::Idle);
+                m_idle_lock = true;
+            }
+
+            m_is_idle = true;
+            m_is_holding_walk_button = false;
+            break;
+    }
 }
 
 void Entity::attack() {
+    if (m_state == State::Attacking) return;
 
     bool state_has_changed = m_state != State::Attacking;
     if (state_has_changed)
