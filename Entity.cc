@@ -1,9 +1,8 @@
 #include "Entity.h"
 
-Entity::Entity(const gfx::Window& window, gfx::Vec position, gfx::Texture texture, int width, int height)
+Entity::Entity(const gfx::Window& window, gfx::Vec position, int width, int height)
     : m_window(window)
     , m_position(position)
-    , m_texture(std::move(texture))
     , m_width(width)
     , m_height(height)
 { }

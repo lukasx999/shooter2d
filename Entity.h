@@ -21,7 +21,6 @@ class Entity : public GameObject {
 protected:
     const gfx::Window& m_window;
     gfx::Vec m_position;
-    const gfx::Texture m_texture;
     static constexpr int m_max_health = 100;
     static constexpr float m_movement_speed = 500;
     int m_health = m_max_health;
@@ -40,7 +39,7 @@ protected:
     bool m_is_holding_walk_button = false;
 
 public:
-    Entity(const gfx::Window& window, gfx::Vec position, gfx::Texture texture, int width, int height);
+    Entity(const gfx::Window& window, gfx::Vec position, int width, int height);
 
     [[nodiscard]] gfx::Vec get_position() const {
         return m_position;

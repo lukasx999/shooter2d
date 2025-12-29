@@ -6,6 +6,7 @@ class Player : public Entity {
     static constexpr double m_animation_delay = 0.1;
     static constexpr float m_texture_scale = 5;
     static constexpr int m_spritesheet_cell_size = 32;
+    const gfx::Texture m_texture;
     gfx::Spritesheet m_spritesheet { m_texture, m_spritesheet_cell_size, m_spritesheet_cell_size };
     gfx::AnimatedTexture m_sprite_attacking_south     { m_window, m_spritesheet.get_row(6, 4), m_animation_delay };
     gfx::AnimatedTexture m_sprite_attacking_north     { m_window, m_spritesheet.get_row(8, 4), m_animation_delay };
@@ -52,13 +53,8 @@ private:
 
 public:
     Player(const gfx::Window& window, gfx::Vec position)
-    : Entity(
-        window,
-        position,
-        gfx::Texture("./assets/Cute_Fantasy_Free/Player/Player.png"),
-        m_spritesheet_cell_size * m_texture_scale,
-        m_spritesheet_cell_size * m_texture_scale
-    )
+        : Entity(window, position, m_spritesheet_cell_size * m_texture_scale, m_spritesheet_cell_size * m_texture_scale)
+        , m_texture(gfx::Texture("./assets/Cute_Fantasy_Free/Player/Player.png"))
     { }
 
     void draw(gfx::Renderer& rd) const override {
