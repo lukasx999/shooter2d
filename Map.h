@@ -13,9 +13,14 @@
 #include <tmxlite/Object.hpp>
 
 #include "GameObject.h"
-#include "Player.h"
+#include "Entity.h"
+#include "Emitter.h"
+#include "misc.h"
 
-class Map : public GameObject {
+class Map
+: public GameObject
+, public Emitter<CollisionData>
+{
     tmx::Map m_map;
     std::unordered_map<const tmx::Tileset*, gfx::Texture> m_textures;
 
@@ -132,16 +137,16 @@ public:
             gfx::Rect p = entity.get_hitbox();
 
             if (p.check_collision(left))
-                entity.set_position({ x - p.width / 2.0f - 1, pos.y });
+                notify({ x - p.width / 2.0f - 1, pos.y });
 
             if (p.check_collision(right))
-                entity.set_position({ x + width + p.width / 2.0f + 1, pos.y });
+                notify({ x + width + p.width / 2.0f + 1, pos.y });
 
             if (p.check_collision(top))
-                entity.set_position({ pos.x, y - p.height / 2.0f - 1 });
+                notify({ pos.x, y - p.height / 2.0f - 1 });
 
             if (p.check_collision(bottom))
-                entity.set_position({ pos.x, y + height + p.height / 2.0f + 1 });
+                notify({ pos.x, y + height + p.height / 2.0f + 1 });
 
         }
 

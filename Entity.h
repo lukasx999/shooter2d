@@ -1,23 +1,27 @@
 #pragma once
 
 #include <gfx.h>
-#include <print>
 
 #include "GameObject.h"
+#include "IListener.h"
+#include "misc.h"
 
 enum class Direction { North, East, South, West };
 
 [[nodiscard]] inline constexpr const char* stringify_direction(Direction direction) {
     switch (direction) {
         using enum Direction;
-        case North: return "North";
-        case East:  return "East";
-        case South: return "South";
-        case West:  return "West";
+        case North: return STRINGIFY(North);
+        case East:  return STRINGIFY(East);
+        case South: return STRINGIFY(South);
+        case West:  return STRINGIFY(West);
     }
 }
 
-class Entity : public GameObject {
+class Entity
+: public GameObject
+, public IListener<CollisionData>
+{
 protected:
     // TODO: this should be public
     enum class State { Idle, Walking, Attacking };
@@ -67,9 +71,9 @@ public:
     [[nodiscard]] static constexpr const char* stringify_state(State state) {
         switch (state) {
             using enum State;
-            case Idle:      return "Idle";
-            case Walking:   return "Walking";
-            case Attacking: return "Attacking";
+            case Idle:      return STRINGIFY(Idle);
+            case Walking:   return STRINGIFY(Walking);
+            case Attacking: return STRINGIFY(Attacking);
         }
     }
 
@@ -78,6 +82,10 @@ public:
     void draw([[maybe_unused]] gfx::Renderer& rd) const override { }
     void walk(Direction dir, double dt);
     void attack();
+
+    void on_notify(CollisionData data) override {
+        set_position(data.resolved_position);
+    }
 
 protected:
     virtual void on_direction_change([[maybe_unused]] Direction new_direction) { }

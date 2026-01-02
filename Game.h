@@ -27,7 +27,9 @@ public:
         , m_font(m_renderer.load_font("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Regular.ttf"))
         , m_map("./assets/map.tmx")
         , m_player(m_renderer.get_window(), { m_renderer.get_window().get_width() / 2.0f, m_renderer.get_window().get_height() / 2.0f })
-    { }
+    {
+        m_map.add_listener(m_player);
+    }
 
     void draw(gfx::Renderer& rd) const override {
 
