@@ -20,7 +20,7 @@ enum class Direction { North, East, South, West };
 
 class Entity
 : public GameObject
-, public IListener<CollisionData>
+, public IListener<CollisionEvent>
 {
 protected:
     // TODO: this should be public
@@ -83,7 +83,7 @@ public:
     void walk(Direction dir, double dt);
     void attack();
 
-    void on_notify(CollisionData data) override {
+    void on_notify(CollisionEvent data) override {
         set_position(data.resolved_position);
     }
 

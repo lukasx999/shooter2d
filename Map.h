@@ -19,7 +19,7 @@
 
 class Map
 : public GameObject
-, public Emitter<CollisionData>
+, public Emitter<CollisionEvent>
 {
     tmx::Map m_map;
     std::unordered_map<const tmx::Tileset*, gfx::Texture> m_textures;

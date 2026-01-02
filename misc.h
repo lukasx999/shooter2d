@@ -4,6 +4,6 @@
 
 #define STRINGIFY(x) (static_cast<void>(x), #x)
 
-struct CollisionData {
+struct CollisionEvent {
     gfx::Vec resolved_position;
 };
