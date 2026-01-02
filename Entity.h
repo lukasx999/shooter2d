@@ -83,8 +83,8 @@ public:
     void walk(Direction dir, double dt);
     void attack();
 
-    void on_notify(CollisionEvent data) override {
-        set_position(data.resolved_position);
+    void on_notify(CollisionEvent event) override {
+        set_position(event.resolved_position);
     }
 
 protected:
