@@ -22,8 +22,8 @@ class Game : public GameObject {
     };
 
 public:
-    explicit Game(gfx::Renderer& renderer)
-        : m_renderer(renderer)
+    explicit Game(gfx::Renderer& rd)
+        : m_renderer(rd)
         , m_font(m_renderer.load_font("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Regular.ttf"))
         , m_map("./assets/map.tmx")
         , m_player(m_renderer.get_window(), { m_renderer.get_window().get_width() / 2.0f, m_renderer.get_window().get_height() / 2.0f })
@@ -53,7 +53,6 @@ public:
 
         handle_inputs(dt);
 
-        // TODO: this method should accept a span of const entities, and fire an event if a collision happens
         m_map.resolve_collisions(m_renderer.get_window(), m_player, dt);
     }
 

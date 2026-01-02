@@ -1,8 +1,7 @@
 #pragma once
 
 template <typename Payload>
-class IListener {
-public:
+struct IListener {
     virtual ~IListener() = default;
     virtual void on_notify(Payload payload) = 0;
 };
