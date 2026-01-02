@@ -4,7 +4,7 @@
 
 #include "SpriteEntity.h"
 
-class Player : public SpriteEntity {
+class Enemy : public SpriteEntity {
     static constexpr double m_animation_delay = 0.1;
     static constexpr float m_texture_scale = 5;
     static constexpr int m_spritesheet_cell_size = 32;
@@ -21,13 +21,13 @@ class Player : public SpriteEntity {
     gfx::AnimatedTexture m_sprite_walking_south       { m_window, m_spritesheet.get_row(3, 6), m_animation_delay };
 
 public:
-    Player(const gfx::Window& window, gfx::Vec position)
+    Enemy(const gfx::Window& window, gfx::Vec position)
         : SpriteEntity(window, position, m_spritesheet_cell_size * m_texture_scale, m_spritesheet_cell_size * m_texture_scale)
-        , m_texture(gfx::Texture("./assets/Cute_Fantasy_Free/Player/Player.png"))
+        , m_texture(gfx::Texture("./assets/Cute_Fantasy_Free/Enemies/Skeleton.png"))
     { }
 
     [[nodiscard]] gfx::AnimatedTexture& get_current_sprite(Direction direction, State state) override {
-        return const_cast<gfx::AnimatedTexture&>(static_cast<const Player*>(this)->get_current_sprite(direction, state));
+        return const_cast<gfx::AnimatedTexture&>(static_cast<const Enemy*>(this)->get_current_sprite(direction, state));
     }
 
     [[nodiscard]] const gfx::AnimatedTexture& get_current_sprite(Direction direction, State state) const override {

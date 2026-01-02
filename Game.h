@@ -6,29 +6,40 @@
 #include <gfx.h>
 
 #include "Entity.h"
-#include "SpriteEntity.h"
+#include "Player.h"
+#include "Enemy.h"
 #include "GameObject.h"
 #include "Map.h"
 
 class Game : public GameObject {
-    gfx::Renderer& m_renderer;
+    gfx::Renderer& m_rd;
     gfx::Font m_font;
     Map m_map;
-    SpriteEntity m_player;
+    Player m_player;
+    Enemy m_enemy;
 
     std::vector<std::reference_wrapper<GameObject>> m_objects {
         m_map,
         m_player,
+        m_enemy,
+    };
+
+    // BUG: Map emitter sends event to every entity object not just the one that collided
+    std::vector<std::reference_wrapper<Entity>> m_entities {
+        m_player,
+        // m_enemy,
     };
 
 public:
     explicit Game(gfx::Renderer& rd)
-        : m_renderer(rd)
-        , m_font(m_renderer.load_font("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Regular.ttf"))
+        : m_rd(rd)
+        , m_font(m_rd.load_font("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Regular.ttf"))
         , m_map("./assets/map.tmx")
-        , m_player(m_renderer.get_window(), { m_renderer.get_window().get_width() / 2.0f, m_renderer.get_window().get_height() / 2.0f })
+        , m_player(m_rd.get_window(), { m_rd.get_window().get_width() / 2.0f, m_rd.get_window().get_height() / 2.0f })
+        , m_enemy(m_rd.get_window(), { m_rd.get_window().get_width() / 2.0f, m_rd.get_window().get_height() / 2.0f })
     {
-        m_map.add_listener(m_player);
+        for (auto& entity : m_entities)
+            m_map.add_listener(entity);
     }
 
     void draw(gfx::Renderer& rd) const override {
@@ -53,12 +64,12 @@ public:
 
         handle_inputs(dt);
 
-        m_map.resolve_collisions(m_renderer.get_window(), m_player, dt);
+        m_map.resolve_collisions(m_rd.get_window(), m_entities, dt);
     }
 
 private:
     void handle_inputs(double dt) {
-        auto& window = m_renderer.get_window();
+        auto& window = m_rd.get_window();
 
         using enum Direction;
 
