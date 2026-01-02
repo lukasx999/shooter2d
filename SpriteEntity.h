@@ -29,21 +29,21 @@ private:
             case Idle: switch (direction) {
                 case North: return self->m_sprite_idle_north;
                 case East:
-                case West: return self->m_sprite_idle_sidewards;
+                case West:  return self->m_sprite_idle_sidewards;
                 case South: return self->m_sprite_idle_south;
             }
 
             case Walking: switch (direction) {
                 case North: return self->m_sprite_walking_north;
                 case East:
-                case West: return self->m_sprite_walking_sidewards;
+                case West:  return self->m_sprite_walking_sidewards;
                 case South: return self->m_sprite_walking_south;
             }
 
             case Attacking: switch (direction) {
                 case North: return self->m_sprite_attacking_north;
                 case East:
-                case West: return self->m_sprite_attacking_sidewards;
+                case West:  return self->m_sprite_attacking_sidewards;
                 case South: return self->m_sprite_attacking_south;
             }
 
