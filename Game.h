@@ -6,7 +6,7 @@
 #include <gfx.h>
 
 #include "Entity.h"
-#include "Player.h"
+#include "SpriteEntity.h"
 #include "GameObject.h"
 #include "Map.h"
 
@@ -14,7 +14,7 @@ class Game : public GameObject {
     gfx::Renderer& m_renderer;
     gfx::Font m_font;
     Map m_map;
-    Player m_player;
+    SpriteEntity m_player;
 
     std::vector<std::reference_wrapper<GameObject>> m_objects {
         m_map,
