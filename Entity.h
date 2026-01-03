@@ -8,24 +8,8 @@
 
 enum class Direction { North, East, South, West };
 
-[[nodiscard]] inline constexpr const char* stringify_direction(Direction direction) {
-    switch (direction) {
-        using enum Direction;
-        case North: return STRINGIFY(North);
-        case East:  return STRINGIFY(East);
-        case South: return STRINGIFY(South);
-        case West:  return STRINGIFY(West);
-    }
-}
-
-class Entity
-: public GameObject
-, public IListener<CollisionEvent>
-{
+class Entity : public GameObject {
 protected:
-    // TODO: this should be public
-    enum class State { Idle, Walking, Attacking };
-
     static constexpr int m_max_health = 100;
     static constexpr float m_movement_speed = 500;
     const int m_width;
@@ -34,12 +18,17 @@ protected:
 
     gfx::Vec m_position;
     Direction m_direction = Direction::South;
-    State m_state = State::Idle;
     int m_health = m_max_health;
 
     bool m_is_idle = false;
     bool m_idle_lock = false;
     bool m_is_holding_walk_button = false;
+
+public:
+    enum class State { Idle, Walking, Attacking };
+
+protected:
+    State m_state = State::Idle;
 
 public:
     Entity(const gfx::Window& window, gfx::Vec position, int width, int height);
@@ -68,28 +57,50 @@ public:
         m_position = position;
     }
 
-    [[nodiscard]] static constexpr const char* stringify_state(State state) {
-        switch (state) {
-            using enum State;
-            case Idle:      return STRINGIFY(Idle);
-            case Walking:   return STRINGIFY(Walking);
-            case Attacking: return STRINGIFY(Attacking);
-        }
-    }
-
     [[nodiscard]] gfx::Rect get_hitbox() const;
     void update(double dt) override;
     void draw([[maybe_unused]] gfx::Renderer& rd) const override { }
     void walk(Direction dir, double dt);
     void attack();
 
-    void on_notify(CollisionEvent event) override {
-        set_position(event.resolved_position);
-    }
-
 protected:
     virtual void on_direction_change([[maybe_unused]] Direction new_direction) { }
     virtual void on_state_change([[maybe_unused]] State new_state) { }
     [[nodiscard]] virtual bool is_attack_done() const = 0;
 
+};
+
+template <>
+struct std::formatter<Direction> : std::formatter<std::string> {
+    auto format(const Direction& direction, std::format_context& ctx) const {
+
+        auto fmt = [&] {
+            switch (direction) {
+                using enum Direction;
+                case North: return STRINGIFY(North);
+                case East:  return STRINGIFY(East);
+                case South: return STRINGIFY(South);
+                case West:  return STRINGIFY(West);
+            }
+        }();
+
+        return std::formatter<std::string>::format(fmt, ctx);
+    }
+};
+
+template <>
+struct std::formatter<Entity::State> : std::formatter<std::string> {
+    auto format(const Entity::State& state, std::format_context& ctx) const {
+
+        auto fmt = [&] {
+            switch (state) {
+                using enum Entity::State;
+                case Idle:      return STRINGIFY(Idle);
+                case Walking:   return STRINGIFY(Walking);
+                case Attacking: return STRINGIFY(Attacking);
+            }
+        }();
+
+        return std::formatter<std::string>::format(fmt, ctx);
+    }
 };

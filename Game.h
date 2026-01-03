@@ -48,8 +48,8 @@ public:
 
         auto text = std::format("Health: {}", m_player.get_health());
         rd.draw_text(0, 0, 50, text.c_str(), m_font, gfx::Color::white());
-        rd.draw_text(0, 50, 50, m_player.stringify_state(m_player.get_state()), m_font, gfx::Color::white());
-        rd.draw_text(0, 100, 50, stringify_direction(m_player.get_direction()), m_font, gfx::Color::white());
+        rd.draw_text(0, 50, 50, std::format("{}", m_player.get_state()), m_font, gfx::Color::white());
+        rd.draw_text(0, 100, 50, std::format("{}", m_player.get_direction()), m_font, gfx::Color::white());
 
     }
 
