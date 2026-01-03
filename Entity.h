@@ -24,6 +24,8 @@ protected:
     bool m_idle_lock = false;
     bool m_is_holding_walk_button = false;
 
+    bool m_first_iteration = true;
+
 public:
     enum class State { Idle, Walking, Attacking };
 
