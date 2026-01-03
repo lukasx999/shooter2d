@@ -24,10 +24,9 @@ class Game : public GameObject {
         m_enemy,
     };
 
-    // BUG: Map emitter sends event to every entity object not just the one that collided
     std::vector<std::reference_wrapper<Entity>> m_entities {
         m_player,
-        // m_enemy,
+        m_enemy,
     };
 
 public:
@@ -37,10 +36,7 @@ public:
         , m_map("./assets/map.tmx")
         , m_player(m_rd.get_window(), { m_rd.get_window().get_width() / 2.0f, m_rd.get_window().get_height() / 2.0f })
         , m_enemy(m_rd.get_window(), { m_rd.get_window().get_width() / 2.0f, m_rd.get_window().get_height() / 2.0f })
-    {
-        for (auto& entity : m_entities)
-            m_map.add_listener(entity);
-    }
+    { }
 
     void draw(gfx::Renderer& rd) const override {
 
@@ -73,6 +69,7 @@ private:
 
         using enum Direction;
 
+        // TODO: use the event system for this
         if (window.get_key_state(gfx::Key::W).pressed())
             m_player.walk(North, dt);
 

@@ -104,16 +104,16 @@ void Map::resolve_collisions(const gfx::Window& window, std::span<std::reference
             gfx::Rect p = entity.get_hitbox();
 
             if (p.check_collision(left))
-                notify({ x - p.width / 2.0f - 1, pos.y });
+                entity.set_position({ x - p.width / 2.0f - 1, pos.y });
 
             if (p.check_collision(right))
-                notify({ x + width + p.width / 2.0f + 1, pos.y });
+                entity.set_position({ x + width + p.width / 2.0f + 1, pos.y });
 
             if (p.check_collision(top))
-                notify({ pos.x, y - p.height / 2.0f - 1 });
+                entity.set_position({ pos.x, y - p.height / 2.0f - 1 });
 
             if (p.check_collision(bottom))
-                notify({ pos.x, y + height + p.height / 2.0f + 1 });
+                entity.set_position({ pos.x, y + height + p.height / 2.0f + 1 });
 
         }
     }

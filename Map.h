@@ -19,10 +19,7 @@
 #include "Emitter.h"
 #include "misc.h"
 
-class Map
-: public GameObject
-, public Emitter<CollisionEvent>
-{
+class Map : public GameObject {
     tmx::Map m_map;
     std::unordered_map<const tmx::Tileset*, gfx::Texture> m_textures;
 
