@@ -36,7 +36,9 @@ public:
         , m_map("./assets/map.tmx")
         , m_player(m_rd.get_window(), { m_rd.get_window().get_width() / 2.0f, m_rd.get_window().get_height() / 2.0f })
         , m_enemy(m_rd.get_window(), { m_rd.get_window().get_width() / 2.0f, m_rd.get_window().get_height() / 2.0f }, m_player)
-    { }
+    {
+        m_enemy.set_movement_speed(100);
+    }
 
     void draw(gfx::Renderer& rd) const override {
 

@@ -42,6 +42,10 @@ public:
 
             case Idle: switch (direction) {
                 case North: return m_sprite_idle_north;
+                case SouthEast:
+                case SouthWest:
+                case NorthEast:
+                case NorthWest:
                 case East:
                 case West:  return m_sprite_idle_sidewards;
                 case South: return m_sprite_idle_south;
@@ -49,6 +53,10 @@ public:
 
             case Walking: switch (direction) {
                 case North: return m_sprite_walking_north;
+                case SouthEast:
+                case SouthWest:
+                case NorthEast:
+                case NorthWest:
                 case East:
                 case West:  return m_sprite_walking_sidewards;
                 case South: return m_sprite_walking_south;
@@ -56,6 +64,10 @@ public:
 
             case Attacking: switch (direction) {
                 case North: return m_sprite_attacking_north;
+                case SouthEast:
+                case SouthWest:
+                case NorthEast:
+                case NorthWest:
                 case East:
                 case West:  return m_sprite_attacking_sidewards;
                 case South: return m_sprite_attacking_south;
@@ -82,7 +94,7 @@ private:
             angle = 180 + (180 - angle);
 
         if (diff.length() >= 100)
-            walk(angle_to_direction(angle), dt/5);
+            walk(angle_to_direction(angle), dt);
 
     }
 

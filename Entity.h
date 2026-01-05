@@ -19,7 +19,7 @@ enum class Direction {
 class Entity : public GameObject {
 protected:
     static constexpr int m_max_health = 100;
-    static constexpr float m_movement_speed = 500;
+    float m_movement_speed = 500;
     const int m_width;
     const int m_height;
     const gfx::Window& m_window;
@@ -48,6 +48,10 @@ public:
 
     [[nodiscard]] int get_health() const {
         return m_health;
+    }
+
+    void set_movement_speed(float movement_speed) {
+        m_movement_speed = movement_speed;
     }
 
     [[nodiscard]] float get_movement_speed() const {
