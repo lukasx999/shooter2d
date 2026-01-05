@@ -62,58 +62,7 @@ void Map::resolve_collisions(const gfx::Window& window, std::span<std::reference
             float width = aabb.width * factor.x;
             float height = aabb.height * factor.y;
 
-            // subtracted from the height of the collision hitbox, otherwise
-            // the player would clip through the tile and trigger a wrong collision
-            // it is set to the amount of pixels the player can move at the current frame
-            float diff = entity.get_movement_speed() * dt;
-
-            // width of the collision hitbox
-            float collision_size = 1;
-
-            // add a tiny collision rectangle for each side of the tile so we
-            // know which tile was hit
-            gfx::Rect left {
-                x - collision_size,
-                y + diff,
-                collision_size,
-                height - diff * 2,
-            };
-
-            gfx::Rect right {
-                static_cast<float>(x) + width,
-                y + diff,
-                collision_size,
-                height - diff * 2,
-            };
-
-            gfx::Rect top {
-                x + diff,
-                y - collision_size,
-                width - diff * 2,
-                collision_size,
-            };
-
-            gfx::Rect bottom {
-                x + diff,
-                static_cast<float>(y) + height,
-                width - diff * 2,
-                collision_size,
-            };
-
-            gfx::Vec pos = entity.get_position();
-            gfx::Rect p = entity.get_hitbox();
-
-            if (p.check_collision(left))
-                entity.set_position({ x - p.width / 2.0f - 1, pos.y });
-
-            if (p.check_collision(right))
-                entity.set_position({ x + width + p.width / 2.0f + 1, pos.y });
-
-            if (p.check_collision(top))
-                entity.set_position({ pos.x, y - p.height / 2.0f - 1 });
-
-            if (p.check_collision(bottom))
-                entity.set_position({ pos.x, y + height + p.height / 2.0f + 1 });
+            resolve_collision_rects(gfx::Rect{ x, y, width, height }, entity, dt);
 
         }
     }

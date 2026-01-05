@@ -61,6 +61,7 @@ public:
         handle_inputs(dt);
 
         m_map.resolve_collisions(m_rd.get_window(), m_entities, dt);
+        m_map.resolve_collisions_entities(m_enemy, m_player, dt);
     }
 
 private:

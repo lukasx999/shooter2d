@@ -16,8 +16,6 @@
 
 #include "GameObject.h"
 #include "Entity.h"
-#include "Emitter.h"
-#include "misc.h"
 
 class Map : public GameObject {
     tmx::Map m_map;
@@ -36,6 +34,12 @@ public:
     void update([[maybe_unused]] double dt) override { }
     void draw(gfx::Renderer& rd) const override;
     void resolve_collisions(const gfx::Window& window, std::span<std::reference_wrapper<Entity>> entities, double dt);
+
+    // TODO: move out of this class
+    void resolve_collisions_entities(Entity& e1, const Entity& e2, double dt) {
+        gfx::Rect p = e2.get_hitbox();
+        resolve_collision_rects(p, e1, dt);
+    }
 
 private:
     // get the scaling factor so the map fits the window
@@ -71,6 +75,63 @@ private:
     [[nodiscard]] static constexpr gfx::Color tmx_color_to_gfx_color(tmx::Colour color) {
         // HACK: use a cleaner approach
         return *reinterpret_cast<gfx::Color*>(&color);
+    }
+
+    static void resolve_collision_rects(gfx::Rect b, Entity& entity, double dt) {
+
+        // subtracted from the height of the collision hitbox, otherwise
+        // the player would clip through the tile and trigger a wrong collision
+        // it is set to the amount of pixels the player can move at the current frame
+        float diff = entity.get_movement_speed() * dt;
+
+        // width of the collision hitbox
+        float collision_size = 1;
+
+        // add a tiny collision rectangle for each side of the tile so we
+        // know which tile was hit
+        gfx::Rect left {
+            b.x - collision_size,
+            b.y + diff,
+            collision_size,
+            b.height - diff * 2,
+        };
+
+        gfx::Rect right {
+            static_cast<float>(b.x) + b.width,
+            b.y + diff,
+            collision_size,
+            b.height - diff * 2,
+        };
+
+        gfx::Rect top {
+            b.x + diff,
+            b.y - collision_size,
+            b.width - diff * 2,
+            collision_size,
+        };
+
+        gfx::Rect bottom {
+            b.x + diff,
+            static_cast<float>(b.y) + b.height,
+            b.width - diff * 2,
+            collision_size,
+        };
+
+        gfx::Vec pos = entity.get_position();
+
+        auto a = entity.get_hitbox();
+
+        if (a.check_collision(left))
+            entity.set_position({ b.x - a.width / 2.0f - 1, pos.y });
+
+        if (a.check_collision(right))
+            entity.set_position({ b.x + b.width + a.width / 2.0f + 1, pos.y });
+
+        if (a.check_collision(top))
+            entity.set_position({ pos.x, b.y - a.height / 2.0f - 1 });
+
+        if (a.check_collision(bottom))
+            entity.set_position({ pos.x, b.y + b.height + a.height / 2.0f + 1 });
     }
 
 };
