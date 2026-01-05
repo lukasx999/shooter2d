@@ -3,7 +3,6 @@
 #include <gfx.h>
 
 #include "GameObject.h"
-#include "IListener.h"
 #include "misc.h"
 
 enum class Direction { North, East, South, West };
@@ -24,7 +23,7 @@ protected:
     bool m_idle_lock = false;
     bool m_is_holding_walk_button = false;
 
-    bool m_first_iteration = true;
+    bool m_is_first_iteration = true;
 
 public:
     enum class State { Idle, Walking, Attacking };

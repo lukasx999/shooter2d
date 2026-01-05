@@ -54,9 +54,9 @@ void Entity::walk(Direction direction, double dt) {
 
 void Entity::update([[maybe_unused]] double dt) {
 
-    if (m_first_iteration) {
+    if (m_is_first_iteration) {
         on_state_change(State::Idle);
-        m_first_iteration = false;
+        m_is_first_iteration = false;
     }
 
     switch (m_state) {
