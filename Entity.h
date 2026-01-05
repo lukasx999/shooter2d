@@ -5,7 +5,16 @@
 #include "GameObject.h"
 #include "misc.h"
 
-enum class Direction { North, East, South, West };
+enum class Direction {
+    North,
+    NorthEast,
+    East,
+    SouthEast,
+    South,
+    SouthWest,
+    West,
+    NorthWest,
+};
 
 class Entity : public GameObject {
 protected:
@@ -21,7 +30,6 @@ protected:
 
     bool m_is_idle = false;
     bool m_idle_lock = false;
-    bool m_is_holding_walk_button = false;
 
     bool m_is_first_iteration = true;
 
@@ -82,6 +90,10 @@ struct std::formatter<Direction> : std::formatter<std::string> {
                 case East:  return STRINGIFY(East);
                 case South: return STRINGIFY(South);
                 case West:  return STRINGIFY(West);
+                case NorthEast: return STRINGIFY(NorthEast);
+                case SouthEast: return STRINGIFY(SouthEast);
+                case SouthWest: return STRINGIFY(SouthWest);
+                case NorthWest: return STRINGIFY(NorthWest);
             }
         }();
 

@@ -26,9 +26,7 @@ void Entity::walk(Direction direction, double dt) {
         m_idle_lock = false;
 
         bool direction_has_changed = direction != m_direction;
-        // m_is_holding_walk_button prevents conflicting on_direction_change() calls
-        // when multiple buttons are pressed at the same time
-        if (direction_has_changed && !m_is_holding_walk_button)
+        if (direction_has_changed)
             on_direction_change(direction);
 
         m_direction = direction;
@@ -38,17 +36,48 @@ void Entity::walk(Direction direction, double dt) {
             on_state_change(State::Walking);
 
         m_state = State::Walking;
-        m_is_holding_walk_button = true;
     }
 
     float step = m_movement_speed * dt;
 
     switch (direction) {
         using enum Direction;
-        case North: m_position.y -= step; break;
-        case East:  m_position.x += step; break;
-        case South: m_position.y += step; break;
-        case West:  m_position.x -= step; break;
+
+        case North:
+            m_position.y -= step;
+            break;
+
+        case East:
+            m_position.x += step;
+            break;
+
+        case South:
+            m_position.y += step;
+            break;
+
+        case West:
+            m_position.x -= step;
+            break;
+
+        case NorthEast:
+            m_position.y -= step;
+            m_position.x += step;
+            break;
+
+        case SouthEast:
+            m_position.x += step;
+            m_position.y += step;
+            break;
+
+        case SouthWest:
+            m_position.x -= step;
+            m_position.y += step;
+            break;
+
+        case NorthWest:
+            m_position.x -= step;
+            m_position.y -= step;
+            break;
     }
 }
 
@@ -82,7 +111,6 @@ void Entity::update([[maybe_unused]] double dt) {
             }
 
             m_is_idle = true;
-            m_is_holding_walk_button = false;
             break;
     }
 }

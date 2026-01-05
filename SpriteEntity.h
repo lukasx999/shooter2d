@@ -17,7 +17,9 @@ public:
 
         auto& sprite = get_current_sprite(m_direction, m_state);
 
-        if (m_direction == Direction::West)
+        if (m_direction == Direction::West ||
+            m_direction == Direction::NorthWest ||
+            m_direction == Direction::SouthWest)
             sprite.draw_mirrored(rd, get_hitbox());
         else
             sprite.draw(rd, get_hitbox());

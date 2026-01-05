@@ -71,23 +71,41 @@ private:
         using enum Direction;
 
         // TODO: use the event system for this
-        if (window.get_key_state(gfx::Key::W).pressed())
-            m_player.walk(North, dt);
 
-        if (window.get_key_state(gfx::Key::S).pressed())
-            m_player.walk(South, dt);
+        bool up = window.get_key_state(gfx::Key::W).pressed();
+        bool right = window.get_key_state(gfx::Key::D).pressed();
+        bool down = window.get_key_state(gfx::Key::S).pressed();
+        bool left = window.get_key_state(gfx::Key::A).pressed();
 
-        if (window.get_key_state(gfx::Key::D).pressed())
-            m_player.walk(East, dt);
+        auto direction = input_to_direction(up, right, left, down);
 
-        if (window.get_key_state(gfx::Key::A).pressed())
-            m_player.walk(West, dt);
+        if (direction)
+            m_player.walk(*direction, dt);
+
 
         if (window.get_key_state(gfx::Key::J).pressed())
             m_player.attack();
 
         if (window.get_key_state(gfx::Key::Escape).pressed())
             window.close();
+    }
+
+    [[nodiscard]] static constexpr auto
+    input_to_direction(bool up, bool right, bool left, bool down) -> std::optional<Direction> {
+        using enum Direction;
+
+        // TODO: how to handle multiple keys pressed at the same time
+
+        if (up && right) return NorthEast;
+        if (up && left) return NorthWest;
+        if (down && right) return SouthEast;
+        if (down && left) return SouthWest;
+        if (up) return North;
+        if (down) return South;
+        if (right) return East;
+        if (left) return West;
+
+        return {};
     }
 
 };
