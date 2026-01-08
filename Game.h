@@ -85,19 +85,51 @@ private:
         using enum Direction;
 
         auto& window = m_rd.get_window();
-        bool up = window.get_key_state(gfx::Key::W).pressed();
+        bool up    = window.get_key_state(gfx::Key::W).pressed();
         bool right = window.get_key_state(gfx::Key::D).pressed();
-        bool down = window.get_key_state(gfx::Key::S).pressed();
-        bool left = window.get_key_state(gfx::Key::A).pressed();
+        bool down  = window.get_key_state(gfx::Key::S).pressed();
+        bool left  = window.get_key_state(gfx::Key::A).pressed();
 
-        if (up && right) m_player.walk(NorthEast, dt);
-        if (up && left) m_player.walk(NorthWest, dt);
-        if (down && right) m_player.walk(SouthEast, dt);
-        if (down && left) m_player.walk(SouthWest, dt);
-        if (up) m_player.walk(North, dt);
-        if (down) m_player.walk(South, dt);
-        if (right) m_player.walk(East, dt);
-        if (left) m_player.walk(West, dt);
+        if (up && right) {
+            m_player.walk(NorthEast, dt);
+            return;
+        }
+
+        if (up && left) {
+            m_player.walk(NorthWest, dt);
+            return;
+        }
+
+        if (down && right) {
+            m_player.walk(SouthEast, dt);
+            return;
+        }
+
+        if (down && left) {
+            m_player.walk(SouthWest, dt);
+            return;
+        }
+
+        if (up) {
+            m_player.walk(North, dt);
+            return;
+        }
+
+        if (down) {
+            m_player.walk(South, dt);
+            return;
+        }
+
+        if (right) {
+            m_player.walk(East, dt);
+            return;
+        }
+
+        if (left) {
+            m_player.walk(West, dt);
+            return;
+        }
+
     }
 
 };
