@@ -18,25 +18,22 @@ gfx::Rect Entity::get_hitbox() const {
 
 void Entity::walk(Direction direction, double dt) {
 
-    // just update the position when attacking while walking, so we dont
-    // show the walking animation
-    if (m_state != State::Attacking) {
+    if (m_state == State::Attacking) return;
 
-        m_is_idle = false;
-        m_idle_lock = false;
+    m_is_idle = false;
+    m_idle_lock = false;
 
-        bool direction_has_changed = direction != m_direction;
-        if (direction_has_changed)
-            on_direction_change(direction);
+    bool direction_has_changed = direction != m_direction;
+    if (direction_has_changed)
+        on_direction_change(direction);
 
-        m_direction = direction;
+    m_direction = direction;
 
-        bool state_has_changed = m_state != State::Walking;
-        if (state_has_changed)
-            on_state_change(State::Walking);
+    bool state_has_changed = m_state != State::Walking;
+    if (state_has_changed)
+        on_state_change(State::Walking);
 
-        m_state = State::Walking;
-    }
+    m_state = State::Walking;
 
     float step = m_movement_speed * dt;
 
