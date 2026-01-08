@@ -70,20 +70,9 @@ private:
     void handle_inputs(double dt) {
         auto& window = m_rd.get_window();
 
-        using enum Direction;
-
         // TODO: use the event system for this
 
-        bool up = window.get_key_state(gfx::Key::W).pressed();
-        bool right = window.get_key_state(gfx::Key::D).pressed();
-        bool down = window.get_key_state(gfx::Key::S).pressed();
-        bool left = window.get_key_state(gfx::Key::A).pressed();
-
-        auto direction = input_to_direction(up, right, left, down);
-
-        if (direction)
-            m_player.walk(*direction, dt);
-
+        handle_player_controls(dt);
 
         if (window.get_key_state(gfx::Key::J).pressed())
             m_player.attack();
@@ -92,22 +81,23 @@ private:
             window.close();
     }
 
-    [[nodiscard]] static constexpr auto
-    input_to_direction(bool up, bool right, bool left, bool down) -> std::optional<Direction> {
+    void handle_player_controls(double dt) {
         using enum Direction;
 
-        // TODO: how to handle multiple keys pressed at the same time
+        auto& window = m_rd.get_window();
+        bool up = window.get_key_state(gfx::Key::W).pressed();
+        bool right = window.get_key_state(gfx::Key::D).pressed();
+        bool down = window.get_key_state(gfx::Key::S).pressed();
+        bool left = window.get_key_state(gfx::Key::A).pressed();
 
-        if (up && right) return NorthEast;
-        if (up && left) return NorthWest;
-        if (down && right) return SouthEast;
-        if (down && left) return SouthWest;
-        if (up) return North;
-        if (down) return South;
-        if (right) return East;
-        if (left) return West;
-
-        return {};
+        if (up && right) m_player.walk(NorthEast, dt);
+        if (up && left) m_player.walk(NorthWest, dt);
+        if (down && right) m_player.walk(SouthEast, dt);
+        if (down && left) m_player.walk(SouthWest, dt);
+        if (up) m_player.walk(North, dt);
+        if (down) m_player.walk(South, dt);
+        if (right) m_player.walk(East, dt);
+        if (left) m_player.walk(West, dt);
     }
 
 };
