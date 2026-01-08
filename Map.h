@@ -121,16 +121,16 @@ private:
 
         auto a = entity.get_hitbox();
 
-        if (a.check_collision(left))
+        if (a.check_collision_rect(left))
             entity.set_position({ b.x - a.width / 2.0f - 1, pos.y });
 
-        if (a.check_collision(right))
+        if (a.check_collision_rect(right))
             entity.set_position({ b.x + b.width + a.width / 2.0f + 1, pos.y });
 
-        if (a.check_collision(top))
+        if (a.check_collision_rect(top))
             entity.set_position({ pos.x, b.y - a.height / 2.0f - 1 });
 
-        if (a.check_collision(bottom))
+        if (a.check_collision_rect(bottom))
             entity.set_position({ pos.x, b.y + b.height + a.height / 2.0f + 1 });
     }
 

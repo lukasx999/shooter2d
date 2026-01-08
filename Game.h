@@ -17,6 +17,7 @@ class Game : public GameObject {
     Map m_map;
     Player m_player;
     Enemy m_enemy;
+    gfx::ui::Button m_button { m_rd.get_window(), m_font, "start game", { 0, 0, 500, 100 }, 50 };
 
     std::vector<std::reference_wrapper<GameObject>> m_objects {
         m_map,
@@ -42,20 +43,23 @@ public:
 
     void draw(gfx::Renderer& rd) const override {
 
-        rd.set_camera(m_player.get_position());
-        rd.with_camera([&] {
-            for (auto& obj : m_objects)
-                obj.get().draw(rd);
-        });
+        rd.draw_text_centered(rd.get_window().get_width()/2.0, 0, 50, "epic game", m_font, gfx::Color::white());
 
-        auto text = std::format("Health: {}", m_player.get_health());
-        rd.draw_text(0, 0, 50, text.c_str(), m_font, gfx::Color::white());
-        rd.draw_text(0, 50, 50, std::format("{}", m_player.get_state()), m_font, gfx::Color::white());
-        rd.draw_text(0, 100, 50, std::format("{}", m_player.get_direction()), m_font, gfx::Color::white());
+        m_button.draw(rd);
 
+
+        // rd.set_camera(m_player.get_position());
+        // rd.with_camera([&] {
+        //     for (auto& obj : m_objects)
+        //         obj.get().draw(rd);
+        // });
+        //
+        // draw_ui(rd);
     }
 
     void update(double dt) override {
+
+        m_button.update();
 
         for (auto& obj : m_objects)
             obj.get().update(dt);
@@ -67,6 +71,13 @@ public:
     }
 
 private:
+    void draw_ui(gfx::Renderer& rd) const {
+        auto text = std::format("Health: {}", m_player.get_health());
+        rd.draw_text(0, 0, 50, text.c_str(), m_font, gfx::Color::white());
+        rd.draw_text(0, 50, 50, std::format("{}", m_player.get_state()), m_font, gfx::Color::white());
+        rd.draw_text(0, 100, 50, std::format("{}", m_player.get_direction()), m_font, gfx::Color::white());
+    }
+
     void handle_inputs(double dt) {
         auto& window = m_rd.get_window();
 
