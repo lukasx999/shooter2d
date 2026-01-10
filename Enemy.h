@@ -30,10 +30,6 @@ public:
         , m_target(target)
     { }
 
-    [[nodiscard]] gfx::AnimatedTexture& get_current_sprite(Direction direction, State state) override {
-        return const_cast<gfx::AnimatedTexture&>(static_cast<const Enemy*>(this)->get_current_sprite(direction, state));
-    }
-
     [[nodiscard]] const gfx::AnimatedTexture& get_current_sprite(Direction direction, State state) const override {
 
         switch (state) {

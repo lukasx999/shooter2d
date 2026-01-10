@@ -26,10 +26,6 @@ public:
         , m_texture(gfx::Texture("./assets/Cute_Fantasy_Free/Player/Player.png"))
     { }
 
-    [[nodiscard]] gfx::AnimatedTexture& get_current_sprite(Direction direction, State state) override {
-        return const_cast<gfx::AnimatedTexture&>(static_cast<const Player*>(this)->get_current_sprite(direction, state));
-    }
-
     [[nodiscard]] const gfx::AnimatedTexture& get_current_sprite(Direction direction, State state) const override {
 
         switch (state) {
