@@ -90,10 +90,10 @@ struct std::formatter<Direction> : std::formatter<std::string> {
         auto fmt = [&] {
             switch (direction) {
                 using enum Direction;
-                case North: return STRINGIFY(North);
-                case East:  return STRINGIFY(East);
-                case South: return STRINGIFY(South);
-                case West:  return STRINGIFY(West);
+                case North:     return STRINGIFY(North);
+                case East:      return STRINGIFY(East);
+                case South:     return STRINGIFY(South);
+                case West:      return STRINGIFY(West);
                 case NorthEast: return STRINGIFY(NorthEast);
                 case SouthEast: return STRINGIFY(SouthEast);
                 case SouthWest: return STRINGIFY(SouthWest);
