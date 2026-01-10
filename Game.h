@@ -19,6 +19,11 @@ class Game : public GameObject {
     Enemy m_enemy;
     gfx::ui::Button m_button { m_rd.get_window(), m_font, "start game", { 0, 0, 500, 100 }, 50 };
 
+    enum class State {
+        Titlescreen,
+        Playing,
+    } m_state = State::Playing;
+
     std::vector<std::reference_wrapper<GameObject>> m_objects {
         m_map,
         m_player,
@@ -39,22 +44,23 @@ public:
         , m_enemy(m_rd.get_window(), { m_rd.get_window().get_width() / 2.0f, m_rd.get_window().get_height() / 2.0f }, m_player)
     {
         m_enemy.set_movement_speed(100);
+        m_button.on_press([&] {
+            m_state = State::Playing;
+        });
     }
 
     void draw(gfx::Renderer& rd) const override {
+        switch (m_state) {
+            using enum State;
 
-        rd.draw_text_centered(rd.get_window().get_width()/2.0, 0, 50, "epic game", m_font, gfx::Color::white());
+            case Titlescreen:
+                draw_titlescreen(rd);
+                break;
 
-        m_button.draw(rd);
-
-
-        // rd.set_camera(m_player.get_position());
-        // rd.with_camera([&] {
-        //     for (auto& obj : m_objects)
-        //         obj.get().draw(rd);
-        // });
-        //
-        // draw_ui(rd);
+            case Playing:
+                draw_playing(rd);
+                break;
+        }
     }
 
     void update(double dt) override {
@@ -71,6 +77,22 @@ public:
     }
 
 private:
+    void draw_playing(gfx::Renderer& rd) const {
+
+        rd.set_camera(m_player.get_position());
+        rd.with_camera([&] {
+            for (auto& obj : m_objects)
+            obj.get().draw(rd);
+        });
+
+        draw_ui(rd);
+    }
+
+    void draw_titlescreen(gfx::Renderer& rd) const {
+        rd.draw_text_centered(rd.get_window().get_width()/2.0, 0, 50, "epic game", m_font, gfx::Color::white());
+        m_button.draw(rd);
+    }
+
     void draw_ui(gfx::Renderer& rd) const {
         auto text = std::format("Health: {}", m_player.get_health());
         rd.draw_text(0, 0, 50, text.c_str(), m_font, gfx::Color::white());
