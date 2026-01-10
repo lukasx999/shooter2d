@@ -7,7 +7,7 @@ int main() {
     gfx::Window window(1600, 900, "Game", gfx::WindowFlags::Logging);
     gfx::Renderer rd(window);
 
-    Game game(rd);
+    Game game(window);
 
     rd.draw([&] {
 

@@ -9,7 +9,7 @@
 
 class Game : public GameObject {
 
-    gfx::Renderer& m_rd;
+    gfx::Window& m_window;
     gfx::Font m_font;
 
     GamePlaying m_game_playing;
@@ -21,11 +21,11 @@ class Game : public GameObject {
     } m_state = State::Playing;
 
 public:
-    explicit Game(gfx::Renderer& rd)
-        : m_rd(rd)
-        , m_font(m_rd.load_font("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Regular.ttf"))
-        , m_game_playing(m_rd.get_window(), m_font)
-        , m_game_titlescreen(m_rd.get_window(), m_font)
+    explicit Game(gfx::Window& window)
+        : m_window(window)
+        , m_font(m_window.load_font("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Regular.ttf"))
+        , m_game_playing(m_window, m_font)
+        , m_game_titlescreen(m_window, m_font)
     { }
 
     void draw(gfx::Renderer& rd) const override {
@@ -62,12 +62,11 @@ public:
 
 private:
     void handle_inputs(double dt) {
-        auto& window = m_rd.get_window();
 
         // TODO: use the event system for this
 
-        if (window.get_key_state(gfx::Key::Escape).pressed())
-            window.close();
+        if (m_window.get_key_state(gfx::Key::Escape).pressed())
+            m_window.close();
     }
 
 };
