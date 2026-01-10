@@ -22,9 +22,11 @@ public:
 
         auto& sprite = get_current_sprite(m_direction, m_state);
 
-        if (m_direction == Direction::West ||
+        bool is_facing_left = m_direction == Direction::West ||
             m_direction == Direction::NorthWest ||
-            m_direction == Direction::SouthWest)
+            m_direction == Direction::SouthWest;
+
+        if (is_facing_left)
             sprite.draw_mirrored(rd, get_hitbox());
         else
             sprite.draw(rd, get_hitbox());
