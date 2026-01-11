@@ -2,15 +2,95 @@
 
 #include <chrono>
 
+using namespace std::chrono_literals;
+
 #include <gfx.h>
 #include "GameObject.h"
+#include "misc.h"
+
+namespace interpolators {
+
+[[nodiscard]] inline constexpr float step([[maybe_unused]] float x) {
+    return 1.0f;
+}
+
+[[nodiscard]] inline constexpr float linear(float x) {
+    return x;
+}
+
+[[nodiscard]] inline constexpr float ease_in_quad(float x) {
+    return std::pow(x, 2);
+}
+
+[[nodiscard]] inline constexpr float ease_in_out_quad(float x) {
+    return x < 0.5 ? 2 * x * x : 1 - std::pow(-2 * x + 2, 2) / 2;
+}
+
+[[nodiscard]] inline constexpr float ease_in_cubic(float x) {
+    return std::pow(x, 3);
+}
+
+[[nodiscard]] inline constexpr float ease_out_expo(float x) {
+    return x == 1 ? 1 : 1 - std::pow(2, -10 * x);
+}
+
+[[nodiscard]] inline constexpr float ease_in_out_cubic(float x) {
+    return x < 0.5 ? 4 * std::pow(x, 3) : 1 - std::pow(-2 * x + 2, 3) / 2;
+}
+
+[[nodiscard]] inline constexpr float ease_in_out_back(float x) {
+    float c1 = 1.70158;
+    float c2 = c1 * 1.525;
+
+    return x < 0.5
+    ? (std::pow(2 * x, 2) * ((c2 + 1) * 2 * x - c2)) / 2
+    : (std::pow(2 * x - 2, 2) * ((c2 + 1) * (x * 2 - 2) + c2) + 2) / 2;
+}
+
+[[nodiscard]] inline constexpr float ease_in_out_circ(float x) {
+    return x < 0.5
+    ? (1 - std::sqrt(1 - std::pow(2 * x, 2))) / 2
+    : (std::sqrt(1 - std::pow(-2 * x + 2, 2)) + 1) / 2;
+}
+
+[[nodiscard]] inline constexpr float ease_in_out_quint(float x) {
+    return x < 0.5 ? 16 * std::pow(x, 5) : 1 - std::pow(-2 * x + 2, 5) / 2;
+}
+
+[[nodiscard]] inline constexpr float ease_out_elastic(float x) {
+    float c4 = (2 * M_PI) / 3;
+    return x == 0 ? 0 : x == 1 ? 1 : std::pow(2, -10 * x) * std::sin((x * 10 - 0.75) * c4) + 1;
+}
+
+[[nodiscard]] inline constexpr float ease_in_expo(float x) {
+    return x == 0 ? 0 : std::pow(2, 10 * x - 10);
+}
+
+[[nodiscard]] inline constexpr float ease_out_back(float x) {
+    float c1 = 1.70158;
+    float c3 = c1 + 1;
+    return 1 + c3 * std::pow(x - 1, 3) + c1 * std::pow(x - 1, 2);
+}
+
+[[nodiscard]] inline constexpr float ease_in_out_expo(float x) {
+    return x == 0 ? 0 : x == 1 ? 1
+    : x < 0.5 ? std::pow(2, 20 * x - 10) / 2
+    : (2 - std::pow(2, -20 * x + 10)) / 2;
+}
+
+} // namespace interpolators
 
 template <typename T>
 class Animation {
+
+    using Duration = std::chrono::duration<double>;
+    using InterpolationFn = std::function<float(float)>;
+    const InterpolationFn m_fn = interpolators::ease_in_out_cubic;
+
     T m_start;
     T m_end;
-    double m_duration;
-    double m_start_time = 0.0;
+    Duration m_duration;
+    Duration m_start_time = 0s;
 
     enum class State {
         Idle,
@@ -18,7 +98,7 @@ class Animation {
     } m_state = State::Idle;
 
 public:
-    Animation(T start, T end, double duration)
+    Animation(T start, T end, Duration duration)
         : m_start(start)
         , m_end(end)
         , m_duration(duration)
@@ -30,13 +110,22 @@ public:
     }
 
     void reset() {
-        m_start_time = 0.0;
+        m_start_time = 0s;
         m_state = State::Idle;
     }
 
     [[nodiscard]] bool is_done() const {
-        double diff = get_current_time() - m_start_time;
+        if (m_state == State::Idle) return false;
+        auto diff = get_current_time() - m_start_time;
         return diff >= m_duration;
+    }
+
+    [[nodiscard]] T get_start() const {
+        return m_start;
+    }
+
+    [[nodiscard]] T get_end() const {
+        return m_end;
     }
 
     [[nodiscard]] T get() const {
@@ -45,24 +134,23 @@ public:
                 return m_start;
 
             case State::Running:
-                double diff = get_current_time() - m_start_time;
-
-                if (is_done()) return m_end;
-
-                double normalized = m_duration / diff; // 0..1
-                return lerp(m_start, m_end, normalized);
+                return is_done() ? m_end : get_running();
         }
     }
 
 private:
+    [[nodiscard]] T get_running() const {
+        auto diff = get_current_time() - m_start_time;
+        auto t = diff / m_duration;
+        return lerp(m_start, m_end, m_fn(t));
+    }
+
     [[nodiscard]] static constexpr T lerp(T start, T end, float t) {
         return start + (end-start) * t;
     }
 
-    [[nodiscard]] static double get_current_time() {
-        namespace chrono = std::chrono;
-        auto now = chrono::steady_clock::now().time_since_epoch();
-        return chrono::duration_cast<chrono::milliseconds>(now).count();
+    [[nodiscard]] static Duration get_current_time() {
+        return std::chrono::steady_clock::now().time_since_epoch();
     }
 
 };
@@ -72,7 +160,7 @@ class GameTitlescreen : public IGameObject {
     const gfx::Font& m_font;
 
     gfx::ui::Button m_button { m_window, m_font, "start game", { 0, 0, 500, 100 }, 50 };
-    Animation<int> m_animation{ 0, m_window.get_width(), 5.0 };
+    Animation<int> m_animation{ 0, m_window.get_width(), 5s };
 
 public:
     GameTitlescreen(const gfx::Window& window, const gfx::Font& font)
@@ -87,7 +175,7 @@ public:
 
     void draw(gfx::Renderer& rd) const override {
         rd.draw_text_centered(rd.get_window().get_width()/2.0, 0, 50, "epic game", m_font, gfx::Color::white());
-        rd.draw_rectangle(0, 0, m_animation.get(), 50, gfx::Color::red());
+        rd.draw_rectangle(0, 100, m_animation.get(), 50, gfx::Color::red());
         m_button.draw(rd);
     }
 

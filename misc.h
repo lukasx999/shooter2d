@@ -1,8 +1,11 @@
 #pragma once
 
 #include <format>
+#include <print>
 
 #include <gfx.h>
+
+#define PRINT(value) std::println("{}: {}", #value, (value))
 
 #define STRINGIFY(x) (static_cast<void>(x), #x)
 
