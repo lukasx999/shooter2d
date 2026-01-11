@@ -1,20 +1,19 @@
 #pragma once
 
-#include "ControllableEntity.h"
 #include "Entity.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "GameObject.h"
 #include "Map.h"
 
-class GamePlaying : public GameObject {
+class GamePlaying : public IGameObject {
     const gfx::Window& m_window;
     const gfx::Font& m_font;
     Map m_map;
     Player m_player;
     Enemy m_enemy;
 
-    std::vector<std::reference_wrapper<GameObject>> m_objects {
+    std::vector<std::reference_wrapper<IGameObject>> m_objects {
         m_map,
         m_player,
         m_enemy,
@@ -26,7 +25,7 @@ class GamePlaying : public GameObject {
     };
 
 public:
-    explicit GamePlaying(const gfx::Window& window, const gfx::Font& font)
+    GamePlaying(const gfx::Window& window, const gfx::Font& font)
         : m_window(window)
         , m_font(font)
         , m_map("./assets/map.tmx")

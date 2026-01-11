@@ -9,10 +9,11 @@ inline consteval void check_entity_mixin(const auto& deduced_this) {
     static_assert(std::derived_from<This, Entity>, "this mixin may only be applied to classes derived from Entity");
 }
 
-class ControllableEntity {
+// this mixin should be a friend of the derived class, so it can access all of its
+// private/protected members
+class ControllableEntityMixin {
 public:
     void handle_input(this auto& entity, double dt) {
-
         check_entity_mixin(entity);
 
         using enum Direction;

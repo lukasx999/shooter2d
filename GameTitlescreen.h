@@ -3,7 +3,7 @@
 #include <gfx.h>
 #include "GameObject.h"
 
-class GameTitlescreen : public GameObject {
+class GameTitlescreen : public IGameObject {
     const gfx::Window& m_window;
     const gfx::Font& m_font;
 

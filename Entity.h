@@ -16,7 +16,7 @@ enum class Direction {
     NorthWest,
 };
 
-class Entity : public GameObject {
+class Entity : public IGameObject {
 protected:
     static constexpr int m_max_health = 100;
     float m_movement_speed = 500;
