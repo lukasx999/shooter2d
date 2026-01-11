@@ -61,7 +61,7 @@ public:
     }
 
 private:
-    void handle_inputs(double dt) {
+    void handle_inputs([[maybe_unused]] double dt) {
 
         // TODO: use the event system for this
 

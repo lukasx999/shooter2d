@@ -4,8 +4,14 @@
 
 #include "Player.h"
 #include "SpriteEntity.h"
+#include "ChasingEntityMixin.h"
 
-class Enemy : public SpriteEntity {
+class Enemy
+: public SpriteEntity
+, public ChasingEntityMixin
+{
+    friend ChasingEntityMixin;
+
     static constexpr double m_animation_delay = 0.1;
     static constexpr float m_texture_scale = 5;
     static constexpr int m_spritesheet_cell_size = 32;
@@ -21,13 +27,11 @@ class Enemy : public SpriteEntity {
     gfx::AnimatedTexture m_sprite_walking_north       { m_window, m_spritesheet.get_row(5, 6), m_animation_delay };
     gfx::AnimatedTexture m_sprite_walking_south       { m_window, m_spritesheet.get_row(3, 6), m_animation_delay };
 
-    const Player& m_target;
-
 public:
     Enemy(const gfx::Window& window, gfx::Vec position, const Player& target)
         : SpriteEntity(window, position, m_spritesheet_cell_size * m_texture_scale, m_spritesheet_cell_size * m_texture_scale)
+        , ChasingEntityMixin(target)
         , m_texture(gfx::Texture("./assets/Cute_Fantasy_Free/Enemies/Skeleton.png"))
-        , m_target(target)
     { }
 
     [[nodiscard]] const gfx::AnimatedTexture& get_current_sprite(Direction direction, State state) const override {
@@ -76,32 +80,6 @@ public:
     void update(double dt) override {
         SpriteEntity::update(dt);
         chase_target(dt);
-
-    }
-
-private:
-    void chase_target(double dt) {
-
-        auto diff = m_target.get_position() - get_position();
-        gfx::Vec base(1.0, 0.0);
-        auto angle = gfx::rad_to_deg(diff.angle(base));
-
-        if (m_target.get_position().y > get_position().y)
-            angle = 180 + (180 - angle);
-
-        if (diff.length() >= 100)
-            walk(angle_to_direction(angle), dt);
-
-    }
-
-    [[nodiscard]] constexpr Direction angle_to_direction(int angle) const {
-
-        if (angle >= 45 && angle <= 135) return Direction::North;
-        if (angle >= 135 && angle <= 225) return Direction::West;
-        if (angle >= 225 && angle <= 315) return Direction::South;
-        if (angle >= 315 || angle <= 45) return Direction::East;
-
-        throw std::runtime_error("invalid angle");
     }
 
 };
