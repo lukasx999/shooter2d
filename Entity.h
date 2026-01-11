@@ -22,7 +22,6 @@ protected:
     float m_movement_speed = 500;
     const int m_width;
     const int m_height;
-    const gfx::Window& m_window;
 
     gfx::Vec m_position;
     Direction m_direction = Direction::South;
@@ -40,7 +39,7 @@ protected:
     State m_state = State::Idle;
 
 public:
-    Entity(const gfx::Window& window, gfx::Vec position, int width, int height);
+    Entity(gfx::Vec position, int width, int height);
 
     [[nodiscard]] gfx::Vec get_position() const {
         return m_position;

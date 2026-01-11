@@ -3,7 +3,6 @@
 #include "Entity.h"
 
 class SpriteEntity : public Entity {
-
 private:
     [[nodiscard]] virtual const gfx::AnimatedTexture& get_current_sprite(Direction direction, State state) const = 0;
 
@@ -14,8 +13,8 @@ private:
     }
 
 public:
-    SpriteEntity(const gfx::Window& window, gfx::Vec position, int width, int height)
-    : Entity(window, position, width, height)
+    SpriteEntity(gfx::Vec position, int width, int height)
+        : Entity(position, width, height)
     { }
 
     void draw(gfx::Renderer& rd) const override {

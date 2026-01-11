@@ -14,6 +14,7 @@ class Player
     static constexpr double m_animation_delay = 0.1;
     static constexpr float m_texture_scale = 5;
     static constexpr int m_spritesheet_cell_size = 32;
+    const gfx::Window& m_window;
     const gfx::Texture m_texture;
     gfx::Spritesheet m_spritesheet { m_texture, m_spritesheet_cell_size, m_spritesheet_cell_size };
     gfx::AnimatedTexture m_sprite_attacking_south     { m_window, m_spritesheet.get_row(6, 4), m_animation_delay };
@@ -28,7 +29,8 @@ class Player
 
 public:
     Player(const gfx::Window& window, gfx::Vec position)
-        : SpriteEntity(window, position, m_spritesheet_cell_size * m_texture_scale, m_spritesheet_cell_size * m_texture_scale)
+        : SpriteEntity(position, m_spritesheet_cell_size * m_texture_scale, m_spritesheet_cell_size * m_texture_scale)
+        , m_window(window)
         , m_texture(gfx::Texture("./assets/Cute_Fantasy_Free/Player/Player.png"))
     { }
 
