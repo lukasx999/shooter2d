@@ -38,6 +38,10 @@ public:
         return m_health;
     }
 
+    void set_health(int health) {
+        m_health = health;
+    }
+
     void set_movement_speed(float movement_speed) {
         m_movement_speed = movement_speed;
     }

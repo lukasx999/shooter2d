@@ -18,7 +18,7 @@ class Game : public IGameObject {
     enum class State {
         Titlescreen,
         Playing,
-    } m_state = State::Playing;
+    } m_state = State::Titlescreen;
 
 public:
     explicit Game(gfx::Window& window)
