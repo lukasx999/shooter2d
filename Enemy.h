@@ -4,13 +4,13 @@
 
 #include "Player.h"
 #include "SpriteEntity.h"
-#include "ChasingEntityMixin.h"
+#include "TrackingEntity.h"
 
 class Enemy
 : public SpriteEntity
-, public ChasingEntityMixin
+, public TrackingEntity
 {
-    friend ChasingEntityMixin;
+    friend TrackingEntity;
 
     static constexpr double m_animation_delay = 0.1;
     static constexpr float m_texture_scale = 5;
@@ -30,7 +30,7 @@ class Enemy
 public:
     Enemy(const gfx::Window& window, gfx::Vec position, const Player& target)
         : SpriteEntity(window, position, m_spritesheet_cell_size * m_texture_scale, m_spritesheet_cell_size * m_texture_scale)
-        , ChasingEntityMixin(target)
+        , TrackingEntity(target)
         , m_texture(gfx::Texture("./assets/Cute_Fantasy_Free/Enemies/Skeleton.png"))
     { }
 
@@ -79,7 +79,7 @@ public:
 
     void update(double dt) override {
         SpriteEntity::update(dt);
-        chase_target(dt);
+        track_target(dt);
     }
 
 };

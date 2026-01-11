@@ -6,7 +6,7 @@
 
 // this mixin should be a friend of the derived class, so it can access all of its
 // private/protected members
-class ControllableEntityMixin {
+class ControllableEntity {
 public:
     void handle_input(this auto& entity, double dt) {
         check_entity_mixin(entity);

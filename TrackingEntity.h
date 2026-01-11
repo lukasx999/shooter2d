@@ -3,14 +3,14 @@
 #include "mixins.h"
 #include "Player.h"
 
-class ChasingEntityMixin {
+class TrackingEntity {
     // [[maybe_unused]], because the compiler is confused
     [[maybe_unused]] const Player& m_target;
 
 public:
-    explicit ChasingEntityMixin(const Player& target) : m_target(target) { }
+    explicit TrackingEntity(const Player& target) : m_target(target) { }
 
-    void chase_target(this auto& entity, double dt) {
+    void track_target(this auto& entity, double dt) {
         check_entity_mixin(entity);
 
         auto diff = entity.m_target.get_position() - entity.get_position();

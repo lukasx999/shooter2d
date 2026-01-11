@@ -3,13 +3,13 @@
 #include <gfx.h>
 
 #include "SpriteEntity.h"
-#include "ControllableEntityMixin.h"
+#include "ControllableEntity.h"
 
 class Player
 : public SpriteEntity
-, public ControllableEntityMixin
+, public ControllableEntity
 {
-    friend ControllableEntityMixin;
+    friend ControllableEntity;
 
     static constexpr double m_animation_delay = 0.1;
     static constexpr float m_texture_scale = 5;
