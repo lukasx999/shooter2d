@@ -3,8 +3,11 @@
 #include <gfx.h>
 
 #include "SpriteEntity.h"
+#include "ControllableEntity.h"
 
-class Player : public SpriteEntity {
+class Player : public SpriteEntity, public ControllableEntity {
+    friend ControllableEntity;
+
     static constexpr double m_animation_delay = 0.1;
     static constexpr float m_texture_scale = 5;
     static constexpr int m_spritesheet_cell_size = 32;
@@ -25,6 +28,11 @@ public:
         : SpriteEntity(window, position, m_spritesheet_cell_size * m_texture_scale, m_spritesheet_cell_size * m_texture_scale)
         , m_texture(gfx::Texture("./assets/Cute_Fantasy_Free/Player/Player.png"))
     { }
+
+    void update(double dt) override {
+        SpriteEntity::update(dt);
+        handle_input(dt);
+    }
 
     [[nodiscard]] const gfx::AnimatedTexture& get_current_sprite(Direction direction, State state) const override {
 
