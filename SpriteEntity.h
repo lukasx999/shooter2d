@@ -3,15 +3,6 @@
 #include "Entity.h"
 
 class SpriteEntity : public Entity {
-private:
-    [[nodiscard]] virtual const gfx::AnimatedTexture& get_current_sprite(Direction direction, State state) const = 0;
-
-    [[nodiscard]] gfx::AnimatedTexture& get_current_sprite(Direction direction, State state) {
-        const auto* const_this = static_cast<const SpriteEntity*>(this);
-        const auto& sprite = const_this->get_current_sprite(direction, state);
-        return const_cast<gfx::AnimatedTexture&>(sprite);
-    }
-
 public:
     SpriteEntity(gfx::Vec position, int width, int height)
         : Entity(position, width, height)
@@ -45,8 +36,16 @@ public:
     }
 
     bool is_attack_done() const override {
-        auto& sprite = get_current_sprite(m_direction, m_state);
-        return sprite.is_done();
+        return get_current_sprite(m_direction, m_state).is_done();
+    }
+
+private:
+    [[nodiscard]] virtual const gfx::AnimatedTexture& get_current_sprite(Direction direction, State state) const = 0;
+
+    [[nodiscard]] gfx::AnimatedTexture& get_current_sprite(Direction direction, State state) {
+        const auto* const_this = static_cast<const SpriteEntity*>(this);
+        const auto& sprite = const_this->get_current_sprite(direction, state);
+        return const_cast<gfx::AnimatedTexture&>(sprite);
     }
 
 };

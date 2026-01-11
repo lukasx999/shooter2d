@@ -12,10 +12,12 @@ class Enemy
 {
     friend TrackingEntity;
 
+    const gfx::Window& m_window;
+
     static constexpr double m_animation_delay = 0.1;
     static constexpr float m_texture_scale = 5;
     static constexpr int m_spritesheet_cell_size = 32;
-    const gfx::Window& m_window;
+
     const gfx::Texture m_texture;
     gfx::Spritesheet m_spritesheet { m_texture, m_spritesheet_cell_size, m_spritesheet_cell_size };
     gfx::AnimatedTexture m_sprite_attacking_south     { m_window, m_spritesheet.get_row(6, 4), m_animation_delay };
