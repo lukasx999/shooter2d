@@ -6,7 +6,7 @@
 
 using namespace std::chrono_literals;
 
-class GameTitlescreen : public IGameObject {
+class GameTitlescreen : public GameObject {
     const gfx::Window& m_window;
     const gfx::Font& m_font;
 

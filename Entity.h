@@ -5,7 +5,7 @@
 #include "GameObject.h"
 #include "misc.h"
 
-class Entity : public IGameObject {
+class Entity : public GameObject {
 protected:
     const int m_width;
     const int m_height;
@@ -36,6 +36,10 @@ public:
 
     [[nodiscard]] int get_health() const {
         return m_health;
+    }
+
+    [[nodiscard]] int get_max_health() const {
+        return m_max_health;
     }
 
     void set_health(int health) {

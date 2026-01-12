@@ -1,22 +1,27 @@
 #pragma once
 
+#include <ranges>
+
 #include "Entity.h"
+#include "HealthPickup.h"
 #include "Player.h"
 #include "Enemy.h"
 #include "GameObject.h"
 #include "Map.h"
 
-class GamePlaying : public IGameObject {
+class GamePlaying : public GameObject {
     const gfx::Window& m_window;
     const gfx::Font& m_font;
     Map m_map;
     Player m_player;
     Enemy m_enemy;
+    HealthPickup m_health_pickup{10};
 
-    std::vector<std::reference_wrapper<IGameObject>> m_objects {
+    std::vector<std::reference_wrapper<GameObject>> m_objects {
         m_map,
         m_player,
         m_enemy,
+        m_health_pickup,
     };
 
     std::vector<std::reference_wrapper<Entity>> m_entities {
@@ -34,6 +39,15 @@ public:
     {
 
         m_enemy.set_movement_speed(100);
+        m_player.set_health(m_player.get_max_health() / 2);
+
+        m_health_pickup.on_pickup([&] {
+            auto it = std::ranges::find_if(m_objects, [&](auto& object) {
+                return &object.get() == &m_health_pickup;
+            });
+            assert(it != m_objects.end());
+            m_objects.erase(it);
+        });
     }
 
     void draw(gfx::Renderer& rd) const override {
@@ -59,6 +73,10 @@ public:
             m_map.resolve_collisions(m_window, entity, dt);
 
         m_map.resolve_collisions_entities(m_enemy, m_player, dt);
+
+        if (!m_health_pickup.is_consumed())
+            m_health_pickup.check_collision_player(m_player);
+
     }
 
 private:

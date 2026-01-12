@@ -2,9 +2,9 @@
 
 #include <gfx.h>
 
-class IGameObject {
+class GameObject {
 public:
-    virtual ~IGameObject() = default;
+    virtual ~GameObject() = default;
     virtual void update(double dt) = 0;
     virtual void draw(gfx::Renderer& rd) const = 0;
 };

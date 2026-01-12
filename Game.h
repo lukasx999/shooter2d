@@ -7,7 +7,7 @@
 #include "GamePlaying.h"
 #include "GameTitlescreen.h"
 
-class Game : public IGameObject {
+class Game : public GameObject {
 
     gfx::Window& m_window;
     gfx::Font m_font;

@@ -17,7 +17,7 @@
 #include "GameObject.h"
 #include "Entity.h"
 
-class Map : public IGameObject {
+class Map : public GameObject {
     tmx::Map m_map;
     std::unordered_map<const tmx::Tileset*, gfx::Texture> m_textures;
 
