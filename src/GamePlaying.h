@@ -16,7 +16,7 @@ class GamePlaying : public GameObject {
     Map m_map;
     Player m_player;
     Enemy m_enemy;
-    HealthPickup m_health_pickup{10};
+    HealthPickup m_health_pickup { {100, 100}, 10 };
 
     std::vector<std::reference_wrapper<GameObject>> m_objects {
         m_map,

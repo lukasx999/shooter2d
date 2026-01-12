@@ -2,12 +2,11 @@
 
 #include <gfx.h>
 
-#include "GameObject.h"
+#include "PhysicalObject.h"
 #include "Player.h"
 
-class HealthPickup : public GameObject {
+class HealthPickup : public PhysicalObject {
     // TODO: factor position out into something like PhysicalObject
-    gfx::Vec m_position { 100, 100 };
     static constexpr float m_radius = 50.0f;
     const int m_heal_amount;
     bool m_is_consumed = false;
@@ -16,8 +15,9 @@ class HealthPickup : public GameObject {
     PickupHandler m_pickup_handler = [] { };
 
 public:
-    explicit HealthPickup(int heal_amount)
-    : m_heal_amount(heal_amount)
+    HealthPickup(gfx::Vec position, int heal_amount)
+        : PhysicalObject(position)
+        , m_heal_amount(heal_amount)
     { }
 
     void draw(gfx::Renderer& rd) const override {

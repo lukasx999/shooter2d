@@ -2,16 +2,15 @@
 
 #include <gfx.h>
 
-#include "GameObject.h"
+#include "PhysicalObject.h"
 #include "misc.h"
 
-class Entity : public GameObject {
+class Entity : public PhysicalObject {
 protected:
     const int m_width;
     const int m_height;
 
     float m_movement_speed = 500;
-    gfx::Vec m_position;
     Direction m_direction = Direction::South;
 
     static constexpr int m_max_health = 100;
@@ -31,10 +30,6 @@ protected:
 
 public:
     Entity(gfx::Vec position, int width, int height);
-
-    [[nodiscard]] gfx::Vec get_position() const {
-        return m_position;
-    }
 
     [[nodiscard]] int get_health() const {
         return m_health;
@@ -68,10 +63,6 @@ public:
 
     void show_hitbox() {
         m_show_hitbox = true;
-    }
-
-    void set_position(gfx::Vec position) {
-        m_position = position;
     }
 
     void update(double dt) override;

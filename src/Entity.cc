@@ -1,9 +1,9 @@
 #include "Entity.h"
 
 Entity::Entity(gfx::Vec position, int width, int height)
-    : m_width(width)
+    : PhysicalObject(position)
+    , m_width(width)
     , m_height(height)
-    , m_position(position)
 { }
 
 gfx::Rect Entity::get_hitbox() const {
