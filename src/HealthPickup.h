@@ -6,7 +6,6 @@
 #include "Player.h"
 
 class HealthPickup : public PhysicalObject {
-    // TODO: factor position out into something like PhysicalObject
     static constexpr float m_radius = 50.0f;
     const int m_heal_amount;
     bool m_is_consumed = false;
