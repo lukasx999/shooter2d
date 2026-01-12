@@ -33,6 +33,8 @@ FetchContent_MakeAvailable(Tmxlite)
 # link_directories(./build/_deps/tmxlite-build/)
 # include_directories(./build/_deps/tmxlite-src/tmxlite/include/)
 
-add_executable(game main.cc Entity.cc Map.cc)
+add_executable(game)
 target_compile_options(game PRIVATE -Wall -Wextra -O3 -ggdb)
 target_link_libraries(game PRIVATE gfx tmxlite)
+
+add_subdirectory(src)
