@@ -55,7 +55,9 @@ public:
         if (m_window.get_key_state(gfx::Key::J).pressed())
             m_player.attack();
 
-        m_map.resolve_collisions(m_window, m_entities, dt);
+        for (auto& entity : m_entities)
+            m_map.resolve_collisions(m_window, entity, dt);
+
         m_map.resolve_collisions_entities(m_enemy, m_player, dt);
     }
 

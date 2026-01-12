@@ -42,7 +42,7 @@ void Map::draw(gfx::Renderer& rd) const {
     });
 }
 
-void Map::resolve_collisions(const gfx::Window& window, std::span<std::reference_wrapper<Entity>> entities, double dt) {
+void Map::resolve_collisions(const gfx::Window& window, Entity& entity, double dt) {
 
     // TODO: parse all object layers
     auto& obj_layer = m_map.getLayers()[1];
@@ -51,20 +51,16 @@ void Map::resolve_collisions(const gfx::Window& window, std::span<std::reference
 
     auto factor = get_map_scaling_factor(window);
 
-    for (auto& e : entities) {
-        Entity& entity = e.get();
+    for (auto& object : objects) {
+        auto aabb = object.getAABB();
 
-        for (auto& object : objects) {
-            auto aabb = object.getAABB();
+        float x = aabb.left * factor.x;
+        float y = aabb.top * factor.y;
+        float width = aabb.width * factor.x;
+        float height = aabb.height * factor.y;
 
-            float x = aabb.left * factor.x;
-            float y = aabb.top * factor.y;
-            float width = aabb.width * factor.x;
-            float height = aabb.height * factor.y;
+        resolve_collision_rects(gfx::Rect{ x, y, width, height }, entity, dt);
 
-            resolve_collision_rects(gfx::Rect{ x, y, width, height }, entity, dt);
-
-        }
     }
 
 }

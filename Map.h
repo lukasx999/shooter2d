@@ -33,7 +33,7 @@ public:
 
     void update([[maybe_unused]] double dt) override { }
     void draw(gfx::Renderer& rd) const override;
-    void resolve_collisions(const gfx::Window& window, std::span<std::reference_wrapper<Entity>> entities, double dt);
+    void resolve_collisions(const gfx::Window& window, Entity& entity, double dt);
 
     // TODO: move out of this class
     void resolve_collisions_entities(Entity& e1, const Entity& e2, double dt) {
