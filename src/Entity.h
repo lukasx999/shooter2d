@@ -7,9 +7,6 @@
 
 class Entity : public PhysicalObject {
 protected:
-    const int m_width;
-    const int m_height;
-
     float m_movement_speed = 500;
     Direction m_direction = Direction::South;
 
@@ -19,8 +16,6 @@ protected:
     bool m_is_idle = false;
     bool m_idle_lock = false;
     bool m_is_first_iteration = true;
-
-    bool m_show_hitbox = true;
 
 public:
     enum class State { Idle, Walking, Attacking };
@@ -51,8 +46,6 @@ public:
         return m_state;
     }
 
-    [[nodiscard]] gfx::Rect get_hitbox() const;
-
     void set_health(int health) {
         m_health = health;
     }
@@ -61,12 +54,7 @@ public:
         m_movement_speed = movement_speed;
     }
 
-    void show_hitbox() {
-        m_show_hitbox = true;
-    }
-
     void update(double dt) override;
-    void draw(gfx::Renderer& rd) const override;
 
     void walk(Direction dir, double dt);
     void attack();

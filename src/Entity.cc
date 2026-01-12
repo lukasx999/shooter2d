@@ -1,19 +1,8 @@
 #include "Entity.h"
 
 Entity::Entity(gfx::Vec position, int width, int height)
-    : PhysicalObject(position)
-    , m_width(width)
-    , m_height(height)
+: PhysicalObject(position, width, height)
 { }
-
-gfx::Rect Entity::get_hitbox() const {
-    return {
-        m_position.x - m_width / 2.0f,
-        m_position.y - m_height / 2.0f,
-        static_cast<float>(m_width),
-        static_cast<float>(m_height),
-    };
-}
 
 void Entity::walk(Direction direction, double dt) {
 
@@ -109,11 +98,6 @@ void Entity::update([[maybe_unused]] double dt) {
             m_is_idle = true;
             break;
     }
-}
-
-void Entity::draw(gfx::Renderer& rd) const {
-    if (m_show_hitbox)
-        rd.draw_rectangle(get_hitbox(), gfx::Color::red().set_alpha(128));
 }
 
 void Entity::attack() {

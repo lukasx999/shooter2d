@@ -16,11 +16,12 @@ class HealthPickup : public PhysicalObject {
 
 public:
     HealthPickup(gfx::Vec position, int heal_amount)
-        : PhysicalObject(position)
+        : PhysicalObject(position, 100, 100)
         , m_heal_amount(heal_amount)
     { }
 
     void draw(gfx::Renderer& rd) const override {
+        PhysicalObject::draw(rd);
         rd.draw_circle(m_position, m_radius, gfx::Color::green());
     }
 
