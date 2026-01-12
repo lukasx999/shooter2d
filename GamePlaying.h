@@ -49,7 +49,6 @@ public:
 
     void update(double dt) override {
 
-
         for (auto& obj : m_objects)
             obj.get().update(dt);
 
