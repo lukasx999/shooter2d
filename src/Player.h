@@ -4,6 +4,7 @@
 
 #include "SpriteEntity.h"
 #include "ControllableEntity.h"
+#include "misc.h"
 
 class Player
 : public SpriteEntity
@@ -33,7 +34,7 @@ public:
     Player(const gfx::Window& window, gfx::Vec position)
         : SpriteEntity(position, m_spritesheet_cell_size * m_texture_scale, m_spritesheet_cell_size * m_texture_scale)
         , m_window(window)
-        , m_texture(gfx::Texture("./assets/Cute_Fantasy_Free/Player/Player.png"))
+        , m_texture(gfx::Texture(RESOURCE_PATH "/Cute_Fantasy_Free/Player/Player.png"))
     { }
 
     void update(double dt) override {

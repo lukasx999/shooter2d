@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "SpriteEntity.h"
 #include "TrackingEntity.h"
+#include "misc.h"
 
 class Enemy
 : public SpriteEntity
@@ -35,7 +36,7 @@ public:
         : SpriteEntity(position, m_spritesheet_cell_size * m_texture_scale, m_spritesheet_cell_size * m_texture_scale)
         , TrackingEntity(target)
         , m_window(window)
-        , m_texture(gfx::Texture("./assets/Cute_Fantasy_Free/Enemies/Skeleton.png"))
+        , m_texture(gfx::Texture(RESOURCE_PATH "/Cute_Fantasy_Free/Enemies/Skeleton.png"))
     { }
 
     [[nodiscard]] const gfx::AnimatedTexture& get_current_sprite(Direction direction, State state) const override {
