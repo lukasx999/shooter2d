@@ -34,7 +34,7 @@ public:
     GamePlaying(const gfx::Window& window, const gfx::Font& font)
         : m_window(window)
         , m_font(font)
-        , m_map(RESOURCE_PATH "/map.tmx")
+        , m_map(ASSETS_PATH "/map.tmx")
         , m_player(m_window, { m_window.get_width() / 2.0f, m_window.get_height() / 2.0f })
         , m_enemy(m_window, { m_window.get_width() / 2.0f, m_window.get_height() / 2.0f }, m_player)
     {

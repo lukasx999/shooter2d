@@ -9,7 +9,7 @@
 
 #define STRINGIFY(x) (static_cast<void>(x), #x)
 
-#define RESOURCE_PATH "./assets"
+#define ASSETS_PATH "./assets"
 
 enum class Direction {
     North,
