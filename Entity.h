@@ -21,6 +21,8 @@ protected:
     bool m_idle_lock = false;
     bool m_is_first_iteration = true;
 
+    bool m_show_hitbox = true;
+
 public:
     enum class State { Idle, Walking, Attacking };
 
@@ -42,14 +44,6 @@ public:
         return m_max_health;
     }
 
-    void set_health(int health) {
-        m_health = health;
-    }
-
-    void set_movement_speed(float movement_speed) {
-        m_movement_speed = movement_speed;
-    }
-
     [[nodiscard]] float get_movement_speed() const {
         return m_movement_speed;
     }
@@ -62,14 +56,27 @@ public:
         return m_state;
     }
 
+    [[nodiscard]] gfx::Rect get_hitbox() const;
+
+    void set_health(int health) {
+        m_health = health;
+    }
+
+    void set_movement_speed(float movement_speed) {
+        m_movement_speed = movement_speed;
+    }
+
+    void show_hitbox() {
+        m_show_hitbox = true;
+    }
+
     void set_position(gfx::Vec position) {
         m_position = position;
     }
 
     void update(double dt) override;
-    void draw([[maybe_unused]] gfx::Renderer& rd) const override { }
+    void draw(gfx::Renderer& rd) const override;
 
-    [[nodiscard]] gfx::Rect get_hitbox() const;
     void walk(Direction dir, double dt);
     void attack();
 

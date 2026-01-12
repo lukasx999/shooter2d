@@ -111,6 +111,11 @@ void Entity::update([[maybe_unused]] double dt) {
     }
 }
 
+void Entity::draw(gfx::Renderer& rd) const {
+    if (m_show_hitbox)
+        rd.draw_rectangle(get_hitbox(), gfx::Color::red().set_alpha(128));
+}
+
 void Entity::attack() {
     if (m_state == State::Attacking) return;
 

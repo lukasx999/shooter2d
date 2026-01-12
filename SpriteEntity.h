@@ -10,6 +10,8 @@ public:
 
     void draw(gfx::Renderer& rd) const override {
 
+        Entity::draw(rd);
+
         auto& sprite = get_current_sprite(m_direction, m_state);
 
         bool is_facing_left = m_direction == Direction::West ||
