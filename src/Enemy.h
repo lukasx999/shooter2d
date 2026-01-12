@@ -39,7 +39,7 @@ public:
         , m_texture(gfx::Texture(ASSETS_PATH "/Cute_Fantasy_Free/Enemies/Skeleton.png"))
     { }
 
-    [[nodiscard]] const gfx::AnimatedTexture& get_current_sprite(Direction direction, State state) const override {
+    [[nodiscard]] const gfx::AnimatedTexture& get_active_sprite(Direction direction, State state) const override {
 
         switch (state) {
             using enum State;

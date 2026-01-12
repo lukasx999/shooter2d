@@ -4,9 +4,11 @@
 
 #include <gfx.h>
 
+#include "GamePaused.h"
 #include "GamePlaying.h"
 #include "GameTitlescreen.h"
 
+// TODO: implement state switching
 class Game : public GameObject {
 
     gfx::Window& m_window;
@@ -14,11 +16,13 @@ class Game : public GameObject {
 
     GamePlaying m_game_playing;
     GameTitlescreen m_game_titlescreen;
+    GamePaused m_game_paused;
 
     enum class State {
         Titlescreen,
         Playing,
-    } m_state = State::Playing;
+        Paused
+    } m_state = State::Paused;
 
 public:
     explicit Game(gfx::Window& window)
@@ -26,6 +30,7 @@ public:
         , m_font(m_window.load_font("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Regular.ttf"))
         , m_game_playing(m_window, m_font)
         , m_game_titlescreen(m_window, m_font)
+        , m_game_paused(m_window, m_font)
     { }
 
     void draw(gfx::Renderer& rd) const override {
@@ -38,6 +43,11 @@ public:
 
             case Playing:
                 m_game_playing.draw(rd);
+                break;
+
+            case Paused:
+                m_game_playing.draw(rd);
+                m_game_paused.draw(rd);
                 break;
         }
     }
@@ -55,6 +65,10 @@ public:
 
             case Playing:
                 m_game_playing.update(dt);
+                break;
+
+            case Paused:
+                m_game_paused.update(dt);
                 break;
         }
 

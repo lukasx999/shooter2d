@@ -42,7 +42,8 @@ public:
         handle_input(dt);
     }
 
-    [[nodiscard]] const gfx::AnimatedTexture& get_current_sprite(Direction direction, State state) const override {
+    [[nodiscard]] const gfx::AnimatedTexture&
+    get_active_sprite(Direction direction, State state) const override {
 
         switch (state) {
             using enum State;
