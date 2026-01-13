@@ -2,17 +2,17 @@
 
 #include <gfx.h>
 
-#include "LayerPlaying.h"
-#include "Layer.h"
+#include "StatePlaying.h"
+#include "GameState.h"
 
-class LayerPaused : public Layer {
+class StatePaused : public GameState {
     const gfx::Window& m_window;
     const gfx::Font& m_font;
 
-    LayerPlaying& m_layer_playing;
+    StatePlaying& m_layer_playing;
 
 public:
-    LayerPaused(const gfx::Window& window, const gfx::Font& font, LayerPlaying& layer_playing)
+    StatePaused(const gfx::Window& window, const gfx::Font& font, StatePlaying& layer_playing)
         : m_window(window)
         , m_font(font)
         , m_layer_playing(layer_playing)

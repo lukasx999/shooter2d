@@ -4,11 +4,11 @@
 
 #include <gfx.h>
 
-#include "Layer.h"
+#include "GameState.h"
 
 using namespace std::chrono_literals;
 
-class LayerTitlescreen : public Layer {
+class StateTitlescreen : public GameState {
     const gfx::Window& m_window;
     const gfx::Font& m_font;
 
@@ -16,7 +16,7 @@ class LayerTitlescreen : public Layer {
     gfx::Animation<int> m_animation { 0, m_window.get_width(), 5s, gfx::interpolators::ease_in_out_circ };
 
 public:
-    LayerTitlescreen(const gfx::Window& window, const gfx::Font& font)
+    StateTitlescreen(const gfx::Window& window, const gfx::Font& font)
         : m_window(window)
         , m_font(font)
     { }

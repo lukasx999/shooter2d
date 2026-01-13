@@ -5,41 +5,41 @@
 #include <gfx.h>
 
 #include "GameObject.h"
-#include "layers/LayerPaused.h"
-#include "layers/LayerPlaying.h"
-#include "layers/LayerTitlescreen.h"
+#include "states/StatePaused.h"
+#include "states/StatePlaying.h"
+#include "states/StateTitlescreen.h"
 
 class Game : public GameObject {
     gfx::Window& m_window;
     gfx::Font m_font;
 
-    LayerTitlescreen m_layer_titlescreen;
-    LayerPlaying m_layer_playing;
-    LayerPaused m_layer_paused;
+    StateTitlescreen m_state_titlescreen;
+    StatePlaying m_state_playing;
+    StatePaused m_state_paused;
 
-    std::reference_wrapper<GameObject> m_active_layer = m_layer_titlescreen;
+    std::reference_wrapper<GameObject> m_active_state = m_state_titlescreen;
 
 public:
     explicit Game(gfx::Window& window)
         : m_window(window)
         , m_font(m_window.load_font("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Regular.ttf"))
-        , m_layer_titlescreen(m_window, m_font)
-        , m_layer_playing(m_window, m_font)
-        , m_layer_paused(m_window, m_font, m_layer_playing)
+        , m_state_titlescreen(m_window, m_font)
+        , m_state_playing(m_window, m_font)
+        , m_state_paused(m_window, m_font, m_state_playing)
     {
         auto thunk = [&](State state) { handle_state_change(state); };
-        m_layer_titlescreen.on_state_change(thunk);
-        m_layer_playing.on_state_change(thunk);
-        m_layer_paused.on_state_change(thunk);
+        m_state_titlescreen.on_state_change(thunk);
+        m_state_playing.on_state_change(thunk);
+        m_state_paused.on_state_change(thunk);
     }
 
     void draw(gfx::Renderer& rd) const override {
-        m_active_layer.get().draw(rd);
+        m_active_state.get().draw(rd);
     }
 
     void update(double dt) override {
         handle_inputs(dt);
-        m_active_layer.get().update(dt);
+        m_active_state.get().update(dt);
     }
 
 private:
@@ -57,15 +57,15 @@ private:
             using enum State;
 
             case Titlescreen:
-                m_active_layer = m_layer_titlescreen;
+                m_active_state = m_state_titlescreen;
                 break;
 
             case Playing:
-                m_active_layer = m_layer_playing;
+                m_active_state = m_state_playing;
                 break;
 
             case Paused:
-                m_active_layer = m_layer_paused;
+                m_active_state = m_state_paused;
                 break;
         }
     }

@@ -7,9 +7,9 @@
 #include "../HealthPickup.h"
 #include "../Map.h"
 #include "../Player.h"
-#include "Layer.h"
+#include "GameState.h"
 
-class LayerPlaying : public Layer {
+class StatePlaying : public GameState {
     const gfx::Window& m_window;
     const gfx::Font& m_font;
     Map m_map;
@@ -30,7 +30,7 @@ class LayerPlaying : public Layer {
     };
 
 public:
-    LayerPlaying(const gfx::Window& window, const gfx::Font& font)
+    StatePlaying(const gfx::Window& window, const gfx::Font& font)
         : m_window(window)
         , m_font(font)
         , m_map(ASSETS_PATH "/map.tmx")

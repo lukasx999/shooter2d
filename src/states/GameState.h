@@ -10,7 +10,7 @@ enum class State {
     Paused,
 };
 
-class Layer : public GameObject {
+class GameState : public GameObject {
 protected:
     using StateChangeFn = std::function<void(State)>;
     StateChangeFn m_on_state_change = [](State) { };
