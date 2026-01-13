@@ -1,16 +1,14 @@
 #pragma once
 
-#include <ranges>
+#include <gfx.h>
 
-#include "Entity.h"
-#include "HealthPickup.h"
-#include "Player.h"
 #include "Enemy.h"
 #include "GameObject.h"
+#include "HealthPickup.h"
 #include "Map.h"
-#include "misc.h"
+#include "Player.h"
 
-class GamePlaying : public GameObject {
+class LayerPlaying : public GameObject {
     const gfx::Window& m_window;
     const gfx::Font& m_font;
     Map m_map;
@@ -31,7 +29,7 @@ class GamePlaying : public GameObject {
     };
 
 public:
-    GamePlaying(const gfx::Window& window, const gfx::Font& font)
+    LayerPlaying(const gfx::Window& window, const gfx::Font& font)
         : m_window(window)
         , m_font(font)
         , m_map(ASSETS_PATH "/map.tmx")

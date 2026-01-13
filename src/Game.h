@@ -4,9 +4,64 @@
 
 #include <gfx.h>
 
-#include "GamePaused.h"
-#include "GamePlaying.h"
-#include "GameTitlescreen.h"
+#include "GameObject.h"
+#include "LayerPlaying.h"
+
+using namespace std::chrono_literals;
+
+class LayerTitlescreen : public GameObject {
+    const gfx::Window& m_window;
+    const gfx::Font& m_font;
+
+    gfx::ui::Button m_button { m_window, m_font, "start game", { 0, 0, 500, 100 }, 50 };
+    gfx::Animation<int> m_animation{ 0, m_window.get_width(), 5s, gfx::interpolators::ease_in_out_circ };
+
+public:
+    LayerTitlescreen(const gfx::Window& window, const gfx::Font& font)
+        : m_window(window)
+        , m_font(font)
+    { }
+
+    void draw(gfx::Renderer& rd) const override {
+
+        rd.draw_text_centered(rd.get_window().get_width()/2.0, 0, 50, "epic game", m_font, gfx::Color::white());
+        rd.draw_rectangle(0, 100, m_animation.get(), 50, gfx::Color::red());
+        m_button.draw(rd);
+    }
+
+    void update([[maybe_unused]] double dt) override {
+        m_button.update();
+
+        if (m_button.is_pressed()) {
+        }
+
+    }
+
+};
+
+class LayerPaused : public GameObject {
+    const gfx::Window& m_window;
+    const gfx::Font& m_font;
+
+    LayerPlaying& m_layer_playing;
+
+public:
+    LayerPaused(const gfx::Window& window, const gfx::Font& font, LayerPlaying& layer_playing)
+        : m_window(window)
+        , m_font(font)
+        , m_layer_playing(layer_playing)
+    { }
+
+    void draw(gfx::Renderer& rd) const override {
+        m_layer_playing.draw(rd);
+
+        rd.draw_rectangle(0, 0, m_window.get_width(), m_window.get_height(), gfx::Color::black().set_alpha(128));
+        rd.draw_text(0, 0, 50, "paused.", m_font, gfx::Color::white());
+    }
+
+    void update([[maybe_unused]] double dt) override { }
+
+};
 
 // TODO: implement state switching
 class Game : public GameObject {
@@ -14,9 +69,11 @@ class Game : public GameObject {
     gfx::Window& m_window;
     gfx::Font m_font;
 
-    GamePlaying m_game_playing;
-    GameTitlescreen m_game_titlescreen;
-    GamePaused m_game_paused;
+    LayerTitlescreen m_layer_titlescreen;
+    LayerPlaying m_layer_playing;
+    LayerPaused m_layer_paused;
+
+    GameObject& m_active_layer = m_layer_titlescreen;
 
     enum class State {
         Titlescreen,
@@ -28,50 +85,18 @@ public:
     explicit Game(gfx::Window& window)
         : m_window(window)
         , m_font(m_window.load_font("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Regular.ttf"))
-        , m_game_playing(m_window, m_font)
-        , m_game_titlescreen(m_window, m_font)
-        , m_game_paused(m_window, m_font)
+        , m_layer_titlescreen(m_window, m_font)
+        , m_layer_playing(m_window, m_font)
+        , m_layer_paused(m_window, m_font, m_layer_playing)
     { }
 
     void draw(gfx::Renderer& rd) const override {
-        switch (m_state) {
-            using enum State;
-
-            case Titlescreen:
-                m_game_titlescreen.draw(rd);
-                break;
-
-            case Playing:
-                m_game_playing.draw(rd);
-                break;
-
-            case Paused:
-                m_game_playing.draw(rd);
-                m_game_paused.draw(rd);
-                break;
-        }
+        m_active_layer.draw(rd);
     }
 
     void update(double dt) override {
-
         handle_inputs(dt);
-
-        switch (m_state) {
-            using enum State;
-
-            case Titlescreen:
-                m_game_titlescreen.update(dt);
-                break;
-
-            case Playing:
-                m_game_playing.update(dt);
-                break;
-
-            case Paused:
-                m_game_paused.update(dt);
-                break;
-        }
-
+        m_active_layer.update(dt);
     }
 
 private:
