@@ -3,3 +3,5 @@ main.cc
 Entity.cc
 Map.cc
 )
+
+add_subdirectory(states)

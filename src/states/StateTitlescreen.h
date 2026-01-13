@@ -16,8 +16,9 @@ class StateTitlescreen : public GameState {
     gfx::Animation<int> m_animation { 0, m_window.get_width(), 5s, gfx::interpolators::ease_in_out_circ };
 
 public:
-    StateTitlescreen(const gfx::Window& window, const gfx::Font& font)
-        : m_window(window)
+    StateTitlescreen(const gfx::Window& window, const gfx::Font& font, GameStates& states)
+        : GameState(states)
+        , m_window(window)
         , m_font(font)
     { }
 
@@ -27,13 +28,7 @@ public:
         m_button.draw(rd);
     }
 
-    void update([[maybe_unused]] double dt) override {
-        m_button.update();
-
-        if (m_button.is_pressed())
-            m_on_state_change(State::Playing);
-
-    }
+    GameState* update([[maybe_unused]] double dt) override;
 
 };
 

@@ -1,23 +1,18 @@
 #pragma once
 
-#include <functional>
+#include <gfx.h>
 
-#include "../GameObject.h"
+struct GameStates;
 
-enum class State {
-    Titlescreen,
-    Playing,
-    Paused,
-};
-
-class GameState : public GameObject {
+class GameState {
 protected:
-    using StateChangeFn = std::function<void(State)>;
-    StateChangeFn m_on_state_change = [](State) { };
+    GameStates& m_states;
 
 public:
-    void on_state_change(StateChangeFn on_state_change) {
-        m_on_state_change = on_state_change;
-    }
+    explicit GameState(GameStates& states) : m_states(states) { }
+
+    virtual ~GameState() = default;
+    virtual void draw(gfx::Renderer& rd) const = 0;
+    [[nodiscard("state change should be handled")]] virtual GameState* update(double dt) = 0;
 
 };

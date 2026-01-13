@@ -30,8 +30,9 @@ class StatePlaying : public GameState {
     };
 
 public:
-    StatePlaying(const gfx::Window& window, const gfx::Font& font)
-        : m_window(window)
+    StatePlaying(const gfx::Window& window, const gfx::Font& font, GameStates& states)
+        : GameState(states)
+        , m_window(window)
         , m_font(font)
         , m_map(ASSETS_PATH "/map.tmx")
         , m_player(m_window, { m_window.get_width() / 2.0f, m_window.get_height() / 2.0f })
@@ -61,26 +62,7 @@ public:
         draw_ui(rd);
     }
 
-    void update(double dt) override {
-
-        for (auto& obj : m_objects)
-            obj.get().update(dt);
-
-        if (m_window.get_key_state(gfx::Key::J).pressed())
-            m_player.attack();
-
-        if (m_window.get_key_state(gfx::Key::P).pressed())
-            m_on_state_change(State::Paused);
-
-        for (auto& entity : m_entities)
-            m_map.resolve_collisions(m_window, entity, dt);
-
-        m_map.resolve_collisions_entities(m_enemy, m_player, dt);
-
-        if (!m_health_pickup.is_consumed())
-            m_health_pickup.check_collision_player(m_player);
-
-    }
+    GameState* update(double dt) override;
 
 private:
     void draw_ui(gfx::Renderer& rd) const {
