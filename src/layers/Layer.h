@@ -2,7 +2,7 @@
 
 #include <functional>
 
-#include "GameObject.h"
+#include "../GameObject.h"
 
 enum class State {
     Titlescreen,

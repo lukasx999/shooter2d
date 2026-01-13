@@ -5,9 +5,9 @@
 #include <gfx.h>
 
 #include "GameObject.h"
-#include "LayerPaused.h"
-#include "LayerPlaying.h"
-#include "LayerTitlescreen.h"
+#include "layers/LayerPaused.h"
+#include "layers/LayerPlaying.h"
+#include "layers/LayerTitlescreen.h"
 
 class Game : public GameObject {
     gfx::Window& m_window;

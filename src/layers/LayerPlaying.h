@@ -2,11 +2,11 @@
 
 #include <gfx.h>
 
-#include "Enemy.h"
-#include "GameObject.h"
-#include "HealthPickup.h"
-#include "Map.h"
-#include "Player.h"
+#include "../Enemy.h"
+#include "../GameObject.h"
+#include "../HealthPickup.h"
+#include "../Map.h"
+#include "../Player.h"
 #include "Layer.h"
 
 class LayerPlaying : public Layer {
