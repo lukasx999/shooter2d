@@ -26,20 +26,14 @@ public:
     }
 
     void update(double dt) override {
-        handle_inputs(dt);
+
+        if (m_window.get_key_state(gfx::Key::Escape).pressed())
+            m_window.close();
+
         GameState* new_state = m_active_state->update(dt);
 
         if (new_state != nullptr)
             m_active_state = new_state;
-    }
-
-private:
-    void handle_inputs([[maybe_unused]] double dt) {
-
-        // TODO: use the event system for this
-
-        if (m_window.get_key_state(gfx::Key::Escape).pressed())
-            m_window.close();
     }
 
 };
