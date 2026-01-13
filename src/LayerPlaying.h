@@ -7,8 +7,9 @@
 #include "HealthPickup.h"
 #include "Map.h"
 #include "Player.h"
+#include "Layer.h"
 
-class LayerPlaying : public GameObject {
+class LayerPlaying : public Layer {
     const gfx::Window& m_window;
     const gfx::Font& m_font;
     Map m_map;
@@ -67,6 +68,9 @@ public:
 
         if (m_window.get_key_state(gfx::Key::J).pressed())
             m_player.attack();
+
+        if (m_window.get_key_state(gfx::Key::P).pressed())
+            m_on_state_change(State::Paused);
 
         for (auto& entity : m_entities)
             m_map.resolve_collisions(m_window, entity, dt);
