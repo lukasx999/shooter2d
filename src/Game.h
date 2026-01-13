@@ -17,7 +17,7 @@ class Game : public GameObject {
 public:
     explicit Game(gfx::Window& window)
         : m_window(window)
-        , m_font(m_window.load_font("/usr/share/fonts/TTF/JetBrainsMonoNerdFont-Regular.ttf"))
+        , m_font(m_window.load_font("/usr/share/fonts/Adwaita/AdwaitaMono-Regular.ttf"))
         , m_states(m_window, m_font, m_states)
     { }
 
