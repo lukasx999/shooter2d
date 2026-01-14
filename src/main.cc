@@ -2,6 +2,8 @@
 
 #include "Game.h"
 
+// TODO: entity: move to state pattern and start_walk() end_walk() interface
+
 int main() {
 
     gfx::Window window(1600, 900, "Game", gfx::WindowFlags::Logging);
