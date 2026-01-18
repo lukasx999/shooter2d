@@ -12,7 +12,7 @@ class Game : public GameObject {
     gfx::Font m_font;
 
     GameStates m_states;
-    GameState* m_active_state = &m_states.m_state_titlescreen;
+    GameState* m_active_state = &m_states.m_state_playing;
 
 public:
     explicit Game(gfx::Window& window)

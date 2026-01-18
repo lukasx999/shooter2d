@@ -6,12 +6,12 @@
 
 int main() {
 
-    gfx::Window window(1600, 900, "Game", gfx::WindowFlags::Logging);
+    gfx::Window window(1600, 900, "Game");
     gfx::Renderer rd(window);
 
     Game game(window);
 
-    rd.draw([&] {
+    rd.draw_loop([&] {
 
         rd.clear_background(gfx::Color::black());
 
