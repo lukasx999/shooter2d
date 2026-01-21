@@ -7,16 +7,15 @@
 int main() {
 
     gfx::Window window(1600, 900, "Game");
-    gfx::Renderer rd(window);
 
     Game game(window);
 
-    rd.draw_loop([&] {
+    window.draw_loop([&](gfx::Renderer& rd) {
 
         rd.clear_background(gfx::Color::black());
 
         game.draw(rd);
-        game.update(rd.get_frame_time());
+        game.update(window.get_frame_time());
 
     });
 

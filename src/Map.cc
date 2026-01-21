@@ -21,7 +21,7 @@ void Map::draw(gfx::Renderer& rd) const {
     auto& layer = m_map.getLayers().front();
     auto layer_size = layer->getSize();
 
-    auto factor = get_map_scaling_factor(rd.get_window());
+    auto factor = get_map_scaling_factor(rd.get_surface());
 
     auto color = m_map.getBackgroundColour();
     rd.draw_rectangle(0, 0, layer_size.x * tile_size.x, layer_size.y * tile_size.y, tmx_color_to_gfx_color(color));
@@ -79,13 +79,13 @@ void Map::resolve_collisions(const gfx::Window& window, Entity& entity, double d
 
 }
 
-gfx::Vec Map::get_map_scaling_factor(const gfx::Window& window) const {
+gfx::Vec Map::get_map_scaling_factor(const gfx::Surface& surface) const {
 
     auto tile_size = m_map.getTileSize();
     auto tile_count = m_map.getTileCount();
 
-    float width = window.get_width();
-    float height = window.get_height();
+    float width = surface.get_width();
+    float height = surface.get_height();
     float factor_x = width / (tile_count.x * tile_size.x);
     float factor_y = height / (tile_count.y * tile_size.y);
 

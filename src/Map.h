@@ -30,7 +30,7 @@ public:
 
 private:
     // get the scaling factor so the map fits the window
-    [[nodiscard]] gfx::Vec get_map_scaling_factor(const gfx::Window& window) const;
+    [[nodiscard]] gfx::Vec get_map_scaling_factor(const gfx::Surface& surface) const;
     void for_each_tile(std::function<void(uint32_t gid, gfx::Vec dest)> fn) const;
 
     void load_tile_textures();

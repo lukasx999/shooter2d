@@ -23,7 +23,7 @@ public:
     { }
 
     void draw(gfx::Renderer& rd) const override {
-        rd.draw_text_centered(rd.get_window().get_width()/2.0, 0, 50, "epic game", m_font, gfx::Color::white());
+        rd.draw_text_centered(rd.get_surface().get_width()/2.0, 0, 50, "epic game", m_font, gfx::Color::white());
         rd.draw_rectangle(0, 100, m_animation.get(), 50, gfx::Color::red());
         m_button.draw(rd);
     }
