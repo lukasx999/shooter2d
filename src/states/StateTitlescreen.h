@@ -5,6 +5,7 @@
 #include <gfx/gfx.h>
 
 #include "GameState.h"
+#include "../Button.h"
 
 using namespace std::chrono_literals;
 
@@ -12,7 +13,7 @@ class StateTitlescreen : public GameState {
     const gfx::Window& m_window;
     const gfx::Font& m_font;
 
-    gfx::ui::Button m_button { m_window, m_font, "start game", { 0, 0, 500, 100 }, 50 };
+    Button m_button { m_window, m_font, "start game", { 0, 0, 500, 100 }, 50 };
     gfx::Animation<int> m_animation { 0, m_window.get_width(), 5s, gfx::interpolators::ease_in_out_circ };
 
 public:
