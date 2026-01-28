@@ -2,7 +2,7 @@
 
 #include <print>
 
-#include <gfx.h>
+#include <gfx/gfx.h>
 
 #include "GameObject.h"
 #include "states/GameStates.h"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gfx.h>
+#include <gfx/gfx.h>
 
 #include "PhysicalObject.h"
 #include "Player.h"

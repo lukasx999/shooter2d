@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gfx.h>
+#include <gfx/gfx.h>
 
 #include "../Enemy.h"
 #include "../GameObject.h"

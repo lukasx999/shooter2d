@@ -6,20 +6,9 @@ set(CMAKE_COLOR_DIAGNOSTICS ON)
 
 project(Game)
 
+find_package(gfx)
+
 include(FetchContent)
-
-set(libgfx_local true)
-
-if(libgfx_local)
-    add_subdirectory(libgfx)
-else()
-    FetchContent_Declare(
-    Gfx
-    GIT_REPOSITORY https://github.com/lukasx999/libgfx.git
-    GIT_TAG main
-    )
-    FetchContent_MakeAvailable(Gfx)
-endif()
 
 FetchContent_Declare(
     Tmxlite
@@ -28,10 +17,6 @@ FetchContent_Declare(
     SOURCE_SUBDIR tmxlite
 )
 FetchContent_MakeAvailable(Tmxlite)
-
-# # TODO: remove
-# link_directories(./build/_deps/tmxlite-build/)
-# include_directories(./build/_deps/tmxlite-src/tmxlite/include/)
 
 add_executable(game)
 target_compile_options(game PRIVATE -Wall -Wextra -O3 -ggdb)

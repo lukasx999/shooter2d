@@ -1,6 +1,6 @@
 #pragma once
 
-#include <gfx.h>
+#include <gfx/gfx.h>
 
 #include <tmxlite/Map.hpp>
 #include <tmxlite/TileLayer.hpp>
